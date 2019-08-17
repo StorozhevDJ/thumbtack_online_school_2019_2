@@ -4,7 +4,7 @@ import java.util.stream.IntStream;
 
 public class FirstSteps {
 
-    public void FirstSteps() {
+    public FirstSteps() {
 
     }
 
@@ -26,7 +26,7 @@ public class FirstSteps {
     }
 
     public boolean isEqual(int x, int y) {
-        return (x == y) ? true : false;
+        return x == y;
     }
 
     public boolean isGreater(int x, int y) {
@@ -49,8 +49,7 @@ public class FirstSteps {
      */
     public boolean isInsideRect(int xLeft, int yTop, int xRight, int yBottom, int x, int y) {
         if ((x > xRight) || (x < xLeft)) return false;
-        if ((y > yBottom) || (y < yTop)) return false;
-        return true;
+        return (y <= yBottom) && (y >= yTop);
     }
 
     public int sum(int[] array) {
@@ -73,7 +72,7 @@ public class FirstSteps {
     public int min(int[] array) {
         int val = Integer.MAX_VALUE;
         for (int x : array) {
-            if (val < x) val = x;
+            if (val > x) val = x;
         }
         return val;
     }
@@ -81,20 +80,22 @@ public class FirstSteps {
     public int max(int[] array) {
         int val = Integer.MIN_VALUE;
         for (int x : array) {
-            if (val > x) val = x;
+            if (val < x) val = x;
         }
         return val;
     }
 
     public double average(int[] array) {
+        if (array.length == 0) return 0.0;
         double total = IntStream.of(array).sum();
         return total / array.length;
     }
 
     public boolean isSortedDescendant(int[] array) {
-        int i = array[0];
+        int i = Integer.MAX_VALUE;
         for (int j : array) {
-            if (i > j) return false;
+            if (i <= j) return false;
+            i = j;
         }
         return true;
     }
@@ -113,7 +114,7 @@ public class FirstSteps {
     }
 
     public void reverse(int[] array) {
-        for (int i = 0; i < array.length; i++) {
+        for (int i = 0; i < array.length / 2; i++) {
             int tmp = array[i];
             array[i] = array[array.length - 1 - i];
             array[array.length - 1 - i] = tmp;
@@ -141,16 +142,16 @@ public class FirstSteps {
         int val = Integer.MIN_VALUE;
         for (int[] array : matrix) {
             for (int x : array) {
-                if (val > x) val = x;
+                if (val < x) val = x;
             }
         }
         return val;
     }
 
-    public int diagonalMax(int[][] matrix){
+    public int diagonalMax(int[][] matrix) {
         int val = Integer.MIN_VALUE;
-        for(int i=0; i<matrix[0].length; i++){
-            if (val<matrix[i][i]) val=matrix[i][i];
+        for (int i = 0; i < matrix[0].length; i++) {
+            if (val < matrix[i][i]) val = matrix[i][i];
         }
         return val;
     }
@@ -160,12 +161,13 @@ public class FirstSteps {
      * Пустая строка считается упорядоченной.
      * Разные строки массива matrix могут иметь разное количество элементов.
      * При написании метода рекомендуется внутри него вызвать метод из п. 13. (isSortedDescendant)
+     *
      * @param matrix
      * @return
      */
-    public boolean isSortedDescendant(int[][] matrix){
-        for (int[] a:matrix){
-            if (isSortedDescendant(a)==false) return false;
+    public boolean isSortedDescendant(int[][] matrix) {
+        for (int[] a : matrix) {
+            if (!isSortedDescendant(a)) return false;
         }
         return true;
     }
