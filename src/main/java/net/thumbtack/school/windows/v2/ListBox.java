@@ -25,7 +25,7 @@ public class ListBox {
         this.topLeft = topLeft;
         this.bottomRight = bottomRight;
         this.active = active;
-        this.lines = lines;
+        this.lines = (lines != null) ? lines.clone() : null;
     }
 
     /**
@@ -147,7 +147,7 @@ public class ListBox {
      * @return
      */
     public String[] getLines() {
-        return lines;
+        return (lines != null) ? lines.clone() : null;
     }
 
     /**
