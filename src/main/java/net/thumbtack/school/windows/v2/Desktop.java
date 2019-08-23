@@ -10,8 +10,7 @@ public class Desktop {
     }
 
     public Desktop() {
-        width = 640;
-        height = 480;
+        this(640, 480);
     }
 
     public int getWidth() {

@@ -5,7 +5,7 @@ public class RoundButton {
     private Point center;
     private int radius;
     private boolean active;
-    private String text;
+    String text;
 
     /**
      * Создает RoundButton по координатам центра, значению радиуса и флагу
@@ -32,10 +32,7 @@ public class RoundButton {
      * @param active
      */
     public RoundButton(int xCenter, int yCenter, int radius, boolean active, String text) {
-        this.center = new Point(xCenter, yCenter);
-        this.radius = radius;
-        this.active = active;
-        this.text = text;
+        this(new Point(xCenter, yCenter), radius, active, text);
     }
 
     /**
@@ -102,7 +99,7 @@ public class RoundButton {
      * @param point
      */
     public void moveTo(Point point) {
-        center.moveTo(point.getX(), point.getY());
+        moveTo(point.getX(), point.getY());
     }
 
     /**
@@ -152,8 +149,7 @@ public class RoundButton {
      */
     public void resize(double ratio) {
         radius *= ratio;
-        if (radius < 1)
-            radius = 1;
+        if (radius < 1) radius = 1;
     }
 
     /**
@@ -198,8 +194,7 @@ public class RoundButton {
      * @return
      */
     public boolean isFullyVisibleOnDesktop(Desktop desktop) {
-        if (((center.getX() - radius) < 0) || ((center.getX() + radius) >= desktop.getWidth()))
-            return false;
+        if (((center.getX() - radius) < 0) || ((center.getX() + radius) >= desktop.getWidth())) return false;
         return ((center.getX() - radius) >= 0) && ((center.getX() + radius) < desktop.getWidth());
     }
 

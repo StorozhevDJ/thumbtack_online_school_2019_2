@@ -75,7 +75,7 @@ public class StringOperations {
      * @param str
      * @return
      */
-    public static boolean isSameFirstStringPosition(String string1, String string2, String str) {
+	public static boolean isSameFirstStringPosition(String string1, String string2, String str) {
         return string1.indexOf(str) == string2.indexOf(str);
     }
 
@@ -86,9 +86,9 @@ public class StringOperations {
      * @param string1
      * @param string2
      * @param str
-     * @return
-     */
-    public static boolean isSameLastStringPosition(String string1, String string2, String str) {
+	 * @return
+	 */
+	public static boolean isSameLastStringPosition(String string1, String string2, String str) {
         return string1.lastIndexOf(str) == string2.lastIndexOf(str);
     }
 
@@ -127,11 +127,12 @@ public class StringOperations {
     }
 
     /**
+     *
      * Возвращает true, если строка string1 меньше строки string2 без учета регистра
      * (например, строка “abc” меньше строки “ABCd” в этом смысле).
-     *
-     * @param string1
-     * @param string2
+	 * 
+	 * @param string1
+	 * @param string2
      * @return
      */
     public static boolean isLessIgnoreCase(String string1, String string2) {
@@ -186,8 +187,9 @@ public class StringOperations {
     public static String getCommonPrefix(String string1, String string2) {
         int i = 0;
         for (; (i < string1.length() && i < string2.length()); i++) {
-            if (string1.charAt(i) != string2.charAt(i))
+            if (string1.charAt(i) != string2.charAt(i)) {
                 break;
+            }
         }
         return string1.substring(0, i);
         /*
@@ -260,8 +262,9 @@ public class StringOperations {
      * @return
      */
     public static boolean hasSameSubstring(String string1, String string2, int index, int length) {
-        if ((string1.length() < index + length) || (string2.length() < index + length))
+        if ((string1.length() < index + length) || (string2.length() < index + length)) {
             return false;
+        }
         return string1.substring(index, index + length).equals(string2.substring(index, index + length));
     }
 
@@ -431,10 +434,10 @@ public class StringOperations {
      */
     public static StringBuilder insertCharacters(String string, int[] positions, char[] characters) {
         StringBuilder sb = new StringBuilder(string);
-        for (int i = positions.length; i > 0; i--) {
-            sb = sb.insert(positions[i - 1], characters[i - 1]);
-        }
-        return sb;
-    }
+		for (int i = positions.length; i > 0; i--) {
+			sb = sb.insert(positions[i - 1], characters[i - 1]);
+		}
+		return sb;
+	}
 
 }

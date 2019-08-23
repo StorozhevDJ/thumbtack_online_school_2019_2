@@ -2,10 +2,6 @@ package net.thumbtack.school.base;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.IntStream;
 
 public class NumberOperations {
 
@@ -19,9 +15,11 @@ public class NumberOperations {
      * @return
      */
     public static Integer find(int[] array, int value) {
-        for (int i = 0; i < array.length; i++)
-            if (array[i] == value)
+        for (int i = 0; i < array.length; i++) {
+            if (array[i] == value) {
                 return i;
+            }
+        }
         return null;
     }
 
@@ -36,9 +34,11 @@ public class NumberOperations {
      * @return
      */
     public static Integer find(double[] array, double value, double eps) {
-        for (int i = 0; i < array.length; i++)
-            if (Math.abs(array[i] - value) < eps)
+        for (int i = 0; i < array.length; i++) {
+            if (Math.abs(array[i] - value) < eps) {
                 return i;
+            }
+        }
         return null;
     }
 
@@ -68,9 +68,11 @@ public class NumberOperations {
      * @return
      */
     public static Integer find(BigInteger[] array, BigInteger value) {
-        for (int i = 0; i < array.length; i++)
-            if (array[i].compareTo(value) == 0)
+        for (int i = 0; i < array.length; i++) {
+            if (array[i].equals(value)) {
                 return i;
+            }
+        }
         return null;
     }
 

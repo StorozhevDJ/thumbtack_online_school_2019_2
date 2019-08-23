@@ -4,7 +4,7 @@ public class RectButton {
 
     private Point topLeft, bottomRight;
     private boolean active;
-    private String text;
+    String text;
 
     /**
      * Создает RectButton по координатам углов - левого верхнего и правого нижнего,
@@ -34,10 +34,7 @@ public class RectButton {
      * @param active
      */
     public RectButton(int xLeft, int yTop, int width, int height, boolean active, String text) {
-        topLeft = new Point(xLeft, yTop);
-        bottomRight = new Point(xLeft + width - 1, yTop + height - 1);
-        this.active = active;
-        this.text = text;
+        this(new Point(xLeft, yTop), new Point(xLeft + width - 1, yTop + height - 1), active, text);
     }
 
     /**
@@ -48,10 +45,7 @@ public class RectButton {
      * @param bottomRight
      */
     public RectButton(Point topLeft, Point bottomRight, String text) {
-        this.topLeft = topLeft;
-        this.bottomRight = bottomRight;
-        active = true;
-        this.text = text;
+        this(topLeft, bottomRight, true, text);
     }
 
     /**
@@ -158,8 +152,7 @@ public class RectButton {
      * @param point
      */
     public void moveTo(Point point) {
-        bottomRight.moveRel(point.getX() - topLeft.getX(), point.getY() - topLeft.getY());
-        topLeft = point;
+        moveTo(point.getX(), point.getY());
     }
 
     /**
@@ -196,8 +189,7 @@ public class RectButton {
      * @return
      */
     public boolean isInside(int x, int y) {
-        if ((x < topLeft.getX()) || (x > bottomRight.getX()))
-            return false;
+        if ((x < topLeft.getX()) || (x > bottomRight.getX())) return false;
         return (y >= topLeft.getY()) && (y <= bottomRight.getY());
     }
 
@@ -220,8 +212,7 @@ public class RectButton {
      * @return
      */
     public boolean isIntersects(RectButton rectButton) {
-        if (isInside(rectButton.getBottomRight()) || isInside(rectButton.getTopLeft()))
-            return true;
+        if (isInside(rectButton.getBottomRight()) || isInside(rectButton.getTopLeft())) return true;
         return rectButton.isInside(this.topLeft) || rectButton.isInside(this.bottomRight);
     }
 
@@ -242,8 +233,7 @@ public class RectButton {
      * @return
      */
     public boolean isFullyVisibleOnDesktop(Desktop desktop) {
-        if ((topLeft.getX() < 0) || (topLeft.getY() < 0))
-            return false;
+        if ((topLeft.getX() < 0) || (topLeft.getY() < 0)) return false;
         return (bottomRight.getX() <= desktop.getWidth()) && (bottomRight.getY() <= desktop.getHeight());
     }
 

@@ -6,9 +6,9 @@ import java.util.Collections;
 
 public class ListBox {
 
-    private Point topLeft, bottomRight;
-    private boolean active;
-    private String[] lines;
+    Point topLeft, bottomRight;
+    boolean active;
+    String[] lines;
 
     /**
      * Создает ListBox по координатам углов - левого верхнего и правого нижнего,
@@ -170,8 +170,7 @@ public class ListBox {
      * @return
      */
     public String[] getLinesSlice(int from, int to) {
-        if (lines == null)
-            return null;
+        if (lines == null) return null;
         ArrayList<String> s = new ArrayList<String>();
         for (int i = from; (i < lines.length) && (i < to); i++) {
             s.add(lines[i]);
@@ -211,11 +210,9 @@ public class ListBox {
      * @return
      */
     public Integer findLine(String line) {
-        if ((line == null) || (this.lines == null))
-            return null;
+        if ((line == null) || (this.lines == null)) return null;
         for (int i = 0; i < this.lines.length; i++) {
-            if (line.equals(this.lines[i]))
-                return i;
+            if (line.equals(this.lines[i])) return i;
         }
         return null;
     }
@@ -282,8 +279,7 @@ public class ListBox {
     public boolean isSortedDescendant() {
         if (lines != null) {
             for (int i = 1; i < lines.length; i++) {
-                if (lines[i - 1].compareTo(lines[i]) <= 0)
-                    return false;
+                if (lines[i - 1].compareTo(lines[i]) <= 0) return false;
             }
         }
         return true;
@@ -307,8 +303,7 @@ public class ListBox {
      * @param point
      */
     public void moveTo(Point point) {
-        bottomRight.moveRel(point.getX() - topLeft.getX(), point.getY() - topLeft.getY());
-        topLeft = point;
+        moveTo(point.getX(), point.getY());
     }
 
     /**
@@ -346,8 +341,7 @@ public class ListBox {
      * @return
      */
     public boolean isInside(int x, int y) {
-        if ((x < topLeft.getX()) || (x > bottomRight.getX()))
-            return false;
+        if ((x < topLeft.getX()) || (x > bottomRight.getX())) return false;
         return (y >= topLeft.getY()) && (y <= bottomRight.getY());
     }
 
@@ -356,10 +350,10 @@ public class ListBox {
      * считается, что она лежит внутри.
      *
      * @param point
-     * @return
-     */
-    public boolean isInside(Point point) {
-        return isInside(point.getX(), point.getY());
+	 * @return
+	 */
+	public boolean isInside(Point point) {
+		return isInside(point.getX(), point.getY());
     }
 
     /**
@@ -370,18 +364,17 @@ public class ListBox {
      * @return
      */
     public boolean isIntersects(ListBox listBox) {
-        if (isInside(listBox.getBottomRight()) || isInside(listBox.getTopLeft()))
-            return true;
+        if (isInside(listBox.getBottomRight()) || isInside(listBox.getTopLeft())) return true;
         return listBox.isInside(this.topLeft) || listBox.isInside(this.bottomRight);
     }
 
     /**
      * Определяет, лежит ли ListBox целиком внутри текущего ListBox.
-     *
-     * @param listBox
-     * @return
-     */
-    public boolean isInside(ListBox listBox) {
+	 *
+	 * @param listBox
+	 * @return
+	 */
+	public boolean isInside(ListBox listBox) {
         return isInside(listBox.getTopLeft()) && isInside(listBox.getBottomRight());
     }
 
@@ -392,31 +385,37 @@ public class ListBox {
      * @return
      */
     public boolean isFullyVisibleOnDesktop(Desktop desktop) {
-        if ((topLeft.getX() < 0) || (topLeft.getY() < 0))
-            return false;
+        if ((topLeft.getX() < 0) || (topLeft.getY() < 0)) return false;
         return (bottomRight.getX() <= desktop.getWidth()) && (bottomRight.getY() <= desktop.getHeight());
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        ListBox listBox = (ListBox) o;
-
-        if (active != listBox.active) return false;
-        if (topLeft != null ? !topLeft.equals(listBox.topLeft) : listBox.topLeft != null) return false;
-        if (bottomRight != null ? !bottomRight.equals(listBox.bottomRight) : listBox.bottomRight != null) return false;
-        // Probably incorrect - comparing Object[] arrays with Arrays.equals
-        return Arrays.equals(lines, listBox.lines);
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + (active ? 1231 : 1237);
+        result = prime * result + ((bottomRight == null) ? 0 : bottomRight.hashCode());
+        result = prime * result + Arrays.hashCode(lines);
+        result = prime * result + ((topLeft == null) ? 0 : topLeft.hashCode());
+        return result;
     }
 
     @Override
-    public int hashCode() {
-        int result = topLeft != null ? topLeft.hashCode() : 0;
-        result = 31 * result + (bottomRight != null ? bottomRight.hashCode() : 0);
-        result = 31 * result + (active ? 1 : 0);
-        result = 31 * result + Arrays.hashCode(lines);
-        return result;
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null) return false;
+        if (getClass() != obj.getClass()) return false;
+		ListBox other = (ListBox) obj;
+		if (active != other.active) return false;
+		if (bottomRight == null) {
+			if (other.bottomRight != null) 	return false;
+		} else if (!bottomRight.equals(other.bottomRight)) 	return false;
+		if (!Arrays.equals(lines, other.lines)) return false;
+		if (topLeft == null) {
+            return other.topLeft == null;
+		} else return topLeft.equals(other.topLeft);
     }
+
+	// методы equals и hashCode.
+
 }
