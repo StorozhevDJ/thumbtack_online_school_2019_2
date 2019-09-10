@@ -4,6 +4,8 @@ import net.thumbtack.school.windows.v4.base.WindowErrorCode;
 import net.thumbtack.school.windows.v4.base.WindowException;
 import net.thumbtack.school.windows.v4.base.WindowState;
 
+import java.util.Objects;
+
 public class ComboBox extends ListBox {
 
     private Integer selected;
@@ -129,29 +131,18 @@ public class ComboBox extends ListBox {
         this.selected = selected;
     }
 
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        ComboBox comboBox = (ComboBox) o;
+        return Objects.equals(selected, comboBox.selected);
+    }
+
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = super.hashCode();
-        result = prime * result + ((selected == null) ? 0 : selected.hashCode());
-        return result;
+        return Objects.hash(super.hashCode(), selected);
     }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (!super.equals(obj))
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        ComboBox other = (ComboBox) obj;
-        if (selected == null) {
-            if (other.selected != null)
-                return false;
-        } else if (!selected.equals(other.selected))
-            return false;
-        return true;
-    }
-
 }

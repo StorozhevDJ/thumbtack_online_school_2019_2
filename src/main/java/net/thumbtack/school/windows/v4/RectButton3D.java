@@ -3,6 +3,8 @@ package net.thumbtack.school.windows.v4;
 import net.thumbtack.school.windows.v4.base.WindowException;
 import net.thumbtack.school.windows.v4.base.WindowState;
 
+import java.util.Objects;
+
 public class RectButton3D extends RectButton {
 
     private int zHeight;
@@ -133,26 +135,18 @@ public class RectButton3D extends RectButton {
         return (super.isInside(rectButton3D) && (zHeight >= rectButton3D.getZHeight()));
     }
 
+
     @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = super.hashCode();
-        result = prime * result + zHeight;
-        return result;
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		if (!super.equals(o)) return false;
+		RectButton3D that = (RectButton3D) o;
+		return zHeight == that.zHeight;
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (!super.equals(obj))
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        RectButton3D other = (RectButton3D) obj;
-        if (zHeight != other.zHeight)
-            return false;
-        return true;
+	public int hashCode() {
+		return Objects.hash(super.hashCode(), zHeight);
     }
-
 }

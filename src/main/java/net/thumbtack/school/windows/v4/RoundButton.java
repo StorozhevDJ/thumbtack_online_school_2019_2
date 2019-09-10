@@ -4,6 +4,8 @@ import net.thumbtack.school.windows.v4.base.RoundWindow;
 import net.thumbtack.school.windows.v4.base.WindowException;
 import net.thumbtack.school.windows.v4.base.WindowState;
 
+import java.util.Objects;
+
 public class RoundButton extends RoundWindow {
 
     private String text;
@@ -70,41 +72,6 @@ public class RoundButton extends RoundWindow {
     }
 
     /**
-     * Определяет, лежит ли точка (x, y) внутри RoundButton. Если точка лежит на
-     * окружности, считается, что она лежит внутри. В этом методе мы пренебрегаем
-     * пиксельной структурой изображения и рассматриваем RoundButton как
-     * математический круг.
-     *
-     * @param x
-     * @param y
-     * @return
-     */
-    public boolean isInside(int x, int y) {
-
-        /*
-         * x^2+y^2=r^2 (for circle with center in 0) (x-a)^2 + (y-b)^2 = r^2 (for circle
-         * with center with x=a, y=b)
-         *
-         */
-        int dx = x - getCenter().getX();
-        int dy = y - getCenter().getY();
-        return (dx * dx + dy * dy) <= getRadius() * getRadius();
-    }
-
-    /**
-     * Определяет, лежит ли точка point внутри RoundButton. Если точка лежит на
-     * окружности, считается, что она лежит внутри. В этом методе мы пренебрегаем
-     * пиксельной структурой изображения и рассматриваем RoundButton как
-     * математический круг.
-     *
-     * @param point
-     * @return
-     */
-    public boolean isInside(Point point) {
-        return isInside(point.getX(), point.getY());
-    }
-
-    /**
      * Определяет, верно ли, что вся RoundButton находится в пределах Desktop.
      *
      * @param desktop
@@ -135,29 +102,18 @@ public class RoundButton extends RoundWindow {
         this.text = text;
     }
 
+
     @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = super.hashCode();
-        result = prime * result + ((text == null) ? 0 : text.hashCode());
-        return result;
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		if (!super.equals(o)) return false;
+		RoundButton that = (RoundButton) o;
+		return Objects.equals(text, that.text);
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (!super.equals(obj))
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        RoundButton other = (RoundButton) obj;
-        if (text == null) {
-            if (other.text != null)
-                return false;
-        } else if (!text.equals(other.text))
-            return false;
-        return true;
+	public int hashCode() {
+		return Objects.hash(super.hashCode(), text);
     }
-
 }

@@ -271,50 +271,19 @@ public class ListBox extends RectWindow {
         return true;
     }
 
-    /**
-     * Определяет, пересекается ли ListBox с другим ListBox. Считается, что
-     * ListBox’ы пересекаются, если у них есть хоть одна общая точка.
-     *
-     * @param listBox
-     * @return
-     */
-    public boolean isIntersects(ListBox listBox) {
-        if (isInside(listBox.getBottomRight()) || isInside(listBox.getTopLeft())) {
-            return true;
-        }
-        return listBox.isInside(getTopLeft()) || listBox.isInside(getBottomRight());
-    }
-
-    /**
-     * Определяет, лежит ли ListBox целиком внутри текущего ListBox.
-     *
-     * @param listBox
-     * @return
-     */
-    public boolean isInside(ListBox listBox) {
-        return isInside(listBox.getTopLeft()) && isInside(listBox.getBottomRight());
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		if (!super.equals(o)) return false;
+		ListBox listBox = (ListBox) o;
+		return Arrays.equals(lines, listBox.lines);
     }
 
     @Override
     public int hashCode() {
-        final int prime = 31;
         int result = super.hashCode();
-        result = prime * result + Arrays.hashCode(lines);
+		result = 31 * result + Arrays.hashCode(lines);
         return result;
     }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (!super.equals(obj))
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        ListBox other = (ListBox) obj;
-        if (!Arrays.equals(lines, other.lines))
-            return false;
-        return true;
-    }
-
 }

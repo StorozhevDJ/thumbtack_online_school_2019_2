@@ -3,6 +3,8 @@ package net.thumbtack.school.windows.v4;
 import net.thumbtack.school.windows.v4.base.WindowException;
 import net.thumbtack.school.windows.v4.base.WindowState;
 
+import java.util.Objects;
+
 public class RadioButton extends RoundButton {
 
     private boolean checked;
@@ -91,26 +93,16 @@ public class RadioButton extends RoundButton {
     }
 
     @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = super.hashCode();
-        result = prime * result + (checked ? 1231 : 1237);
-        return result;
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		if (!super.equals(o)) return false;
+		RadioButton that = (RadioButton) o;
+		return checked == that.checked;
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (!super.equals(obj))
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        RadioButton other = (RadioButton) obj;
-        if (checked != other.checked)
-            return false;
-        return true;
+	public int hashCode() {
+		return Objects.hash(super.hashCode(), checked);
     }
-
-
 }

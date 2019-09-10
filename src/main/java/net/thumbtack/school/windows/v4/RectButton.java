@@ -5,6 +5,8 @@ import net.thumbtack.school.windows.v4.base.WindowErrorCode;
 import net.thumbtack.school.windows.v4.base.WindowException;
 import net.thumbtack.school.windows.v4.base.WindowState;
 
+import java.util.Objects;
+
 public class RectButton extends RectWindow {
 
     private String text;
@@ -98,30 +100,6 @@ public class RectButton extends RectWindow {
     }
 
     /**
-     * Определяет, пересекается ли RectButton с другим RectButton. Считается, что
-     * кнопки пересекаются, если у них есть хоть одна общая точка.
-     *
-     * @param rectButton
-     * @return
-     */
-    public boolean isIntersects(RectButton rectButton) {
-        if (isInside(rectButton.getBottomRight()) || isInside(rectButton.getTopLeft())) {
-            return true;
-        }
-        return rectButton.isInside(getTopLeft()) || rectButton.isInside(getBottomRight());
-    }
-
-    /**
-     * Определяет, лежит ли RectButton целиком внутри текущего RectButton.
-     *
-     * @param rectButton
-     * @return
-     */
-    public boolean isInside(RectButton rectButton) {
-        return isInside(rectButton.getTopLeft()) && isInside(rectButton.getBottomRight());
-    }
-
-    /**
      * Возвращает текст окна
      *
      * @return
@@ -140,28 +118,17 @@ public class RectButton extends RectWindow {
     }
 
     @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = super.hashCode();
-        result = prime * result + ((text == null) ? 0 : text.hashCode());
-        return result;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        RectButton that = (RectButton) o;
+        return Objects.equals(text, that.text);
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (!super.equals(obj))
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        RectButton other = (RectButton) obj;
-        if (text == null) {
-            if (other.text != null)
-                return false;
-        } else if (!text.equals(other.text))
-            return false;
-        return true;
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), text);
     }
 
 }

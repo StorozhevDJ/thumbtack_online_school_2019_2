@@ -1,5 +1,7 @@
 package net.thumbtack.school.windows.v4;
 
+import java.util.Objects;
+
 public class Desktop {
 
     private int width, height;
@@ -26,28 +28,16 @@ public class Desktop {
     }
 
     @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + height;
-        result = prime * result + width;
-        return result;
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		Desktop desktop = (Desktop) o;
+		return width == desktop.width &&
+				height == desktop.height;
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        Desktop other = (Desktop) obj;
-        if (height != other.height)
-            return false;
-        if (width != other.width)
-            return false;
-        return true;
+	public int hashCode() {
+		return Objects.hash(width, height);
     }
-
 }

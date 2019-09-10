@@ -3,6 +3,8 @@ package net.thumbtack.school.windows.v4.base;
 import net.thumbtack.school.windows.v4.Point;
 import net.thumbtack.school.windows.v4.base.Window;
 
+import java.util.Objects;
+
 public abstract class RoundWindow extends Window {
 
     private Point center;
@@ -79,32 +81,54 @@ public abstract class RoundWindow extends Window {
         }
     }
 
+
+	/**
+	 * Определяет, лежит ли точка (x, y) внутри RoundButton. Если точка лежит на
+	 * окружности, считается, что она лежит внутри. В этом методе мы пренебрегаем
+	 * пиксельной структурой изображения и рассматриваем RoundButton как
+	 * математический круг.
+	 *
+	 * @param x
+	 * @param y
+	 * @return
+	 */
+	public boolean isInside(int x, int y) {
+
+		/*
+		 * x^2+y^2=r^2 (for circle with center in 0) (x-a)^2 + (y-b)^2 = r^2 (for circle
+		 * with center with x=a, y=b)
+		 *
+		 */
+		int dx = x - getCenter().getX();
+		int dy = y - getCenter().getY();
+		return (dx * dx + dy * dy) <= getRadius() * getRadius();
+	}
+
+	/**
+	 * Определяет, лежит ли точка point внутри RoundButton. Если точка лежит на
+	 * окружности, считается, что она лежит внутри. В этом методе мы пренебрегаем
+	 * пиксельной структурой изображения и рассматриваем RoundButton как
+	 * математический круг.
+	 *
+	 * @param point
+	 * @return
+	 */
+	public boolean isInside(Point point) {
+		return isInside(point.getX(), point.getY());
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		if (!super.equals(o)) return false;
+		RoundWindow that = (RoundWindow) o;
+		return radius == that.radius &&
+				Objects.equals(center, that.center);
+	}
+
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((center == null) ? 0 : center.hashCode());
-        result = prime * result + radius;
-        return result;
+		return Objects.hash(super.hashCode(), center, radius);
     }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        RoundWindow other = (RoundWindow) obj;
-        if (center == null) {
-            if (other.center != null)
-                return false;
-        } else if (!center.equals(other.center))
-            return false;
-        if (radius != other.radius)
-            return false;
-        return true;
-    }
-
 }
