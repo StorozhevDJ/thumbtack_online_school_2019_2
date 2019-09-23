@@ -326,7 +326,7 @@ public class FileService {
      */
     public static Trainee readTraineeFromTextFileOneLine(File file) throws IOException, TrainingException {
         Trainee ret = null;
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF-8"))) {
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8))) {
             //ret = new Trainee(reader., reader.readLine(), Integer.valueOf(reader.readLine()));
 
             String[] str = reader.readLine().split(" ");
@@ -362,9 +362,8 @@ public class FileService {
      */
     public static Trainee readTraineeFromTextFileThreeLines(File file) throws IOException, TrainingException {
         Trainee ret = null;
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF-8"))) {
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8))) {
             ret = new Trainee(reader.readLine(), reader.readLine(), Integer.valueOf(reader.readLine()));
-            String currentLine = reader.readLine();
         }
         return ret;
     }
