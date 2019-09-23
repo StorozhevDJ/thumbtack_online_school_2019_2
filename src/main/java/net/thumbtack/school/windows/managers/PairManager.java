@@ -42,10 +42,7 @@ public class PairManager<T extends Window, V extends Window> {
      * @return
      */
     public boolean allWindowsFullyVisibleOnDesktop(PairManager<? extends Window, ? extends Window> pairManager, Desktop desktop) {
-        return firstWindow.isFullyVisibleOnDesktop(desktop) &&
-                secondWindow.isFullyVisibleOnDesktop(desktop) &&
-                pairManager.getFirstWindow().isFullyVisibleOnDesktop(desktop) &&
-                pairManager.getSecondWindow().isFullyVisibleOnDesktop(desktop);
+        return allWindowsFullyVisibleOnDesktop(this, pairManager, desktop);
     }
 
     /**

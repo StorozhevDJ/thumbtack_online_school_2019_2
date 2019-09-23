@@ -33,9 +33,9 @@ public class FileService {
      * @throws IOException
      */
     public static void writeByteArrayToBinaryFile(File file, byte[] array) throws IOException {
-        BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(file));
-        bos.write(array);
-        bos.close();
+        try (BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(file))) {
+            bos.write(array);
+        }
     }
 
     /**
@@ -164,13 +164,11 @@ public class FileService {
      * @param file
      * @return
      */
-    public static RectButton readRectButtonFromBinaryFile(File file) throws IOException {
+    public static RectButton readRectButtonFromBinaryFile(File file) throws IOException, WindowException {
         RectButton ret = null;
         try (DataInputStream dis = new DataInputStream(new FileInputStream(file))) {
             ret = new RectButton(new Point(dis.readInt(), dis.readInt()), new Point(dis.readInt(), dis.readInt()),
                     WindowState.valueOf(dis.readUTF()), dis.readUTF());
-        } catch (WindowException e) {
-            e.printStackTrace();
         }
         return ret;
     }
@@ -200,7 +198,7 @@ public class FileService {
      *
      * @param file
      */
-    public static void modifyRectButtonArrayInBinaryFile(File file) throws IOException {
+    public static void modifyRectButtonArrayInBinaryFile(File file) throws IOException, WindowException {
         RectButton[] rb = readRectButtonArrayFromBinaryFile(file);
         for (RectButton rectButton : rb) {
             rectButton.moveRel(+1, 0);
@@ -215,14 +213,12 @@ public class FileService {
      * @param file
      * @return
      */
-    public static RectButton[] readRectButtonArrayFromBinaryFile(File file) throws IOException {
+    public static RectButton[] readRectButtonArrayFromBinaryFile(File file) throws IOException, WindowException {
         ArrayList<RectButton> rbal = new ArrayList<>();
         try (DataInputStream dis = new DataInputStream(new FileInputStream(file))) {
             while (dis.available() > 0) {
                 rbal.add(new RectButton(new Point(dis.readInt(), dis.readInt()), new Point(dis.readInt(), dis.readInt()), "OK"));
             }
-        } catch (WindowException e) {
-            e.printStackTrace();
         }
         return rbal.toArray(new RectButton[rbal.size()]);
     }
@@ -250,7 +246,7 @@ public class FileService {
      * @param file
      * @return
      */
-    public static RectButton readRectButtonFromTextFileOneLine(File file) throws IOException {
+    public static RectButton readRectButtonFromTextFileOneLine(File file) throws IOException, WindowException {
         RectButton rb = null;
         try (Scanner scanner = new Scanner(new FileReader(file))) {
             scanner.useDelimiter(" ");
@@ -258,8 +254,6 @@ public class FileService {
             rb = new RectButton(new Point(scanner.nextInt(), scanner.nextInt()),
                     new Point(scanner.nextInt(), scanner.nextInt()), WindowState.valueOf(scanner.next()),
                     scanner.next());
-        } catch (WindowException e) {
-            e.printStackTrace();
         }
         return rb;
     }
@@ -298,16 +292,12 @@ public class FileService {
      * @param file
      * @return
      */
-    public static RectButton readRectButtonFromTextFileSixLines(File file) throws IOException {
+    public static RectButton readRectButtonFromTextFileSixLines(File file) throws IOException, WindowException {
         RectButton rb = null;
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             rb = new RectButton(new Point(Integer.parseInt(reader.readLine()), Integer.parseInt(reader.readLine())),
                     new Point(Integer.parseInt(reader.readLine()), Integer.parseInt(reader.readLine())),
                     WindowState.valueOf(reader.readLine()), reader.readLine());
-        } catch (NumberFormatException e) {
-            e.printStackTrace();
-        } catch (WindowException e) {
-            e.printStackTrace();
         }
         return rb;
     }
@@ -334,17 +324,13 @@ public class FileService {
      * @param file
      * @return
      */
-    public static Trainee readTraineeFromTextFileOneLine(File file) throws IOException {
+    public static Trainee readTraineeFromTextFileOneLine(File file) throws IOException, TrainingException {
         Trainee ret = null;
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF-8"))) {
             //ret = new Trainee(reader., reader.readLine(), Integer.valueOf(reader.readLine()));
 
             String[] str = reader.readLine().split(" ");
             ret = new Trainee(str[0], str[1], Integer.parseInt(str[2]));
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        } catch (TrainingException e) {
-            e.printStackTrace();
         }
         return ret;
     }
@@ -374,15 +360,11 @@ public class FileService {
      * @param file
      * @return
      */
-    public static Trainee readTraineeFromTextFileThreeLines(File file) throws IOException {
+    public static Trainee readTraineeFromTextFileThreeLines(File file) throws IOException, TrainingException {
         Trainee ret = null;
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF-8"))) {
             ret = new Trainee(reader.readLine(), reader.readLine(), Integer.valueOf(reader.readLine()));
             String currentLine = reader.readLine();
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        } catch (TrainingException e) {
-            e.printStackTrace();
         }
         return ret;
     }
@@ -408,14 +390,10 @@ public class FileService {
      * @param file
      * @return
      */
-    public static Trainee deserializeTraineeFromBinaryFile(File file) throws IOException {
+    public static Trainee deserializeTraineeFromBinaryFile(File file) throws IOException, ClassNotFoundException {
         Trainee ret = null;
         try (ObjectInputStream objectInputStream = new ObjectInputStream(new FileInputStream(file))) {
-            try {
-                ret = (Trainee) objectInputStream.readObject();
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-            }
+            ret = (Trainee) objectInputStream.readObject();
         }
         return ret;
     }
