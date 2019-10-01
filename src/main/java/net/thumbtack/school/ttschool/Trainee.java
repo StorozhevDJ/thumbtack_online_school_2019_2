@@ -1,6 +1,8 @@
 package net.thumbtack.school.ttschool;
 
-public class Trainee {
+import java.io.Serializable;
+
+public class Trainee implements Serializable {
 
     private String firstName, lastName;
     private int rating;
