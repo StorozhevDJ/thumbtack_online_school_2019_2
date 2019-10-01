@@ -1,8 +1,6 @@
 package net.thumbtack.school.ttschool;
 
-import java.io.Serializable;
-
-public class Trainee implements Serializable {
+public class Trainee {
 
     private String firstName, lastName;
     private int rating;
@@ -138,6 +136,5 @@ public class Trainee implements Serializable {
     /**
      * Методы equals и hashCode
      */
-
 
 }
