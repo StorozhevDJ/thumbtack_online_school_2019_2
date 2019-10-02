@@ -21,14 +21,7 @@ public class ComboBox extends ListBox {
     public ComboBox(Point topLeft, Point bottomRight, WindowState active, String[] lines, Integer selected)
             throws WindowException {
         super(topLeft, bottomRight, active, lines);
-        if (lines == null) {
-            if (selected != null) {
-                throw new WindowException(WindowErrorCode.EMPTY_ARRAY);
-            }
-        } else if ((selected != null) && ((lines.length <= selected) || (selected < 0))) {
-            throw new WindowException(WindowErrorCode.WRONG_INDEX);
-        }
-        this.selected = selected;
+        setSelected(selected);
     }
 
     public ComboBox(Point topLeft, Point bottomRight, String active, String[] lines, Integer selected)
@@ -122,7 +115,7 @@ public class ComboBox extends ListBox {
      * @throws WindowException
      */
     public void setSelected(Integer selected) throws WindowException {
-        if ((getLines().length == 0) && (selected != null)) {
+        if ((getLines() == null) && (selected != null)) {
             throw new WindowException(WindowErrorCode.EMPTY_ARRAY);
         }
         if ((selected != null) && ((selected < 0) || (getLines().length <= selected))) {

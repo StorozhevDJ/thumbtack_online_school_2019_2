@@ -9,7 +9,7 @@ import java.util.Objects;
 
 public abstract class Window implements Movable, Resizable {
 
-    private WindowState active;
+    private WindowState state;
 
     /**
      * Возвращает true, если кнопка активна, иначе false.
@@ -17,20 +17,20 @@ public abstract class Window implements Movable, Resizable {
      * @return
      */
     public WindowState getState() {
-        return active;
+        return state;
     }
 
     /**
      * Устанавливает состояние активности RectButton.
      *
-     * @param active
+     * @param state
      * @throws WindowException
      */
-    public void setState(WindowState active) throws WindowException {
-        if ((this.active == WindowState.DESTROYED) && (active != WindowState.DESTROYED) || active == null) {
+    public void setState(WindowState state) throws WindowException {
+        if ((this.state == WindowState.DESTROYED) && (state != WindowState.DESTROYED) || state == null) {
             throw new WindowException(WindowErrorCode.WRONG_STATE);
         }
-        this.active = active;
+        this.state = state;
     }
 
     public abstract void moveTo(int i, int i1);
@@ -46,11 +46,11 @@ public abstract class Window implements Movable, Resizable {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
 		Window window = (Window) o;
-		return active == window.active;
+        return state == window.state;
 	}
 
     @Override
     public int hashCode() {
-		return Objects.hash(active);
+        return Objects.hash(state);
     }
 }

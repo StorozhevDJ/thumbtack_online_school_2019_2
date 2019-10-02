@@ -2,7 +2,6 @@ package net.thumbtack.school.windows.v4.base;
 
 import net.thumbtack.school.windows.v4.Desktop;
 import net.thumbtack.school.windows.v4.Point;
-import net.thumbtack.school.windows.v4.RectButton;
 
 import java.util.Objects;
 

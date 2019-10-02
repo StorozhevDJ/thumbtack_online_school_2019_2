@@ -18,13 +18,4 @@ public enum WindowErrorCode {
 	public String getText() {
 		return this.errorString;
 	}
-
-	public static WindowErrorCode fromString(String text) {
-		for (WindowErrorCode b : WindowErrorCode.values()) {
-			if (b.errorString.equals(text)) {
-				return b;
-			}
-		}
-		return null;
-	}
 }

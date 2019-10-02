@@ -41,7 +41,7 @@ public class School {
      * @throws TrainingException
      */
     public void setName(String name) throws TrainingException {
-        if ((name == null) || (name.equals(""))) {
+        if (name == null || name.isEmpty()) {
             throw new TrainingException(TrainingErrorCode.SCHOOL_WRONG_NAME);
         }
         this.name = name;

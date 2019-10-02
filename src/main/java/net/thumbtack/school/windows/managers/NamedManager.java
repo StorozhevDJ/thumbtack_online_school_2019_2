@@ -3,7 +3,7 @@ package net.thumbtack.school.windows.managers;
 import net.thumbtack.school.windows.v4.base.Window;
 import net.thumbtack.school.windows.v4.base.WindowException;
 
-public class NamedManager<T extends Window> extends Manager {
+public class NamedManager<T extends Window> extends Manager<Window> {
 
     private String name;
 

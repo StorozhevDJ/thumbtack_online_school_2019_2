@@ -39,7 +39,7 @@ public class Group {
      * @param name
      */
     public void setName(String name) throws TrainingException {
-        if ((name == null) || (name.equals(""))) {
+        if (name == null || name.isEmpty()) {
             throw new TrainingException(TrainingErrorCode.GROUP_WRONG_NAME);
         }
         this.name = name;
@@ -61,7 +61,7 @@ public class Group {
      * @param room
      */
     public void setRoom(String room) throws TrainingException {
-        if ((room == null) || (room == "")) {
+        if (room == null || room.isEmpty()) {
             throw new TrainingException(TrainingErrorCode.GROUP_WRONG_ROOM);
         }
         this.room = room;
@@ -123,7 +123,7 @@ public class Group {
      */
     public Trainee getTraineeByFirstName(String firstName) throws TrainingException {
         for (Trainee trainee : studentList) {
-            if (trainee.getFirstName() == firstName) {
+            if (trainee.getFirstName().equals(firstName)) {
                 return trainee;
             }
         }
@@ -140,7 +140,7 @@ public class Group {
      */
     public Trainee getTraineeByFullName(String fullName) throws TrainingException {
         for (Trainee trainee : studentList) {
-            if (fullName.equals(trainee.getFullName())) {
+            if (trainee.getFullName().equals(fullName)) {
                 return trainee;
             }
         }
