@@ -2,13 +2,18 @@ package net.thumbtack.school.concert.server;
 
 import java.io.File;
 import java.io.IOException;
-import java.security.MessageDigest;
-import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
+
+import net.thumbtack.school.concert.dto.request.LoginUserDtoRequest;
+import net.thumbtack.school.concert.dto.request.RegisterUserDtoRequest;
+import net.thumbtack.school.concert.dto.response.ErrorDtoResponse;
 import net.thumbtack.school.concert.exception.ServerErrorCode;
 import net.thumbtack.school.concert.exception.ServerException;
+import net.thumbtack.school.concert.service.UserService;
 
 public class Server {
 
@@ -24,11 +29,11 @@ public class Server {
 	 * @throws ServerException
 	 */
 	public void startServer(String savedDataFileName) throws ServerException {
-		if (serverStarted) {
+		if (IsServerStarted()) {
 			throw new ServerException(ServerErrorCode.SERVER_ALREADY_STARTED);
 		}
 
-		if (savedDataFileName != null) {//Start server with settings from config file
+		if (savedDataFileName != null) {// Start server with settings from config file
 			if (isFileNameCorrect(savedDataFileName)) {
 				throw new ServerException(ServerErrorCode.CONFIG_FILE_NOT_READ, "Имя файла не корректно!");
 			}
@@ -40,8 +45,7 @@ public class Server {
 				throw new ServerException(ServerErrorCode.CONFIG_FILE_NOT_READ,
 						savedDataFileName + " " + e.getMessage());
 			}
-		}
-		else {//Start server with default settings
+		} else {// Start server with default settings
 
 		}
 		serverStarted = true;
@@ -57,7 +61,7 @@ public class Server {
 	 * @throws ServerException
 	 */
 	public void stopServer(String savedDataFileName) throws ServerException {
-		if (!serverStarted) {
+		if (!IsServerStarted()) {
 			throw new ServerException(ServerErrorCode.SERVER_NOT_STARTED);
 		}
 		serverStarted = false;
@@ -65,24 +69,54 @@ public class Server {
 	}
 
 	/**
+	 * @return boolean - Server started state
+	 */
+	public boolean IsServerStarted() {
+		return serverStarted;
+	}
+
+	/**
 	 * Register new user
 	 * 
 	 * @param jsonRequest - JSON string with Username and password for new user
 	 */
-	public String registerUser(String jsonRequest) throws ServerException {
-		throw new ServerException("This method is in development");
+	public String registerUser(String jsonRequest) {
+		if (!IsServerStarted()) {
+			return jsonError(new ServerException(ServerErrorCode.SERVER_NOT_STARTED));
+		}
+		RegisterUserDtoRequest registerUserDTO;
+		try {
+			registerUserDTO = new Gson().fromJson(jsonRequest, RegisterUserDtoRequest.class);
+		} catch (JsonSyntaxException e) {
+			return jsonError(new ServerException(ServerErrorCode.JSON_SYNTAX_ERROR));
+		}
+		try {
+			return new Gson().toJson(new UserService().registerUser(registerUserDTO));
+		} catch (ServerException e) {
+			return jsonError(e);
+		}
 	}
 
 	/**
-	 * Login user
+	 * Sign in user
 	 * 
 	 * @param jsonRequest - JSON string with Username and password for login user
 	 */
-	public String loginUser(String jsonRequest) throws ServerException {
-		UUID uuid = UUID.randomUUID();
-		String uuidString = uuid.toString();
-
-		throw new ServerException("This method is in development");
+	public String loginUser(String jsonRequest) {
+		if (!IsServerStarted()) {
+			return jsonError(new ServerException(ServerErrorCode.SERVER_NOT_STARTED));
+		}
+		LoginUserDtoRequest userDto;
+		try {
+			userDto = new Gson().fromJson(jsonRequest, LoginUserDtoRequest.class);
+		} catch (JsonSyntaxException e) {
+			return jsonError(new ServerException(ServerErrorCode.JSON_SYNTAX_ERROR));
+		}
+		try {
+			return new Gson().toJson(new UserService().loginUser(userDto));
+		} catch (ServerException e) {
+			return jsonError(e);
+		}
 	}
 
 	/**
@@ -90,12 +124,23 @@ public class Server {
 	 * 
 	 * @param jsonRequest - JSON string with user UUID for logout
 	 */
-	public String logoutUser(String jsonRequest) throws ServerException {
-		throw new ServerException("This method is in development");
+	public String logoutUser(String jsonRequest) {
+		if (!IsServerStarted()) {
+			return jsonError(new ServerException(ServerErrorCode.SERVER_NOT_STARTED));
+		}
+		
+		return null;
+	}
+
+	/**
+	 * Convert Error to JSON string
+	 */
+	private String jsonError(ServerException error) {
+		return new Gson().toJson(new ErrorDtoResponse(error.getServerErrorText()));
 	}
 
 	public static boolean isFileNameCorrect(String name) {
-		//if (name.trim().isEmpty()) return false;
+		// if (name.trim().isEmpty()) return false;
 		Pattern pattern = Pattern.compile("(.+)?[><\\|\\?*/:\\\\\"](.+)?");
 		Matcher matcher = pattern.matcher(name);
 		return !matcher.find();

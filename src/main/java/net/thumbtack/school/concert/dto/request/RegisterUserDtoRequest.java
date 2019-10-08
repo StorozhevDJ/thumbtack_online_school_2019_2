@@ -1,41 +1,57 @@
 package net.thumbtack.school.concert.dto.request;
 
-public class RegisterUserDtoRequest {
+import java.io.Serializable;
 
-    private String firstName;
-    private String lastName;
-    private String login;
-    private String password;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
+public class RegisterUserDtoRequest implements Serializable {
 
-    public String getFirstName() {
-        return firstName;
-    }
+	private static final long serialVersionUID = -4776248768812385942L;
 
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
+	@NotBlank(message = "Имя пользователя не задано. ")
+	@Pattern(regexp = "^[а-яА-ЯёЁa-zA-Z]{1,20}$", message = "Имя может содержать только заглавные и строчные латинские и кириллические буквы и быть длинной от 1 до 20 символов. ")
+	private String firstName;
+	@NotBlank(message = "Фамилия пользователя не задана. ")
+	@Pattern(regexp = "^[а-яА-ЯёЁa-zA-Z]{1,20}$", message = "Фамилия может содержать только заглавные и строчные латинские и кириллические буквы и быть длинной от 1 до 20 символов. ")
+	private String lastName;
+	@NotBlank(message = "Логин не задан. ")
+	@Pattern(regexp = "^[a-zA-Z0-9-_\\.]{1,20}$", message = "Логин может содержать только латинские буквы, цифры и быть длинной от 1 до 20 символов. ")
+	private String login;
+	@NotBlank(message = "Пароль не задан. ")
+	@Size(min = 4, max = 20, message = "Пароль должен быть длинной от 4 до 20 символов. ")
+	private String password;
 
-    public String getLastName() {
-        return lastName;
-    }
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
 
-    public void setLogin(String login) {
-        this.login = login;
-    }
+	public String getFirstName() {
+		return firstName;
+	}
 
-    public String getLogin() {
-        return login;
-    }
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
+	public String getLastName() {
+		return lastName;
+	}
 
-    public String getPassword() {
-        return password;
-    }
+	public void setLogin(String login) {
+		this.login = login;
+	}
+
+	public String getLogin() {
+		return login;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public String getPassword() {
+		return password;
+	}
 }
