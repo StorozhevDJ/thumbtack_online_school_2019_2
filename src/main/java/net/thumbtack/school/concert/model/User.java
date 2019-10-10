@@ -1,24 +1,36 @@
-package net.thumbtack.school.concert.dto.request;
+package net.thumbtack.school.concert.model;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
-
-public class LoginUserDtoRequest {
-
-	@NotBlank(message = "Логин не задан. ")
-	@Pattern(regexp = "^[a-zA-Z][a-zA-Z0-9 -_\\.]{1,20}$", message = "Логин может содержать только латинские буквы, цифры и быть длинной от 1 до 20 символов. ")
+public class User {
+	private String firstName;
+	private String lastName;
 	private String login;
-	@NotBlank(message = "Пароль не задан. ")
-	@Size(min = 4, max = 20, message = "Пароль должен быть длинной от 4 до 20 символов. ")
 	private String password;
 
-	public LoginUserDtoRequest() {
+	public User() {
+
 	}
 
-	public LoginUserDtoRequest(String login, String password) {
+	public User(String firstName, String lastName, String login, String password) {
+		setFirstName(firstName);
+		setLastName(lastName);
 		setLogin(login);
 		setPassword(password);
+	}
+
+	public String getFirstName() {
+		return firstName;
+	}
+
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
+
+	public String getLastName() {
+		return lastName;
+	}
+
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
 	}
 
 	public String getLogin() {
@@ -41,6 +53,8 @@ public class LoginUserDtoRequest {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
+		result = prime * result + ((firstName == null) ? 0 : firstName.hashCode());
+		result = prime * result + ((lastName == null) ? 0 : lastName.hashCode());
 		result = prime * result + ((login == null) ? 0 : login.hashCode());
 		result = prime * result + ((password == null) ? 0 : password.hashCode());
 		return result;
@@ -54,7 +68,17 @@ public class LoginUserDtoRequest {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		LoginUserDtoRequest other = (LoginUserDtoRequest) obj;
+		User other = (User) obj;
+		if (firstName == null) {
+			if (other.firstName != null)
+				return false;
+		} else if (!firstName.equals(other.firstName))
+			return false;
+		if (lastName == null) {
+			if (other.lastName != null)
+				return false;
+		} else if (!lastName.equals(other.lastName))
+			return false;
 		if (login == null) {
 			if (other.login != null)
 				return false;
@@ -67,7 +91,7 @@ public class LoginUserDtoRequest {
 			return false;
 		return true;
 	}
+	
+	
 
-	
-	
 }

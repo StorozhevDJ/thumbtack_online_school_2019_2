@@ -1,23 +1,24 @@
 package net.thumbtack.school.concert.server;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
-
-import net.thumbtack.school.concert.dto.request.LoginUserDtoRequest;
-import net.thumbtack.school.concert.dto.request.RegisterUserDtoRequest;
+import net.thumbtack.school.concert.database.DataBase;
 import net.thumbtack.school.concert.dto.response.ErrorDtoResponse;
 import net.thumbtack.school.concert.exception.ServerErrorCode;
 import net.thumbtack.school.concert.exception.ServerException;
+import net.thumbtack.school.concert.service.SongService;
 import net.thumbtack.school.concert.service.UserService;
 
 public class Server {
 
-	private boolean serverStarted;
+	private UserService userService;
+	private SongService songService;
 
 	/**
 	 * Производит всю необходимую инициализацию и запускает сервер.
@@ -29,26 +30,26 @@ public class Server {
 	 * @throws ServerException
 	 */
 	public void startServer(String savedDataFileName) throws ServerException {
-		if (IsServerStarted()) {
+		if (isServerStarted()) {
 			throw new ServerException(ServerErrorCode.SERVER_ALREADY_STARTED);
 		}
 
 		if (savedDataFileName != null) {// Start server with settings from config file
-			if (isFileNameCorrect(savedDataFileName)) {
+			if (!isFileNameCorrect(savedDataFileName)) {
 				throw new ServerException(ServerErrorCode.CONFIG_FILE_NOT_READ, "Имя файла не корректно!");
 			}
-			File file = new File(savedDataFileName);
+			File dbFile = new File(savedDataFileName);
 			try {
-				String fileName = file.getCanonicalPath();
-				fileName.trim();
+				String fileName = dbFile.getCanonicalPath();
+				//fileName.trim();
+				
 			} catch (IOException e) {
 				throw new ServerException(ServerErrorCode.CONFIG_FILE_NOT_READ,
 						savedDataFileName + " " + e.getMessage());
 			}
-		} else {// Start server with default settings
-
 		}
-		serverStarted = true;
+		userService = new UserService();
+		songService = new SongService();
 	}
 
 	/**
@@ -61,18 +62,36 @@ public class Server {
 	 * @throws ServerException
 	 */
 	public void stopServer(String savedDataFileName) throws ServerException {
-		if (!IsServerStarted()) {
+		if (!isServerStarted()) {
 			throw new ServerException(ServerErrorCode.SERVER_NOT_STARTED);
 		}
-		serverStarted = false;
-		throw new ServerException("Test stop exception");
+		if ((savedDataFileName != null) && (!savedDataFileName.isEmpty())) {
+			//Save Date to file
+			File dbFile = new File(savedDataFileName);
+			String fileName = null;
+			try {
+				fileName = dbFile.getCanonicalPath();
+				
+			} catch (IOException e) {
+				throw new ServerException(ServerErrorCode.CONFIG_FILE_NOT_WRITED, "Имя файла не корректно!");
+			}
+			try (PrintWriter pw = new PrintWriter(fileName)) {
+				pw.println(new Gson().toJson(new DataBase()));
+				DataBase.close();
+			}
+			catch (FileNotFoundException e) {
+				throw new ServerException(ServerErrorCode.CONFIG_FILE_NOT_WRITED);
+			}
+		}
+		userService = null;
+		songService = null;
 	}
 
 	/**
 	 * @return boolean - Server started state
 	 */
-	public boolean IsServerStarted() {
-		return serverStarted;
+	public boolean isServerStarted() {
+		return (userService != null) && (songService != null);
 	}
 
 	/**
@@ -81,17 +100,11 @@ public class Server {
 	 * @param jsonRequest - JSON string with Username and password for new user
 	 */
 	public String registerUser(String jsonRequest) {
-		if (!IsServerStarted()) {
+		if (!isServerStarted()) {
 			return jsonError(new ServerException(ServerErrorCode.SERVER_NOT_STARTED));
 		}
-		RegisterUserDtoRequest registerUserDTO;
 		try {
-			registerUserDTO = new Gson().fromJson(jsonRequest, RegisterUserDtoRequest.class);
-		} catch (JsonSyntaxException e) {
-			return jsonError(new ServerException(ServerErrorCode.JSON_SYNTAX_ERROR));
-		}
-		try {
-			return new Gson().toJson(new UserService().registerUser(registerUserDTO));
+			return userService.registerUser(jsonRequest);
 		} catch (ServerException e) {
 			return jsonError(e);
 		}
@@ -103,17 +116,11 @@ public class Server {
 	 * @param jsonRequest - JSON string with Username and password for login user
 	 */
 	public String loginUser(String jsonRequest) {
-		if (!IsServerStarted()) {
+		if (!isServerStarted()) {
 			return jsonError(new ServerException(ServerErrorCode.SERVER_NOT_STARTED));
 		}
-		LoginUserDtoRequest userDto;
 		try {
-			userDto = new Gson().fromJson(jsonRequest, LoginUserDtoRequest.class);
-		} catch (JsonSyntaxException e) {
-			return jsonError(new ServerException(ServerErrorCode.JSON_SYNTAX_ERROR));
-		}
-		try {
-			return new Gson().toJson(new UserService().loginUser(userDto));
+			return userService.loginUser(jsonRequest);
 		} catch (ServerException e) {
 			return jsonError(e);
 		}
@@ -125,15 +132,18 @@ public class Server {
 	 * @param jsonRequest - JSON string with user UUID for logout
 	 */
 	public String logoutUser(String jsonRequest) {
-		if (!IsServerStarted()) {
+		if (!isServerStarted()) {
 			return jsonError(new ServerException(ServerErrorCode.SERVER_NOT_STARTED));
 		}
-		
-		return null;
+		try {
+			return userService.logoutUser(jsonRequest);
+		} catch (ServerException e) {
+			return jsonError(e);
+		}
 	}
 
 	/**
-	 * Convert Error to JSON string
+	 * Convert ServerException error to JSON string
 	 */
 	private String jsonError(ServerException error) {
 		return new Gson().toJson(new ErrorDtoResponse(error.getServerErrorText()));

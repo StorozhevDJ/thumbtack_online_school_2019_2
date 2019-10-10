@@ -1,5 +1,16 @@
 package net.thumbtack.school.concert.dao;
 
-public interface SessionDao {
+import net.thumbtack.school.concert.exception.ServerException;
+import net.thumbtack.school.concert.model.Session;
+import net.thumbtack.school.concert.model.User;
 
+public interface SessionDao {
+	
+	/**
+     * Add the User token in session table
+     * 
+     * @param session
+     * @throws ServerException
+     */
+    void loginUser(User user, Session session) throws ServerException;
 }

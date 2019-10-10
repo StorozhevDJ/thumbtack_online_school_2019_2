@@ -7,6 +7,7 @@ public enum ServerErrorCode {
 	SERVER_NOT_STARTED("Сервер еще не запущен"),
 	USERNAME_ALREADY_IN_USE("Логин %s уже используется"),
 	LOGIN_INCORRECT("Неверное имя пользователя или пароль"),
+	TOKEN_INCORRECT("Неверный идентификатор пользователя или пользователь отсутствует. "),
 	BAD_REQUEST("Не корректный запрос! %s"),
 	JSON_SYNTAX_ERROR("JSON syntax error"),
 	OTHER_ERROR("%s");

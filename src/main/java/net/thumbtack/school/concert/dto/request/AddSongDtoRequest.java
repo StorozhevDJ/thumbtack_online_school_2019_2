@@ -1,15 +1,11 @@
 package net.thumbtack.school.concert.dto.request;
 
-import java.io.Serializable;
-
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Positive;
 
-public class AddSongDtoRequest implements Serializable {
+public class AddSongDtoRequest {
 
-	private static final long serialVersionUID = -6421071287876722885L;
-	
 	@NotBlank(message = "Название песни не задано. ")
 	@Pattern(regexp = "^[а-яА-ЯёЁa-zA-Z0-9 -_\\.?!*]{1,50}$", message = "Название песни может содержать только буквы, цифры, символы и быть длинной от 1 до 50 символов. ")
 	private String songName;    //название песни
