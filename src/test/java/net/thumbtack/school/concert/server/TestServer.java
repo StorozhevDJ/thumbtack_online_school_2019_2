@@ -21,7 +21,7 @@ import net.thumbtack.school.concert.exception.ServerException;
 
 public class TestServer {
 	@TempDir
-	private Path tempDir;
+    public Path tempDir;
 
 	@Test
 	public void testStartStopServerDefault() {
