@@ -27,10 +27,10 @@ public class UserService {
 
 	/**
 	 * Add new User (Register) in to DataBase
-	 * 
-	 * @param jsonRequest
-	 * @return
-	 * @throws ServerException
+	 *
+	 * @param jsonRequest - string with about User
+	 * @return JSON string with new user token
+	 * @throws ServerException - JSON_SYNTAX_ERROR, BAD_REQUEST
 	 */
 	public String registerUser(String jsonRequest) throws ServerException {
 		// Parse jsonRequest to RegisterUserDtoRequest
@@ -71,10 +71,10 @@ public class UserService {
 
 	/**
 	 * Finding user in DB and check password and create new user session
-	 * 
-	 * @param jsonRequest
-	 * @return
-	 * @throws ServerException
+	 *
+	 * @param jsonRequest string with info for login
+	 * @return logined user token
+	 * @throws ServerException - JSON_SYNTAX_ERROR, BAD_REQUEST, LOGIN_INCORRECT
 	 */
 	public String loginUser(String jsonRequest) throws ServerException {
 		// Parse JSON string to LoginUserDtoRequest
@@ -103,8 +103,7 @@ public class UserService {
 		}
 
 		// find pair User&password in DB
-		User userModel = new User();
-		userModel = new UserDaoImpl().getInfo(user.getLogin());
+		User userModel = new UserDaoImpl().getInfo(user.getLogin());
 		if ((userModel == null) || (!userModel.getPassword().equals(user.getPassword()))) {
 			throw new ServerException(ServerErrorCode.LOGIN_INCORRECT);
 		}
@@ -117,10 +116,10 @@ public class UserService {
 
 	/**
 	 * Removing the User UUID from DB
-	 * 
-	 * @param jsonRequest
-	 * @return
-	 * @throws ServerException
+	 *
+	 * @param jsonRequest string with user token for logout user
+	 * @return JSON string with null token
+	 * @throws ServerException - JSON_SYNTAX_ERROR, BAD_REQUEST
 	 */
 	public String logoutUser(String jsonRequest) throws ServerException {
 		// Parse jsonRequest to LogoutUserDtoRequest
@@ -148,10 +147,48 @@ public class UserService {
 			throw new ServerException(ServerErrorCode.BAD_REQUEST, err.toString());
 		}
 
-		// TODO User token delete from DB
-		// TODO Return JSON token with null value
-
-		return new Gson().toJson(logoutUser);
+		// User token delete from DB
+		new SessionDaoImpl().logoutUser(new Session(logoutUser.getToken()));
+		// Return JSON token with null values
+		return new Gson().toJson(new Session());
 	}
 
+	/**
+	 * Delete User from database
+	 *
+	 * @param jsonRequest string with user token for logout user
+	 * @return JSON string with null token
+	 * @throws ServerException JSON_SYNTAX_ERROR, BAD_REQUEST
+	 */
+	public String deleteUser(String jsonRequest) throws ServerException {
+		// Parse jsonRequest to LogoutUserDtoRequest
+		LogoutUserDtoRequest logoutUser;
+		try {
+			logoutUser = new Gson().fromJson(jsonRequest, LogoutUserDtoRequest.class);
+		} catch (JsonSyntaxException e) {
+			throw new ServerException(ServerErrorCode.JSON_SYNTAX_ERROR);
+		}
+		// Validate received date
+		ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory();
+		Validator validator = validatorFactory.getValidator();
+		Set<ConstraintViolation<LogoutUserDtoRequest>> violations;
+		try {
+			violations = validator.validate(logoutUser);
+		} catch (IllegalArgumentException e) {
+			throw new ServerException(ServerErrorCode.JSON_SYNTAX_ERROR);
+		}
+		if (!violations.isEmpty()) {
+			StringBuilder err = new StringBuilder();
+			for (ConstraintViolation<LogoutUserDtoRequest> cv : violations) {
+				// System.err.println(cv.getMessage());
+				err.append(cv.getMessage());
+			}
+			throw new ServerException(ServerErrorCode.BAD_REQUEST, err.toString());
+		}
+
+		// User token delete from DB
+		new SessionDaoImpl().logoutUser(new Session(logoutUser.getToken()));
+		// Return JSON token with null values
+		return new Gson().toJson(new Session());
+	}
 }

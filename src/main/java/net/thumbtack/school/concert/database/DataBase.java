@@ -1,9 +1,19 @@
 package net.thumbtack.school.concert.database;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+
+import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
+import com.google.gson.reflect.TypeToken;
 
 //import java.io.Serializable;
 
@@ -13,32 +23,15 @@ import net.thumbtack.school.concert.model.Session;
 import net.thumbtack.school.concert.model.Song;
 import net.thumbtack.school.concert.model.User;
 
-public class DataBase /* implements Serializable */ {
-
-	/*
-	 * private static DataBase instance;
-	 * 
-	 * private DataBase() { }
-	 * 
-	 * public static DataBase getInstance() { if (instance == null) { instance = new
-	 * DataBase(); } return instance; }
-	 */
-
-	// private static final long serialVersionUID = -2656800665876719635L;
-
-
-
-
-	//Comment[] comment;
-	//Rating[] rating;
+public class DataBase {
 
 	private static Set<User> users = new HashSet<>();
-	private static Map<User, Session> sessions = new HashMap<>();
+	private static Map<String, Session> sessions = new HashMap<>();
 	private static Set<Song> songs = new HashSet<>();
-	private static Map<User, Comment[]> comments = new HashMap<>();
-	private static Map<User, Rating[]> ratings = new HashMap<>();
+	private static Map<String, Comment[]> comments = new HashMap<>();
+	private static Map<String, Rating[]> ratings = new HashMap<>();
 
-	public static Set<User> getUsers() {
+	public Set<User> getUsers() {
 		return users;
 	}
 
@@ -46,15 +39,15 @@ public class DataBase /* implements Serializable */ {
 		DataBase.users = users;
 	}
 
-	public static Map<User, Session> getSessions() {
+	public Map<String, Session> getSessions() {
 		return sessions;
 	}
 
-	public static void setSessions(Map<User, Session> sessions) {
+	public static void setSessions(Map<String, Session> sessions) {
 		DataBase.sessions = sessions;
 	}
 
-	public static Set<Song> getSongs() {
+	public Set<Song> getSongs() {
 		return songs;
 	}
 
@@ -62,22 +55,21 @@ public class DataBase /* implements Serializable */ {
 		DataBase.songs = songs;
 	}
 
-	public static Map<User, Comment[]> getComments() {
+	public Map<String, Comment[]> getComments() {
 		return comments;
 	}
 
-	public static void setComments(Map<User, Comment[]> comments) {
+	public static void setComments(Map<String, Comment[]> comments) {
 		DataBase.comments = comments;
 	}
 
-	public static Map<User, Rating[]> getRatings() {
+	public Map<String, Rating[]> getRatings() {
 		return ratings;
 	}
 
-	public static void setRatings(Map<User, Rating[]> ratings) {
+	public static void setRatings(Map<String, Rating[]> ratings) {
 		DataBase.ratings = ratings;
 	}
-
 
 	/**
 	 * Insert new User in table
@@ -85,7 +77,7 @@ public class DataBase /* implements Serializable */ {
 	 * @param user
 	 * @return
 	 */
-	public static boolean insertUser(User user) {
+	protected static boolean insertUser(User user) {
 		return users.add(user);
 	}
 
@@ -112,7 +104,7 @@ public class DataBase /* implements Serializable */ {
 	 * @param user
 	 * @return
 	 */
-	public static boolean deleteUser(User user) {
+	protected static boolean deleteUser(User user) {
 		return users.remove(user);
 	}
 
@@ -122,7 +114,7 @@ public class DataBase /* implements Serializable */ {
 	 * @param login
 	 * @return
 	 */
-	public static boolean deleteUser(String login) {
+	protected static boolean deleteUser(String login) {
 		for (User user : users) {
 			if (user.getLogin().equals(login)) {
 				return users.remove(user);
@@ -131,18 +123,68 @@ public class DataBase /* implements Serializable */ {
 		return false;
 	}
 
-
-
-	protected boolean newSession (User user, Session session) {
-		return sessions.put(user, session)!=null;
+	/**
+	 * Add new session for the logged user into table
+	 *
+	 * @param user
+	 * @param session
+	 * @return
+	 */
+	protected boolean newSession(User user, Session session) {
+		return sessions.put(user.getLogin(), session) != null;
 	}
 
-	public static void close(){
+	/**
+	 * Delete session from table for logged out user
+	 *
+	 * @param session
+	 * @return
+	 */
+	protected boolean removeSession(Session session) {
+		return sessions.entrySet().removeIf(entries -> entries.getValue() == session);
+	}
+
+	public static void open(String fileName) throws JsonSyntaxException, IOException {
+		File dbFile = new File(fileName);
+		try (BufferedReader reader = new BufferedReader(new FileReader(dbFile))) {
+			setUsers(new Gson().fromJson(reader.readLine(), new TypeToken<Set<User>>() {
+			}.getType()));
+			setSessions(new Gson().fromJson(reader.readLine(), new TypeToken<Map<String, Session>>() {
+			}.getType()));
+			setSongs(new Gson().fromJson(reader.readLine(), new TypeToken<Set<Song>>() {
+			}.getType()));
+			setComments(new Gson().fromJson(reader.readLine(), new TypeToken<Map<String, Comment[]>>() {
+			}.getType()));
+			setRatings(new Gson().fromJson(reader.readLine(), new TypeToken<Map<String, Rating>>() {
+			}.getType()));
+		}
+	}
+
+	public static void open() {
 		setUsers(new HashSet<>());
 		setSessions(new HashMap<>());
 		setSongs(new HashSet<>());
 		setComments(new HashMap<>());
 		setRatings(new HashMap<>());
+	}
+
+	public static void close(String fileName) throws FileNotFoundException {
+		try (PrintWriter pw = new PrintWriter(new File(fileName))) {
+			pw.println(new Gson().toJson(users));
+			pw.println(new Gson().toJson(sessions));
+			pw.println(new Gson().toJson(songs));
+			pw.println(new Gson().toJson(comments));
+			pw.println(new Gson().toJson(ratings));
+		}
+		close();
+	}
+
+	public static void close() {
+		users.clear();
+		sessions.clear();
+		songs.clear();
+		comments.clear();
+		ratings.clear();
 	}
 
 	/*

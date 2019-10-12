@@ -1,12 +1,6 @@
 package net.thumbtack.school.concert.server;
 
-import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import com.google.gson.Gson;
 import net.thumbtack.school.concert.database.DataBase;
 import net.thumbtack.school.concert.dto.response.ErrorDtoResponse;
@@ -27,26 +21,23 @@ public class Server {
 	 *                          сервера. Если savedDataFileName == null,
 	 *                          восстановление состояния не производится, сервер
 	 *                          стартует “с нуля”.
-	 * @throws ServerException
+	 * @throws ServerException - SERVER_ALREADY_STARTED, CONFIG_FILE_NOT_READ
 	 */
 	public void startServer(String savedDataFileName) throws ServerException {
 		if (isServerStarted()) {
 			throw new ServerException(ServerErrorCode.SERVER_ALREADY_STARTED);
 		}
 
-		if (savedDataFileName != null) {// Start server with settings from config file
-			if (!isFileNameCorrect(savedDataFileName)) {
-				throw new ServerException(ServerErrorCode.CONFIG_FILE_NOT_READ, "Имя файла не корректно!");
-			}
-			File dbFile = new File(savedDataFileName);
+		if ((savedDataFileName != null) && (!savedDataFileName.isEmpty())) {
+			// Start server with settings from config file
 			try {
-				String fileName = dbFile.getCanonicalPath();
-				//fileName.trim();
-				
-			} catch (IOException e) {
-				throw new ServerException(ServerErrorCode.CONFIG_FILE_NOT_READ,
-						savedDataFileName + " " + e.getMessage());
+				DataBase.open(savedDataFileName);
+			} catch (Exception e) {
+				throw new ServerException(ServerErrorCode.CONFIG_FILE_NOT_READ, e.getMessage());
 			}
+		} else {
+			//Start server with default data
+			DataBase.open();
 		}
 		userService = new UserService();
 		songService = new SongService();
@@ -59,29 +50,23 @@ public class Server {
 	 * 
 	 * @param savedDataFileName - имя файла, в котором было сохранено состояние
 	 *                          сервера.
-	 * @throws ServerException
+	 * @throws ServerException - SERVER_ALREADY_STARTED, CONFIG_FILE_NOT_READ
 	 */
 	public void stopServer(String savedDataFileName) throws ServerException {
 		if (!isServerStarted()) {
 			throw new ServerException(ServerErrorCode.SERVER_NOT_STARTED);
 		}
+		// If the filename is not empty
 		if ((savedDataFileName != null) && (!savedDataFileName.isEmpty())) {
-			//Save Date to file
-			File dbFile = new File(savedDataFileName);
-			String fileName = null;
+			// Save Date to file
 			try {
-				fileName = dbFile.getCanonicalPath();
-				
-			} catch (IOException e) {
-				throw new ServerException(ServerErrorCode.CONFIG_FILE_NOT_WRITED, "Имя файла не корректно!");
-			}
-			try (PrintWriter pw = new PrintWriter(fileName)) {
-				pw.println(new Gson().toJson(new DataBase()));
-				DataBase.close();
-			}
-			catch (FileNotFoundException e) {
+				DataBase.close(savedDataFileName);
+			} catch (FileNotFoundException e) {
 				throw new ServerException(ServerErrorCode.CONFIG_FILE_NOT_WRITED);
 			}
+		} else {
+			// Exit without saving data
+			DataBase.close();
 		}
 		userService = null;
 		songService = null;
@@ -143,17 +128,28 @@ public class Server {
 	}
 
 	/**
+	 * Delete User from DataBase
+	 *
+	 * @param jsonRequest string with user token for delete
+	 * @return JSON string with null token
+	 */
+	public String deleteUser(String jsonRequest) {
+		if (!isServerStarted()) {
+			return jsonError(new ServerException(ServerErrorCode.SERVER_NOT_STARTED));
+		}
+		try {
+			return userService.deleteUser(jsonRequest);
+		} catch (ServerException e) {
+			return jsonError(e);
+		}
+	}
+
+	/**
 	 * Convert ServerException error to JSON string
 	 */
 	private String jsonError(ServerException error) {
 		return new Gson().toJson(new ErrorDtoResponse(error.getServerErrorText()));
 	}
 
-	public static boolean isFileNameCorrect(String name) {
-		// if (name.trim().isEmpty()) return false;
-		Pattern pattern = Pattern.compile("(.+)?[><\\|\\?*/:\\\\\"](.+)?");
-		Matcher matcher = pattern.matcher(name);
-		return !matcher.find();
-	}
 
 }

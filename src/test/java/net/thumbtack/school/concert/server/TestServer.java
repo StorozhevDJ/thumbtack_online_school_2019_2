@@ -5,8 +5,10 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.io.File;
 import java.nio.file.Path;
 
+import org.junit.After;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -19,25 +21,68 @@ import net.thumbtack.school.concert.exception.ServerException;
 
 public class TestServer {
 	@TempDir
-	public Path tempDir;
+	private Path tempDir;
 
-	// @Ignore
 	@Test
 	public void testStartStopServerDefault() {
 		Server server = new Server();
 		try {
 			server.startServer(null);
-			//server.startServer("testfile.json");
 		} catch (ServerException e) {
-			assertEquals(ServerErrorCode.CONFIG_FILE_NOT_WRITED, e.getServerErrorCode());
+			fail(e.getServerErrorText());
 		}
 		try {
-			//server.stopServer(null);
-			server.stopServer("testfile.json");
+			server.startServer(null);
 		} catch (ServerException e) {
-			assertEquals(ServerErrorCode.OTHER_ERROR, e.getServerErrorCode());
+			assertEquals(ServerErrorCode.SERVER_ALREADY_STARTED, e.getServerErrorCode());
 		}
+		try {
+			server.stopServer(null);
+		} catch (ServerException e) {
+			fail(e.getServerErrorText());
+		}
+		try {
+			server.stopServer(null);
+		} catch (ServerException e) {
+			assertEquals(ServerErrorCode.SERVER_NOT_STARTED, e.getServerErrorCode());
+		}
+	}
 
+	@Test
+	public void testStartStopServerFile() {
+		Server server = new Server();
+		try {
+			server.startServer(tempDir.resolve("testfile.json").toString());
+		} catch (ServerException e) {
+			assertEquals(ServerErrorCode.CONFIG_FILE_NOT_READ, e.getServerErrorCode());
+		}
+		try {
+			server.startServer(null);
+		} catch (ServerException e) {
+			fail(e.getServerErrorText());
+		}
+		server.registerUser("{\"firstName\":\"fname\", \"lastName\":\"lname\", \"login\":\"login\", \"password\":\"pswd\"}");
+		server.registerUser("{\"firstName\":\"fnameTwo\", \"lastName\":\"lnameTwo\", \"login\":\"login2\", \"password\":\"pswd2\"}");
+		server.registerUser("{\"firstName\":\"fname\", \"lastName\":\"lname\", \"login\":\"login3\", \"password\":\"pswd\"}");
+		try {
+			server.stopServer(tempDir.resolve("testfile.json").toString());
+		} catch (ServerException e) {
+			fail(e.getServerErrorText());
+		}
+		File file = new File(tempDir.resolve("testfile.json").toString());
+		assertTrue(file.exists());
+		try {
+			server.startServer(tempDir.resolve("testfile.json").toString());
+		} catch (ServerException e) {
+			fail(e.getServerErrorText());
+		}
+		String response = server.loginUser("{\"firstName\":\"fname\", \"lastName\":\"lname\", \"login\":\"login\", \"password\":\"pswd\"}");
+		assertEquals(new Gson().fromJson(response, LoginUserDtoResponse.class).getToken().length(), 36);
+		try {
+			server.stopServer(null);
+		} catch (ServerException e) {
+			fail(e.getServerErrorText());
+		}
 	}
 
 	@Test
@@ -77,8 +122,8 @@ public class TestServer {
 		}
 	}
 
-	/*@Test
-	public void testLoginUser() {
+	@Test
+	public void testLoginLogoutUser() {
 		Server server = new Server();
 		try {
 			server.startServer(null);
@@ -101,10 +146,10 @@ public class TestServer {
 		response = server.loginUser("{\"login\":\"asd123\", \"password\":\"asd5678\"}");
 		assertFalse(new Gson().fromJson(response, ErrorDtoResponse.class).getError().isEmpty());
 		response = server.loginUser("{\"login\":\"login\", \"password\":\"pswd\"}");
-		assertTrue(new Gson().fromJson(response, LoginUserDtoResponse.class).getToken().length() == 36);
+		assertEquals(new Gson().fromJson(response, LoginUserDtoResponse.class).getToken().length(), 36);
 
-		response = server.logoutUser("");
-		assertFalse(new Gson().fromJson(response, ErrorDtoResponse.class).getError().isEmpty());
+		response = server.logoutUser(response);
+		assertNull(new Gson().fromJson(response, LoginUserDtoResponse.class).getToken());
 
 		try {
 			server.stopServer(null);
@@ -112,15 +157,14 @@ public class TestServer {
 			assertEquals(ServerErrorCode.OTHER_ERROR, e.getServerErrorCode());
 		}
 
-	}*/
+	}
 
-	/*
-	 * public void testFileReadWriteByteArray1() throws IOException { byte[]
-	 * arrayToWrite = {0, 1, 5, -34, 67, -123}; File file =
-	 * Files.createFile(tempDir.resolve("test.dat")).toFile();
-	 * FileService.writeByteArrayToBinaryFile(file, arrayToWrite);
-	 * assertTrue(file.exists()); assertEquals(arrayToWrite.length, file.length());
-	 * byte[] arrayRead = FileService.readByteArrayFromBinaryFile(file);
-	 * assertArrayEquals(arrayToWrite, arrayRead); }
-	 */
+	private void assertNull(String token) {
+	}
+
+	@After
+	public void deleteTempDir() {
+		tempDir.toFile().deleteOnExit();
+	}
+
 }
