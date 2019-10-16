@@ -28,9 +28,9 @@ public class UserService {
 	/**
 	 * Add new User (Register) in to DataBase
 	 *
-	 * @param jsonRequest - string with about User
-	 * @return JSON string with new user token
-	 * @throws ServerException - JSON_SYNTAX_ERROR, BAD_REQUEST
+	 * @param jsonRequest
+	 * @return
+	 * @throws ServerException
 	 */
 	public String registerUser(String jsonRequest) throws ServerException {
 		// Parse jsonRequest to RegisterUserDtoRequest
@@ -72,9 +72,9 @@ public class UserService {
 	/**
 	 * Finding user in DB and check password and create new user session
 	 *
-	 * @param jsonRequest string with info for login
-	 * @return logined user token
-	 * @throws ServerException - JSON_SYNTAX_ERROR, BAD_REQUEST, LOGIN_INCORRECT
+	 * @param jsonRequest
+	 * @return
+	 * @throws ServerException
 	 */
 	public String loginUser(String jsonRequest) throws ServerException {
 		// Parse JSON string to LoginUserDtoRequest
@@ -103,7 +103,8 @@ public class UserService {
 		}
 
 		// find pair User&password in DB
-		User userModel = new UserDaoImpl().getInfo(user.getLogin());
+		User userModel = new User();
+		userModel = new UserDaoImpl().getInfo(user.getLogin());
 		if ((userModel == null) || (!userModel.getPassword().equals(user.getPassword()))) {
 			throw new ServerException(ServerErrorCode.LOGIN_INCORRECT);
 		}
@@ -117,9 +118,9 @@ public class UserService {
 	/**
 	 * Removing the User UUID from DB
 	 *
-	 * @param jsonRequest string with user token for logout user
-	 * @return JSON string with null token
-	 * @throws ServerException - JSON_SYNTAX_ERROR, BAD_REQUEST
+	 * @param jsonRequest
+	 * @return
+	 * @throws ServerException
 	 */
 	public String logoutUser(String jsonRequest) throws ServerException {
 		// Parse jsonRequest to LogoutUserDtoRequest
@@ -156,9 +157,9 @@ public class UserService {
 	/**
 	 * Delete User from database
 	 *
-	 * @param jsonRequest string with user token for logout user
-	 * @return JSON string with null token
-	 * @throws ServerException JSON_SYNTAX_ERROR, BAD_REQUEST
+	 * @param jsonRequest
+	 * @return
+	 * @throws ServerException
 	 */
 	public String deleteUser(String jsonRequest) throws ServerException {
 		// Parse jsonRequest to LogoutUserDtoRequest

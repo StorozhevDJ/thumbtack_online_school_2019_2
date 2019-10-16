@@ -1,12 +1,22 @@
 package net.thumbtack.school.concert.model;
 
+import java.util.List;
+
 public class Song {
 
 	private String songName; // название песни
-	private String[] composer; // композитора
-	private String[] author; // автора слов
+    private List<String> composer; // композитора
+    private List<String> author; // автора слов
 	private String singer; // исполнителя (фамилия или название группы)
 	private int length; // продолжительность песни в секундах
+
+    public Song(String songName, List<String> composer, List<String> author, String singer, int length) {
+        setSongName(songName);
+        setComposer(composer);
+        setAuthor(author);
+        setSinger(singer);
+        setLength(length);
+    }
 
 	public String getSongName() {
 		return songName;
@@ -16,19 +26,19 @@ public class Song {
 		this.songName = songName;
 	}
 
-	public String[] getComposer() {
+    public List<String> getComposer() {
 		return composer;
 	}
 
-	public void setComposer(String[] composer) {
+    public void setComposer(List<String> composer) {
 		this.composer = composer;
 	}
 
-	public String[] getAuthor() {
+    public List<String> getAuthor() {
 		return author;
 	}
 
-	public void setAuthor(String[] author) {
+    public void setAuthor(List<String> author) {
 		this.author = author;
 	}
 

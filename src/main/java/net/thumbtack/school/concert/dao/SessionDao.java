@@ -9,16 +9,15 @@ public interface SessionDao {
 	/**
      * Add the User token in session table
      *
-     * @param user model for adding session
-     * @param session model with new session
+     * @param session
      * @throws ServerException
      */
-    void loginUser(User user, Session session);
-
+    void loginUser(User user, Session session) throws ServerException;
+    
     /**
      * Delete session from DataBase for logged out user
      *
-     * @param session model for deleting
+     * @param session
      */
     void logoutUser(Session session);
 }

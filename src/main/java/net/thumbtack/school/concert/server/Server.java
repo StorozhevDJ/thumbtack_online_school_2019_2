@@ -21,7 +21,7 @@ public class Server {
 	 *                          сервера. Если savedDataFileName == null,
 	 *                          восстановление состояния не производится, сервер
 	 *                          стартует “с нуля”.
-	 * @throws ServerException - SERVER_ALREADY_STARTED, CONFIG_FILE_NOT_READ
+	 * @throws ServerException
 	 */
 	public void startServer(String savedDataFileName) throws ServerException {
 		if (isServerStarted()) {
@@ -50,7 +50,7 @@ public class Server {
 	 * 
 	 * @param savedDataFileName - имя файла, в котором было сохранено состояние
 	 *                          сервера.
-	 * @throws ServerException - SERVER_ALREADY_STARTED, CONFIG_FILE_NOT_READ
+	 * @throws ServerException
 	 */
 	public void stopServer(String savedDataFileName) throws ServerException {
 		if (!isServerStarted()) {
@@ -130,8 +130,8 @@ public class Server {
 	/**
 	 * Delete User from DataBase
 	 *
-	 * @param jsonRequest string with user token for delete
-	 * @return JSON string with null token
+	 * @param jsonRequest
+	 * @return
 	 */
 	public String deleteUser(String jsonRequest) {
 		if (!isServerStarted()) {
@@ -139,6 +139,18 @@ public class Server {
 		}
 		try {
 			return userService.deleteUser(jsonRequest);
+		} catch (ServerException e) {
+			return jsonError(e);
+		}
+	}
+
+
+	public String addSong(String jsonRequest) {
+		if (!isServerStarted()) {
+			return jsonError(new ServerException(ServerErrorCode.SERVER_NOT_STARTED));
+		}
+		try {
+			return songService.addSong(jsonRequest);
 		} catch (ServerException e) {
 			return jsonError(e);
 		}

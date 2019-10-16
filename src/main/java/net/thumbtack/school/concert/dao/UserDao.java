@@ -19,7 +19,7 @@ public interface UserDao {
      * @param login for find the User in DataBase
      * @return
      */
-    User getInfo (String login);
+	User getInfo(String login);
     
     
 }

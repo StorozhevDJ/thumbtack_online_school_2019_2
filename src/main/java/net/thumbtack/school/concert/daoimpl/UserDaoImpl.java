@@ -9,13 +9,13 @@ import net.thumbtack.school.concert.model.User;
 public class UserDaoImpl extends DataBase implements UserDao {
 
 	public void insert(User user) throws ServerException {
-		if ((getUser(user.getLogin()) != null) || (!insertUser(user))) {
+        if ((selectUser(user.getLogin()) != null) || (!insertUser(user))) {
 			throw new ServerException(ServerErrorCode.USERNAME_ALREADY_IN_USE, user.getLogin());
 		}
 	}
 
 	public User getInfo(String login) {
-		return getUser(login);
+        return selectUser(login);
 	}
 	
 
