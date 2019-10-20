@@ -11,12 +11,14 @@ import javax.validation.ValidatorFactory;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 
+import net.thumbtack.school.concert.daoimpl.RatingDaoImpl;
 import net.thumbtack.school.concert.daoimpl.SessionDaoImpl;
 import net.thumbtack.school.concert.daoimpl.SongDaoImpl;
 import net.thumbtack.school.concert.dto.request.AddSongDtoRequest;
 import net.thumbtack.school.concert.dto.request.GetSongsDtoRequest;
 import net.thumbtack.school.concert.exception.ServerErrorCode;
 import net.thumbtack.school.concert.exception.ServerException;
+import net.thumbtack.school.concert.model.Rating;
 import net.thumbtack.school.concert.model.Session;
 import net.thumbtack.school.concert.model.Song;
 import net.thumbtack.school.concert.model.User;
@@ -64,13 +66,17 @@ public class SongService extends SongDaoImpl {
 		}
 
 		// Add new Song in the DB
+        // Mapping data
 		List<Song> songsModel = new ArrayList<>();
+        List<Rating> ratingModel = new ArrayList<>();
 		for (AddSongDtoRequest.Song song : newSongs.getSong()) {
 			songsModel.add(new Song(song.getSongName(), song.getComposer(), song.getAuthor(), song.getSinger(),
-					song.getLength()));
-		}
-		//Insert songs into DataBase
-		insert(songsModel.toArray(new Song[0]), user);
+                    song.getLength(), user.getLogin()));
+            ratingModel.add(new Rating(song.getSongName(), 5, user.getLogin()));
+        }
+
+        insert(songsModel, user);                // Insert songs into the DataBase
+        new RatingDaoImpl().insert(ratingModel);//Add initial rating
 
 		return new Gson().toJson(null);
 	}

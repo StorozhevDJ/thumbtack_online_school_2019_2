@@ -4,6 +4,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -57,6 +58,11 @@ public class TestServer {
 			assertEquals(ServerErrorCode.CONFIG_FILE_NOT_READ, e.getServerErrorCode());
 		}
 		try {
+			server.startServer(tempDir.resolve("sd*f?.n").toString());
+		} catch (ServerException e) {
+			assertEquals(ServerErrorCode.CONFIG_FILE_NOT_READ, e.getServerErrorCode());
+		}
+		try {
 			server.startServer(null);
 		} catch (ServerException e) {
 			fail(e.getServerErrorText());
@@ -93,16 +99,25 @@ public class TestServer {
 		} catch (ServerException e) {
 			fail();
 		}
-		String response = server.registerUser(null);
-		assertFalse(new Gson().fromJson(response, ErrorDtoResponse.class).getError().isEmpty());
-		response = server.registerUser("");
-		assertFalse(new Gson().fromJson(response, ErrorDtoResponse.class).getError().isEmpty());
-		response = server.registerUser("Hello world");
-		assertFalse(new Gson().fromJson(response, ErrorDtoResponse.class).getError().isEmpty());
-		response = server.registerUser("{\"firstName\":\"asd\"}");
+
+		assertFalse(new Gson().fromJson(server.registerUser(null), ErrorDtoResponse.class).getError().isEmpty());
+		assertFalse(new Gson().fromJson(server.registerUser(""), ErrorDtoResponse.class).getError().isEmpty());
+		assertFalse(new Gson().fromJson(server.registerUser("Hello world"), ErrorDtoResponse.class).getError().isEmpty());
+		assertFalse(new Gson().fromJson(server.registerUser("{\"firstName\":\"asd\"}"), ErrorDtoResponse.class).getError().isEmpty());
+		String response = server.registerUser(
+				"{\"firstName\":\"qwe\", \"lastName\":\"asdqwe\", \"login\":\"123qwe\", \"password\":\"asd\"}");
 		assertFalse(new Gson().fromJson(response, ErrorDtoResponse.class).getError().isEmpty());
 		response = server.registerUser(
-				"{\"firstName\":\"qwe\", \"lastName\":\"asdqwe\", \"login\":\"123qwe\", \"password\":\"asd\"}");
+				"{\"firstName\":\"\", \"lastName\":\"asdqwe\", \"login\":\"123qwe\", \"password\":\"qwe45678\"}");
+		assertFalse(new Gson().fromJson(response, ErrorDtoResponse.class).getError().isEmpty());
+		response = server.registerUser(
+				"{\"firstName\":\"fname\", \"lastName\":\"\", \"login\":\"login\", \"password\":\"pswd\"}");
+		assertFalse(new Gson().fromJson(response, ErrorDtoResponse.class).getError().isEmpty());
+		response = server.registerUser(
+				"{\"firstName\":\"fname\", \"lastName\":\"lname\", \"login\":\"\", \"password\":\"pswd\"}");
+		assertFalse(new Gson().fromJson(response, ErrorDtoResponse.class).getError().isEmpty());
+		response = server.registerUser(
+				"{\"firstName\":\"fname\", \"lastName\":\"lname\", \"login\":\"login\", \"password\":\"\"}");
 		assertFalse(new Gson().fromJson(response, ErrorDtoResponse.class).getError().isEmpty());
 		response = server.registerUser(
 				"{\"firstNme\":\"asd\", \"lastName\":\"asdqwe\", \"login\":\"asd123qwe\", \"password\":\"asd5678!\"}");
@@ -126,20 +141,52 @@ public class TestServer {
 	public void testLoginLogoutUser() {
 		Server server = new Server();
 		try {
-			server.startServer(null);
+			server.startServer("dbfile.json");
 		} catch (ServerException e) {
 			fail();
 		}
-		server.registerUser(
-				"{\"firstName\":\"fname\", \"lastName\":\"lname\", \"login\":\"login\", \"password\":\"pswd\"}");
 
-		String response = server.loginUser(null);
+		assertFalse(new Gson().fromJson(server.loginUser(null), ErrorDtoResponse.class).getError().isEmpty());
+		assertFalse(new Gson().fromJson(server.loginUser(""), ErrorDtoResponse.class).getError().isEmpty());
+		assertFalse(new Gson().fromJson(server.loginUser("{}"), ErrorDtoResponse.class).getError().isEmpty());
+		String response = server.loginUser("{\"login\":\"login\", \"password\":\"psw5d\"}");
 		assertFalse(new Gson().fromJson(response, ErrorDtoResponse.class).getError().isEmpty());
-		response = server.loginUser("");
+		response = server.loginUser("{\"login\":\"\", \"password\":\"pswd\"}");
 		assertFalse(new Gson().fromJson(response, ErrorDtoResponse.class).getError().isEmpty());
-		response = server.loginUser("{}");
+		response = server.loginUser("{\"login\":\"login\", \"password\":\"\"}");
 		assertFalse(new Gson().fromJson(response, ErrorDtoResponse.class).getError().isEmpty());
-		response = server.loginUser("{\"login\":\"login\", \"password\":\"psw5d\"}");
+		response = server.loginUser("{\"login\":\"asd123\", \"password\":\"\"}");
+		assertFalse(new Gson().fromJson(response, ErrorDtoResponse.class).getError().isEmpty());
+		response = server.loginUser("{\"login\":\"asd123\", \"password\":\"asd5678\"}");
+		assertFalse(new Gson().fromJson(response, ErrorDtoResponse.class).getError().isEmpty());
+		response = server.loginUser("{\"login\":\"login\", \"password\":\"pswd\"}");
+		assertEquals(new Gson().fromJson(response, LoginUserDtoResponse.class).getToken().length(), 36);
+
+		response = server.logoutUser(response);
+		assertNull(new Gson().fromJson(server.logoutUser(response), LoginUserDtoResponse.class).getToken());
+		assertFalse(new Gson().fromJson(server.logoutUser(""), ErrorDtoResponse.class).getError().isEmpty());
+
+		try {
+			server.stopServer(null);
+		} catch (ServerException e) {
+			assertEquals(ServerErrorCode.OTHER_ERROR, e.getServerErrorCode());
+		}
+	}
+
+
+	@Test
+	public void testAddSong() {
+		Server server = new Server();
+		try {
+			server.startServer("dbfile.json");
+		} catch (ServerException e) {
+			fail();
+		}
+
+		assertFalse(new Gson().fromJson(server.addSong(null), ErrorDtoResponse.class).getError().isEmpty());
+		assertFalse(new Gson().fromJson(server.loginUser(""), ErrorDtoResponse.class).getError().isEmpty());
+		assertFalse(new Gson().fromJson(server.loginUser("{}"), ErrorDtoResponse.class).getError().isEmpty());
+		String response = server.loginUser("{\"login\":\"login\", \"password\":\"psw5d\"}");
 		assertFalse(new Gson().fromJson(response, ErrorDtoResponse.class).getError().isEmpty());
 		response = server.loginUser("{\"login\":\"asd123\", \"password\":\"\"}");
 		assertFalse(new Gson().fromJson(response, ErrorDtoResponse.class).getError().isEmpty());
@@ -159,12 +206,5 @@ public class TestServer {
 
 	}
 
-	private void assertNull(String token) {
-	}
-
-	@After
-	public void deleteTempDir() {
-		tempDir.toFile().deleteOnExit();
-	}
 
 }

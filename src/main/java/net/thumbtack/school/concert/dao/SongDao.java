@@ -1,5 +1,7 @@
 package net.thumbtack.school.concert.dao;
 
+import java.util.List;
+
 import net.thumbtack.school.concert.exception.ServerException;
 import net.thumbtack.school.concert.model.Song;
 import net.thumbtack.school.concert.model.User;
@@ -13,7 +15,7 @@ public interface SongDao {
      * @param user      - User song uploader
      * @throws ServerException
      */
-    void insert(Song[] songModel, User user) throws ServerException;
+    void insert(List<Song> songModel, User user) throws ServerException;
 
     /**
      * Get all song with filter

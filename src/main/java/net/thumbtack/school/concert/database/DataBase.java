@@ -6,8 +6,8 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -29,8 +29,8 @@ public class DataBase {
 	private static Set<User> users = new HashSet<>();
 	private static BidiMap<String, Session> sessions = new DualHashBidiMap<>();
 	private static Set<Song> songs = new HashSet<>();
-	private static Map<String, Comment[]> comments = new HashMap<>();
-	private static Map<String, Rating[]> ratings = new HashMap<>();
+	private static Set<Comment> comments = new HashSet<>();
+	private static Set<Rating> ratings = new HashSet<>();
 
 	public Set<User> getUsers() {
 		return users;
@@ -56,19 +56,19 @@ public class DataBase {
 		DataBase.songs = songs;
 	}
 
-	public Map<String, Comment[]> getComments() {
+	public Set<Comment> getComments() {
 		return comments;
 	}
 
-	public static void setComments(Map<String, Comment[]> comments) {
+	public static void setComments(Set<Comment> comments) {
 		DataBase.comments = comments;
 	}
 
-	public Map<String, Rating[]> getRatings() {
+	public Set<Rating> getRatings() {
 		return ratings;
 	}
 
-	public static void setRatings(Map<String, Rating[]> ratings) {
+	public static void setRatings(Set<Rating> ratings) {
 		DataBase.ratings = ratings;
 	}
 
@@ -102,7 +102,7 @@ public class DataBase {
 	 * @return
 	 */
 	protected static User selectUser(String login) {
-		if ((users != null) && (login != null)) {
+		if ((users != null) && (login != null) && (!login.isEmpty())) {
 			for (User user : users) {
 				if (user.getLogin().equals(login)) {
 					return user;
@@ -129,6 +129,9 @@ public class DataBase {
 	 * @return
 	 */
 	public static boolean deleteUser(String login) {
+		if ((login == null) || (login.isEmpty())) {
+			return false;
+		}
 		for (User user : users) {
 			if (user.getLogin().equals(login)) {
 				return users.remove(user);
@@ -158,12 +161,38 @@ public class DataBase {
 		return sessions.entrySet().removeIf(entries -> entries.getValue() == session);
 	}
 
-
-	protected boolean insertSongs(User user, Song song) {
-		//return songs.put(user.getLogin(), song) != null;
-		return true;
+	/**
+	 * Insert new songs in DataBase
+	 *
+	 * @param song - List of new songs to add in DB
+	 * @return true if new songs was added in DataBase
+	 */
+	protected boolean insertSongs(List<Song> song) {
+		return songs.addAll(song);
 	}
 
+	protected List<Song> selectSongs(String songName) {
+		//TODO add code
+		return null;
+	}
+
+	protected boolean updateSong(Song song) {
+		//TODO add code
+		return false;
+	}
+
+	protected boolean deleteSong(Song song) {
+		//TODO add code
+		return false;
+	}
+
+	protected boolean insertRating(Rating rating) {
+		return ratings.add(rating);
+	}
+
+	protected boolean insertRating(Set<Rating> rating) {
+		return ratings.addAll(rating);
+	}
 
 	/**
 	 * Read and open JSON file with DataBase data
@@ -181,9 +210,9 @@ public class DataBase {
 			}.getType()));
 			setSongs(new Gson().fromJson(reader.readLine(), new TypeToken<Set<Song>>() {
 			}.getType()));
-			setComments(new Gson().fromJson(reader.readLine(), new TypeToken<Map<String, Comment[]>>() {
+			setComments(new Gson().fromJson(reader.readLine(), new TypeToken<Set<Comment>>() {
 			}.getType()));
-			setRatings(new Gson().fromJson(reader.readLine(), new TypeToken<Map<String, Rating>>() {
+			setRatings(new Gson().fromJson(reader.readLine(), new TypeToken<Set<Rating>>() {
 			}.getType()));
 		}
 	}
@@ -195,8 +224,8 @@ public class DataBase {
 		setUsers(new HashSet<>());
 		setSessions(new DualHashBidiMap<>());
 		setSongs(new HashSet<>());
-		setComments(new HashMap<>());
-		setRatings(new HashMap<>());
+		setComments(new HashSet<>());
+		setRatings(new HashSet<>());
 	}
 
 	/**
@@ -239,17 +268,28 @@ public class DataBase {
 	 * поиск по нужной мапе.
 	 */
 
-	/* DataBase structure:
+	/*
+	 * Find in ArrayList boolean isModified = CollectionUtils.filter(linkedList1,
+	 *       new Predicate<Customer>() {         public boolean evaluate(Customer
+	 * customer) {             return
+	 * Arrays.asList("Daniel","Kyle").contains(customer.getName());         }
+	 *     });            assertTrue(linkedList1.size() == 2);
+	 */
+
+	/*
+	 * DataBase structure:
 	 *
-	 * Users: String firstName; String lastName; String login UN NN; String password;
+	 * Set <Users>: String firstName; String lastName; String login UN NN; String password;
 	 *
 	 * Sessions: String token; String userLogin UN NN
 	 *
 	 * Comment: String userLogin; String songName; String comment
 	 *
-	 * Rating: String userLogin; String songName; String rating
+	 * Rating: String songName; String userLogin; String rating
+	 *
+	 * Set <Song>: String userLogin; Song song
 	 * 
-	 * Songs 
 	 * 
+	 * Map
 	 */
 }
