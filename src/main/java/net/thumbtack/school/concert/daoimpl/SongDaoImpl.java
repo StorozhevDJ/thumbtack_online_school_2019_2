@@ -15,13 +15,14 @@ import net.thumbtack.school.concert.model.User;
  * @author Denis
  *
  */
-public class SongDaoImpl extends DataBase implements SongDao {
+public class SongDaoImpl implements SongDao {
 
     public void insert(List<Song> songModel, User user) throws ServerException {
-		if (selectUser(user.getLogin()) == null) {
+		DataBase db = new DataBase();
+		if (db.selectUser(user.getLogin()) == null) {
 			throw new ServerException(ServerErrorCode.USERNAME_ALREADY_IN_USE, user.getLogin());
 		}
-        insertSongs(songModel);    //Add new songs into the DataBase
+		db.insertSongs(songModel);    //Add new songs into the DataBase
         // TODO add rating
 	}
 

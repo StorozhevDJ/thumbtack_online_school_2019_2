@@ -23,7 +23,7 @@ import net.thumbtack.school.concert.model.Session;
 import net.thumbtack.school.concert.model.Song;
 import net.thumbtack.school.concert.model.User;
 
-public class SongService extends SongDaoImpl {
+public class SongService {
 
 	/**
 	 * Радиослушатель добавляет новую песню на сервер.
@@ -75,7 +75,7 @@ public class SongService extends SongDaoImpl {
             ratingModel.add(new Rating(song.getSongName(), 5, user.getLogin()));
         }
 
-        insert(songsModel, user);                // Insert songs into the DataBase
+		new SongDaoImpl().insert(songsModel, user);                // Insert songs into the DataBase
         new RatingDaoImpl().insert(ratingModel);//Add initial rating
 
 		return new Gson().toJson(null);

@@ -7,15 +7,15 @@ import net.thumbtack.school.concert.dao.RatingDao;
 import net.thumbtack.school.concert.database.DataBase;
 import net.thumbtack.school.concert.model.Rating;
 
-public class RatingDaoImpl extends DataBase implements RatingDao {
+public class RatingDaoImpl implements RatingDao {
 
 	public boolean insert(Rating rating) {
-		insertRating(rating);
+		new DataBase().insertRating(rating);
 		return false;
 	}
 
 	public boolean insert(List<Rating> ratings) {
-		insertRating(new HashSet<>(ratings));
+		new DataBase().insertRating(new HashSet<>(ratings));
 		return false;
 	}
 

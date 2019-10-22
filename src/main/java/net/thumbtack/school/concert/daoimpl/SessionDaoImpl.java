@@ -5,14 +5,14 @@ import net.thumbtack.school.concert.database.DataBase;
 import net.thumbtack.school.concert.model.Session;
 import net.thumbtack.school.concert.model.User;
 
-public class SessionDaoImpl extends DataBase implements SessionDao {
+public class SessionDaoImpl implements SessionDao {
 
 	public void loginUser(User user, Session session) {
-        insertSession(user, session);
+        new DataBase().insertSession(user, session);
 	}
 
 	public void logoutUser(Session session) {
-        deleteSession(session);
+        new DataBase().deleteSession(session);
     }
 
     public boolean checkSession(Session session) {
@@ -21,6 +21,6 @@ public class SessionDaoImpl extends DataBase implements SessionDao {
     }
 
     public User getUser(Session session) {
-        return selectUser(session);
+        return new DataBase().selectUser(session);
     }
 }

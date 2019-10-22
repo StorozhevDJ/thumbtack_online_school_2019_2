@@ -31,13 +31,13 @@ public class Server {
 		if ((savedDataFileName != null) && (!savedDataFileName.isEmpty())) {
 			// Start server with settings from config file
 			try {
-				DataBase.open(savedDataFileName);
+				new DataBase().open(savedDataFileName);
 			} catch (Exception e) {
 				throw new ServerException(ServerErrorCode.CONFIG_FILE_NOT_READ, e.getMessage());
 			}
 		} else {
 			//Start server with default data
-			DataBase.open();
+			new DataBase().open();
 		}
 		userService = new UserService();
 		songService = new SongService();
@@ -53,6 +53,8 @@ public class Server {
 	 * @throws ServerException
 	 */
 	public void stopServer(String savedDataFileName) throws ServerException {
+		DataBase db = new DataBase();
+		
 		if (!isServerStarted()) {
 			throw new ServerException(ServerErrorCode.SERVER_NOT_STARTED);
 		}
@@ -60,13 +62,13 @@ public class Server {
 		if ((savedDataFileName != null) && (!savedDataFileName.isEmpty())) {
 			// Save Date to file
 			try {
-				DataBase.close(savedDataFileName);
+				db.close(savedDataFileName);
 			} catch (FileNotFoundException e) {
 				throw new ServerException(ServerErrorCode.CONFIG_FILE_NOT_WRITED);
 			}
 		} else {
 			// Exit without saving data
-			DataBase.close();
+			db.close();
 		}
 		userService = null;
 		songService = null;

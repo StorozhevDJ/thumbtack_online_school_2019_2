@@ -23,12 +23,14 @@ public class TestSongService {
     @Test
     public void testAddSongs() {
 
+        DataBase db = new DataBase();
+    	
         Set<User> su = new HashSet<>();
         su.add(new User("fname", "lname", "login", "pass"));
-        DataBase.setUsers(su);
+        db.setUsers(su);
         BidiMap<String, Session> sessions = new DualHashBidiMap<>();
         sessions.put("login", new Session("fea8056a-cd2e-4d9b-8d73-c165cd135299"));
-        DataBase.setSessions(sessions);
+        db.setSessions(sessions);
 
         AddSongDtoRequest sr = new AddSongDtoRequest();
         sr.setToken("fea8056a-cd2e-4d9b-8d73-c165cd135299");

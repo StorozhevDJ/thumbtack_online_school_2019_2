@@ -36,7 +36,7 @@ public class DataBase {
 		return users;
 	}
 
-	public static void setUsers(Set<User> users) {
+	public void setUsers(Set<User> users) {
 		DataBase.users = users;
 	}
 
@@ -44,7 +44,7 @@ public class DataBase {
 		return sessions;
 	}
 
-	public static void setSessions(BidiMap<String, Session> sessions) {
+	public void setSessions(BidiMap<String, Session> sessions) {
 		DataBase.sessions = sessions;
 	}
 
@@ -52,7 +52,7 @@ public class DataBase {
 		return songs;
 	}
 
-	public static void setSongs(Set<Song> songs) {
+	public void setSongs(Set<Song> songs) {
 		DataBase.songs = songs;
 	}
 
@@ -60,7 +60,7 @@ public class DataBase {
 		return comments;
 	}
 
-	public static void setComments(Set<Comment> comments) {
+	public void setComments(Set<Comment> comments) {
 		DataBase.comments = comments;
 	}
 
@@ -68,7 +68,7 @@ public class DataBase {
 		return ratings;
 	}
 
-	public static void setRatings(Set<Rating> ratings) {
+	public void setRatings(Set<Rating> ratings) {
 		DataBase.ratings = ratings;
 	}
 
@@ -78,7 +78,7 @@ public class DataBase {
 	 * @param user
 	 * @return
 	 */
-	protected static boolean insertUser(User user) {
+	public boolean insertUser(User user) {
 		return users.add(user);
 	}
 
@@ -88,7 +88,7 @@ public class DataBase {
 	 * @param session for find User
 	 * @return
 	 */
-	protected static User selectUser(Session session) {
+	public User selectUser(Session session) {
 		if ((session != null) && (sessions != null)) {
 			return selectUser(sessions.getKey(session));
 		}
@@ -101,7 +101,7 @@ public class DataBase {
 	 * @param login for find User
 	 * @return
 	 */
-	protected static User selectUser(String login) {
+	public User selectUser(String login) {
 		if ((users != null) && (login != null) && (!login.isEmpty())) {
 			for (User user : users) {
 				if (user.getLogin().equals(login)) {
@@ -118,7 +118,7 @@ public class DataBase {
 	 * @param user
 	 * @return
 	 */
-	public static boolean deleteUser(User user) {
+	public boolean deleteUser(User user) {
 		return users.remove(user);
 	}
 
@@ -128,7 +128,7 @@ public class DataBase {
 	 * @param login
 	 * @return
 	 */
-	public static boolean deleteUser(String login) {
+	public boolean deleteUser(String login) {
 		if ((login == null) || (login.isEmpty())) {
 			return false;
 		}
@@ -147,7 +147,7 @@ public class DataBase {
 	 * @param session
 	 * @return
 	 */
-	protected boolean insertSession(User user, Session session) {
+	public boolean insertSession(User user, Session session) {
 		return sessions.put(user.getLogin(), session) != null;
 	}
 
@@ -157,7 +157,7 @@ public class DataBase {
 	 * @param session
 	 * @return
 	 */
-	protected boolean deleteSession(Session session) {
+	public boolean deleteSession(Session session) {
 		return sessions.entrySet().removeIf(entries -> entries.getValue() == session);
 	}
 
@@ -167,30 +167,72 @@ public class DataBase {
 	 * @param song - List of new songs to add in DB
 	 * @return true if new songs was added in DataBase
 	 */
-	protected boolean insertSongs(List<Song> song) {
+	public boolean insertSongs(List<Song> song) {
+		if ((song == null) || (song.isEmpty())) {
+			return false;
+		}
 		return songs.addAll(song);
 	}
 
-	protected List<Song> selectSongs(String songName) {
-		//TODO add code
+	/**
+	 * Insert new song in DataBase
+	 *
+	 * @param song - new songs to add in DB
+	 * @return true if new song was added in DataBase
+	 */
+	public boolean insertSong(Song song) {
+		if (song == null) {
+			return false;
+		}
+		return songs.add(song);
+	}
+
+	/**
+	 * Find song with name equals songName
+	 *
+	 * @param songName
+	 * @return Song
+	 */
+	public Song selectSong(String songName) {
+		if ((songName == null) || (songName.isEmpty())) {
+			return null;
+		}
+		for (Song song : songs) {
+			if (song.getSongName().equals(songName)) {
+				return song;
+			}
+		}
 		return null;
 	}
 
-	protected boolean updateSong(Song song) {
-		//TODO add code
+	/**
+	 * Update info for song with old name equal new name
+	 *
+	 * @param song
+	 * @return true if update is successful
+	 */
+	public boolean updateSong(Song song) {
+		if (deleteSong(selectSong(song.getSongName()))) {
+			return insertSong(song);
+		}
 		return false;
 	}
 
-	protected boolean deleteSong(Song song) {
-		//TODO add code
-		return false;
+	/**
+	 * Delete song from DataBase
+	 *
+	 * @param song
+	 * @return
+	 */
+	public boolean deleteSong(Song song) {
+		return songs.remove(song);
 	}
 
-	protected boolean insertRating(Rating rating) {
+	public boolean insertRating(Rating rating) {
 		return ratings.add(rating);
 	}
 
-	protected boolean insertRating(Set<Rating> rating) {
+	public boolean insertRating(Set<Rating> rating) {
 		return ratings.addAll(rating);
 	}
 
@@ -201,7 +243,7 @@ public class DataBase {
 	 * @throws JsonSyntaxException
 	 * @throws IOException
 	 */
-	public static void open(String fileName) throws JsonSyntaxException, IOException {
+	public void open(String fileName) throws JsonSyntaxException, IOException {
 		File dbFile = new File(fileName);
 		try (BufferedReader reader = new BufferedReader(new FileReader(dbFile))) {
 			setUsers(new Gson().fromJson(reader.readLine(), new TypeToken<Set<User>>() {
@@ -220,7 +262,7 @@ public class DataBase {
 	/**
 	 * Initialize DataBase with default data
 	 */
-	public static void open() {
+	public void open() {
 		setUsers(new HashSet<>());
 		setSessions(new DualHashBidiMap<>());
 		setSongs(new HashSet<>());
@@ -234,7 +276,7 @@ public class DataBase {
 	 * @param fileName to save data
 	 * @throws FileNotFoundException
 	 */
-	public static void close(String fileName) throws FileNotFoundException {
+	public void close(String fileName) throws FileNotFoundException {
 		try (PrintWriter pw = new PrintWriter(new File(fileName))) {
 			pw.println(new Gson().toJson(users));
 			pw.println(new Gson().toJson(sessions));
@@ -248,7 +290,7 @@ public class DataBase {
 	/**
 	 * Close DataBase - Clear all data
 	 */
-	public static void close() {
+	public void close() {
 		users.clear();
 		sessions.clear();
 		songs.clear();
@@ -279,7 +321,8 @@ public class DataBase {
 	/*
 	 * DataBase structure:
 	 *
-	 * Set <Users>: String firstName; String lastName; String login UN NN; String password;
+	 * Set <Users>: String firstName; String lastName; String login UN NN; String
+	 * password;
 	 *
 	 * Sessions: String token; String userLogin UN NN
 	 *

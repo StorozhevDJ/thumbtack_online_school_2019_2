@@ -6,16 +6,17 @@ import net.thumbtack.school.concert.exception.ServerErrorCode;
 import net.thumbtack.school.concert.exception.ServerException;
 import net.thumbtack.school.concert.model.User;
 
-public class UserDaoImpl extends DataBase implements UserDao {
+public class UserDaoImpl implements UserDao {
 
 	public void insert(User user) throws ServerException {
-        if ((selectUser(user.getLogin()) != null) || (!insertUser(user))) {
+		DataBase db = new DataBase();
+		if ((db.selectUser(user.getLogin()) != null) || (!db.insertUser(user))) {
 			throw new ServerException(ServerErrorCode.USERNAME_ALREADY_IN_USE, user.getLogin());
 		}
 	}
 
 	public User getInfo(String login) {
-        return selectUser(login);
+		return new DataBase().selectUser(login);
 	}
 	
 
