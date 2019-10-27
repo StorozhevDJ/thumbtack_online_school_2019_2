@@ -62,10 +62,10 @@ public class UserService {
 		UserDao userDao = new UserDaoImpl();
 		User userModel = new User(newUser.getFirstName(), newUser.getLastName(), newUser.getLogin(),
 				newUser.getPassword());
-		userDao.insert(userModel);
+		userDao.add(userModel);
 		// Login and return UUID for this user
 		Session session = new Session(UUID.randomUUID().toString());
-		new SessionDaoImpl().loginUser(userModel, session);
+		new SessionDaoImpl().login(userModel, session);
 		return new Gson().toJson(session);
 	}
 
@@ -104,14 +104,14 @@ public class UserService {
 
 		// find pair User&password in DB
 		User userModel = new User();
-		userModel = new UserDaoImpl().getInfo(user.getLogin());
+		userModel = new UserDaoImpl().get(user.getLogin());
 		if ((userModel == null) || (!userModel.getPassword().equals(user.getPassword()))) {
 			throw new ServerException(ServerErrorCode.LOGIN_INCORRECT);
 		}
 
 		// add uuid to session in DB
 		Session session = new Session(UUID.randomUUID().toString());
-		new SessionDaoImpl().loginUser(userModel, session);
+		new SessionDaoImpl().login(userModel, session);
 		return new Gson().toJson(session);
 	}
 
@@ -149,7 +149,7 @@ public class UserService {
 		}
 
 		// User token delete from DB
-		new SessionDaoImpl().logoutUser(new Session(logoutUser.getToken()));
+		new SessionDaoImpl().logout(new Session(logoutUser.getToken()));
 		// Return JSON token with null values
 		return new Gson().toJson(new Session());
 	}
@@ -188,7 +188,7 @@ public class UserService {
 		}
 
 		// User token delete from DB
-		new SessionDaoImpl().logoutUser(new Session(logoutUser.getToken()));
+		new SessionDaoImpl().logout(new Session(logoutUser.getToken()));
 		// Return JSON token with null values
 		return new Gson().toJson(new Session());
 	}

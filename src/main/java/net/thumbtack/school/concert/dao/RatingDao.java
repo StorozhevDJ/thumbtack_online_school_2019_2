@@ -6,12 +6,51 @@ import net.thumbtack.school.concert.model.Rating;
 
 public interface RatingDao {
 
-    boolean insert(Rating rating);
+	/**
+	 * Add riting in DB
+	 *
+	 * @param rating
+	 * @return
+	 */
+	boolean add(Rating rating);
 
-    boolean insert(List<Rating> ratings);
+	/**
+	 * Add ratings in DB
+	 *
+	 * @param ratings
+	 * @return
+	 */
+	boolean add(List<Rating> ratings);
 
-    boolean deleteRating(Rating rating);
+	/**
+	 * Delete Rating from DB
+	 *
+	 * @param rating
+	 * @return
+	 */
+	boolean delete(Rating rating);
 
-    boolean updateRating(Rating rating);
-	
+	/**
+	 * Update existing rating
+	 * @param rating
+	 * @return
+	 */
+	boolean update(Rating rating);
+
+	/**
+	 * Get rating List for songName
+	 *
+	 * @param songName
+	 * @return
+	 */
+	List<Rating> getRatingList(String songName);
+
+	/**
+	 * Get an average rating for all rating of the Song with name songname
+	 * 
+	 * @param songName
+	 * @return float - average rating
+	 */
+	float get(String songName);
+
 }

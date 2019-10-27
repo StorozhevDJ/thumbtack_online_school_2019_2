@@ -6,6 +6,9 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -76,14 +79,16 @@ public class DataBase {
 	 * Insert new User in table
 	 * 
 	 * @param user
-	 * @return
+	 * @return true if user was added, false if already exist
 	 */
 	public boolean insertUser(User user) {
+		if (selectUser(user.getLogin())!=null) return false;
 		return users.add(user);
 	}
 
 	/**
-	 * Find User with the session
+	 * Find User with the session Equivalent "SELECT * FROM user, session WHERE
+	 * session.login=session.login AND user.login=session.login"
 	 *
 	 * @param session for find User
 	 * @return
@@ -96,7 +101,7 @@ public class DataBase {
 	}
 
 	/**
-	 * Find User with the login
+	 * Find User with the login Equivalent "SELECT * FROM user WHERE login=login"
 	 *
 	 * @param login for find User
 	 * @return
@@ -123,7 +128,8 @@ public class DataBase {
 	}
 
 	/**
-	 * Delete User with login = login from table
+	 * Delete User with login = login from table Equivalent "DELETE FROM user WHERE
+	 * login=login"
 	 * 
 	 * @param login
 	 * @return
@@ -134,7 +140,7 @@ public class DataBase {
 		}
 		for (User user : users) {
 			if (user.getLogin().equals(login)) {
-				return users.remove(user);
+				return deleteUser(user);
 			}
 		}
 		return false;
@@ -165,11 +171,14 @@ public class DataBase {
 	 * Insert new songs in DataBase
 	 *
 	 * @param song - List of new songs to add in DB
-	 * @return true if new songs was added in DataBase
+	 * @return true if new songs was added in DataBase, false if song exist
 	 */
 	public boolean insertSongs(List<Song> song) {
 		if ((song == null) || (song.isEmpty())) {
 			return false;
+		}
+		for (Song s: song) {
+			if (selectSong(s.getSongName())!=null) return false;
 		}
 		return songs.addAll(song);
 	}
@@ -178,18 +187,20 @@ public class DataBase {
 	 * Insert new song in DataBase
 	 *
 	 * @param song - new songs to add in DB
-	 * @return true if new song was added in DataBase
+	 * @return true if new song was added in DataBase, false if song exist
 	 */
 	public boolean insertSong(Song song) {
 		if (song == null) {
 			return false;
 		}
+		if (selectSong(song.getSongName())!=null) return false;
 		return songs.add(song);
 	}
 
 	/**
-	 * Find song with name equals songName
-	 *
+	 * Find song with name equals songName Equivalent "SELECT * FROM songs WHERE
+	 * somgName=songName"
+	 * 
 	 * @param songName
 	 * @return Song
 	 */
@@ -206,8 +217,49 @@ public class DataBase {
 	}
 
 	/**
-	 * Update info for song with old name equal new name
-	 *
+	 * Find a list of songs with any parameters: the Song Name, Composer, Author, Singer, User
+	 * 
+	 * @param song - parameters for searching songs
+	 * @return Song List
+	 */
+	public List<Song> selectSong(Song song) {
+		List<Song> songList = new ArrayList<>();
+		for (Song s : songs) {
+			if ((song.getSongName() != null) && (!song.getSongName().isEmpty())) {
+				if (!s.getSongName().equals(song.getSongName())) {
+					continue;
+				}
+			}
+			if ((song.getComposer() != null) && (!song.getComposer().isEmpty())) {
+				if (!s.getComposer().equals(song.getComposer())) {
+					continue;
+				}
+			}
+			if ((song.getAuthor() != null) && (!song.getAuthor().isEmpty())) {
+				if (!s.getAuthor().equals(song.getAuthor())) {
+					continue;
+				}
+			}
+			if ((song.getSinger() != null) && (!song.getSinger().isEmpty())) {
+				if (!s.getSinger().equals(song.getSinger())) {
+					continue;
+				}
+			}
+			if ((song.getUserLogin() != null) && (!song.getUserLogin().isEmpty())) {
+				if (!s.getUserLogin().equals(song.getUserLogin())) {
+					continue;
+				}
+			}
+			songList.add(s);
+		}
+		return songList;
+	}
+
+	/**
+	 * Update info for song with old name equal new name Equivalent "UPDATE song SET
+	 * * composer=composer, author=author, singer=singer, length=length,
+	 * userLigin=userLogin WHERE songName=songName"
+	 * 
 	 * @param song
 	 * @return true if update is successful
 	 */
@@ -220,7 +272,7 @@ public class DataBase {
 
 	/**
 	 * Delete song from DataBase
-	 *
+	 * 
 	 * @param song
 	 * @return
 	 */
@@ -228,12 +280,181 @@ public class DataBase {
 		return songs.remove(song);
 	}
 
+	/**
+	 * Insert rating into DataBase
+	 * 
+	 * @param rating
+	 * @return
+	 */
 	public boolean insertRating(Rating rating) {
 		return ratings.add(rating);
 	}
 
+	/**
+	 * Insert ratings into DataBase
+	 * 
+	 * @param rating
+	 * @return
+	 */
 	public boolean insertRating(Set<Rating> rating) {
 		return ratings.addAll(rating);
+	}
+
+	/**
+	 * Get songs rating with defined songName and/or user
+	 * 
+	 * @param songName
+	 * @param user
+	 * @return
+	 */
+	public List<Rating> selectRating(String songName, String user) {
+		List<Rating> rating = new ArrayList<>();
+		for (Rating r : ratings) {
+			if ((songName != null) && (!songName.isEmpty())) {
+				if (!r.getSongName().equals(songName))
+					continue;
+			}
+			if ((user != null) && (!user.isEmpty())) {
+				if (!r.getUser().equals(user))
+					continue;
+			}
+			rating.add(r);
+		}
+		return rating;
+	}
+
+	/**
+	 * Get sorted songs rating list with defined songName and/or user
+	 * 
+	 * @param songName
+	 * @param user
+	 * @param desc     - true for descending sorting, false for Ascending sorting
+	 * @return
+	 */
+	public List<Rating> selectRating(String songName, String user, boolean desc) {
+		List<Rating> rating = new ArrayList<>(selectRating(songName, user));
+		if (desc) {
+			Collections.sort(rating, Comparator.comparing(Rating::getRating).reversed());
+		} else {
+			Collections.sort(rating, Comparator.comparing(Rating::getRating));
+		}
+		return rating;
+	}
+
+	/**
+	 * Update song rating
+	 * 
+	 * @param rating
+	 * @return
+	 */
+	public boolean updateRating(Rating rating) {
+		if (deleteRating(rating)) {
+			return insertRating(rating);
+		}
+		return false;
+	}
+
+	/**
+	 * Delete Rating for this songName and user
+	 * 
+	 * @param songName
+	 * @param user
+	 * @return
+	 */
+	public boolean deleteRating(String songName, String user) {
+		List<Rating> rating = selectRating(songName, user);
+		if (rating != null) {
+			return ratings.removeAll(rating);
+		}
+		return false;
+	}
+	
+	/**
+	 * Delete Rating for this songName and user from rating
+	 * 
+	 * @param rating
+	 * @return
+	 */
+	public boolean deleteRating(Rating rating) {
+		return deleteRating(rating.getSongName(), rating.getUser());
+	}
+
+	/**
+	 * Add new comment in "Comment table"
+	 * 
+	 * @param comment
+	 * @return
+	 */
+	public boolean insertComment(Comment comment) {
+		return comments.add(comment);
+	}
+
+	/**
+	 * Find and return all comments for song "songName" with author "author"
+	 * 
+	 * @param songName
+	 * @param author
+	 * @return 
+	 */
+	public List<String> selectComment(String songName, String author) {
+		List<String> comment = new ArrayList<>();
+		for (Comment c : comments) {
+			if ((songName != null) && (!songName.isEmpty())) {
+				if (!c.getSongName().equals(songName))
+					continue;
+			}
+			if ((author != null) && (!author.isEmpty())) {
+				if (!c.getAuthor().equals(author))
+					continue;
+			}
+			comment.add(c.getComment());
+		}
+		return comment;
+	}
+	
+	/**
+	 * Get all comments for songName
+	 * 
+	 * @param songName
+	 * @return
+	 */
+	public List<Comment> selectComment(String songName) {
+		List<Comment> comment = new ArrayList<>();
+		for (Comment c : comments) {
+			if ((songName != null) && (!songName.isEmpty())) {
+				if (!c.getSongName().equals(songName))
+					continue;
+			}
+			comment.add(c);
+		}
+		return comment;
+	}
+
+	/**
+	 * Update comment for this song and user
+	 * 
+	 * @param comment
+	 * @return
+	 */
+	public boolean updateComment(Comment comment) {
+		if (deleteComment(comment)) {
+			return insertComment(comment);
+		}
+		return false;
+	}
+
+	/**
+	 * Delete comment for this Song and User from comment
+	 * 
+	 * @param comment
+	 * @return
+	 */
+	public boolean deleteComment(Comment comment) {
+		return comments.remove(comment);
+	}
+	
+	public boolean deleteComment(String songName, String author) {
+		return comments.removeAll(selectComment(songName, author));
 	}
 
 	/**
@@ -297,42 +518,4 @@ public class DataBase {
 		comments.clear();
 		ratings.clear();
 	}
-
-	/*
-	 * Аналогом таблицы в java является Set<TableRow> где TableRow класс строки
-	 * таблицы. Или, лучше, Map<ID_записи, TableRow>
-	 * 
-	 * Аналогом индекса является HashMap<тут_тип_данных_индекса, TableRow> на каждый
-	 * индекс- свой HashMap. Можно делать HashMap<индекс1,HashMap<индекс2,
-	 * TableRow>> - это индекс по двум полям.
-	 * 
-	 * Соответственно insert в "таблицу" делает вставку в Set и все Map'ы. Поиск-
-	 * поиск по нужной мапе.
-	 */
-
-	/*
-	 * Find in ArrayList boolean isModified = CollectionUtils.filter(linkedList1,
-	 *       new Predicate<Customer>() {         public boolean evaluate(Customer
-	 * customer) {             return
-	 * Arrays.asList("Daniel","Kyle").contains(customer.getName());         }
-	 *     });            assertTrue(linkedList1.size() == 2);
-	 */
-
-	/*
-	 * DataBase structure:
-	 *
-	 * Set <Users>: String firstName; String lastName; String login UN NN; String
-	 * password;
-	 *
-	 * Sessions: String token; String userLogin UN NN
-	 *
-	 * Comment: String userLogin; String songName; String comment
-	 *
-	 * Rating: String songName; String userLogin; String rating
-	 *
-	 * Set <Song>: String userLogin; Song song
-	 * 
-	 * 
-	 * Map
-	 */
 }

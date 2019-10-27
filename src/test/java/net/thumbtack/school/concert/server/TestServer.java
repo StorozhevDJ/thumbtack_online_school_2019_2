@@ -8,13 +8,17 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.io.File;
 import java.nio.file.Path;
+import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
+import net.thumbtack.school.concert.dto.request.GetSongsDtoRequest;
 import net.thumbtack.school.concert.dto.response.ErrorDtoResponse;
+import net.thumbtack.school.concert.dto.response.GetSongsDtoResponse;
 import net.thumbtack.school.concert.dto.response.LoginUserDtoResponse;
 import net.thumbtack.school.concert.exception.ServerErrorCode;
 import net.thumbtack.school.concert.exception.ServerException;
@@ -182,7 +186,7 @@ public class TestServer {
 			fail();
 		}
 
-		assertFalse(new Gson().fromJson(server.addSong(null), ErrorDtoResponse.class).getError().isEmpty());
+		assertFalse(new Gson().fromJson(server.addSongs(null), ErrorDtoResponse.class).getError().isEmpty());
 		assertFalse(new Gson().fromJson(server.loginUser(""), ErrorDtoResponse.class).getError().isEmpty());
 		assertFalse(new Gson().fromJson(server.loginUser("{}"), ErrorDtoResponse.class).getError().isEmpty());
 		String response = server.loginUser("{\"login\":\"login\", \"password\":\"psw5d\"}");
@@ -202,7 +206,29 @@ public class TestServer {
 		} catch (ServerException e) {
 			assertEquals(ServerErrorCode.OTHER_ERROR, e.getServerErrorCode());
 		}
-
+	}
+	
+	@Test
+	public void testGetSong() {
+		Server server = new Server();
+		try {
+			server.startServer("dbfile.json");
+		} catch (ServerException e) {
+			fail();
+		}
+		
+		GetSongsDtoRequest gs = new GetSongsDtoRequest();
+		gs.setToken("aeb9610c-6053-4061-bea8-d9282a42ba48");
+		//server.getSongs(new Gson().toJson(gs));//{"token":"aeb9610c-6053-4061-bea8-d9282a42ba48"}
+		String response = server.getSongs("{\"token\":\"aeb9610c-6053-4061-bea8-d9282a42ba48\"}");
+		List<GetSongsDtoResponse> r = new Gson().fromJson(response, new TypeToken<List<GetSongsDtoResponse>>(){}.getType());
+		assertEquals(r.size(), 3);
+		
+		try {
+			server.stopServer(null);
+		} catch (ServerException e) {
+			assertEquals(ServerErrorCode.OTHER_ERROR, e.getServerErrorCode());
+		}
 	}
 
 

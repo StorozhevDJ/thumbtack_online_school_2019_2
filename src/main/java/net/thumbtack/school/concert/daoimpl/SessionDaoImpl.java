@@ -7,11 +7,11 @@ import net.thumbtack.school.concert.model.User;
 
 public class SessionDaoImpl implements SessionDao {
 
-	public void loginUser(User user, Session session) {
+	public void login(User user, Session session) {
         new DataBase().insertSession(user, session);
 	}
 
-	public void logoutUser(Session session) {
+	public void logout(Session session) {
         new DataBase().deleteSession(session);
     }
 
@@ -20,7 +20,7 @@ public class SessionDaoImpl implements SessionDao {
         return true;
     }
 
-    public User getUser(Session session) {
+    public User get(Session session) {
         return new DataBase().selectUser(session);
     }
 }

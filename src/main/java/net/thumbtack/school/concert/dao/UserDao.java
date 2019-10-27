@@ -11,7 +11,7 @@ public interface UserDao {
 	 * @param user - user info (user name, login, password and etc.)
 	 * @throws ServerException
 	 */
-    void insert(User user) throws ServerException;
+    void add(User user) throws ServerException;
     
     /**
      * Get User info
@@ -19,7 +19,7 @@ public interface UserDao {
      * @param login for find the User in DataBase
      * @return
      */
-	User getInfo(String login);
+	User get(String login);
     
     
 }

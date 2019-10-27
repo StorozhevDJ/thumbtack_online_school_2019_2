@@ -17,17 +17,17 @@ import net.thumbtack.school.concert.model.User;
  */
 public class SongDaoImpl implements SongDao {
 
-    public void insert(List<Song> songModel, User user) throws ServerException {
-		DataBase db = new DataBase();
+    public void add(List<Song> songModel, User user) throws ServerException {
+    	DataBase db = new DataBase();
 		if (db.selectUser(user.getLogin()) == null) {
 			throw new ServerException(ServerErrorCode.USERNAME_ALREADY_IN_USE, user.getLogin());
 		}
-		db.insertSongs(songModel);    //Add new songs into the DataBase
+        db.insertSongs(songModel);    //Add new songs into the DataBase
         // TODO add rating
 	}
 
-	public Song[] select(String[] composer, String[] author, String singer) throws ServerException {
-        // TODO  add code to select Songs from table
-		return null;
+	public List<Song> get(List<String> composer, List<String> author, String singer) {
+		return new DataBase().selectSong(new Song (null, composer, author, singer, 0, null));
+		//return null;
 	}
 }

@@ -15,7 +15,7 @@ public interface SongDao {
      * @param user      - User song uploader
      * @throws ServerException
      */
-    void insert(List<Song> songModel, User user) throws ServerException;
+    void add(List<Song> songModel, User user) throws ServerException;
 
     /**
      * Get all song with filter
@@ -26,5 +26,5 @@ public interface SongDao {
      * @return Song array
      * @throws ServerException
      */
-    Song[] select(String[] composer, String[] author, String singer) throws ServerException;
+    List<Song> get(List<String> composer, List<String> author, String singer);
 }

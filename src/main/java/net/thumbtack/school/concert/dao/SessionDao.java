@@ -12,12 +12,12 @@ public interface SessionDao {
      * @param session
      * @throws ServerException
      */
-    void loginUser(User user, Session session) throws ServerException;
+    void login(User user, Session session) throws ServerException;
     
     /**
      * Delete session from DataBase for logged out user
      *
      * @param session
      */
-    void logoutUser(Session session);
+    void logout(Session session);
 }

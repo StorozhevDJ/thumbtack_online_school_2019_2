@@ -23,7 +23,7 @@ public class TestSongService {
     @Test
     public void testAddSongs() {
 
-        DataBase db = new DataBase();
+    	DataBase db = new DataBase();
     	
         Set<User> su = new HashSet<>();
         su.add(new User("fname", "lname", "login", "pass"));
@@ -63,6 +63,11 @@ public class TestSongService {
         } catch (ServerException e) {
             fail(e.getServerErrorText());
         }
+    }
+    
+    @Test
+    public void testGetSongList() {
+    	
     }
 
 }

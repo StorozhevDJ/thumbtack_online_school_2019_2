@@ -8,15 +8,15 @@ import net.thumbtack.school.concert.model.User;
 
 public class UserDaoImpl implements UserDao {
 
-	public void insert(User user) throws ServerException {
+	public void add(User user) throws ServerException {
 		DataBase db = new DataBase();
-		if ((db.selectUser(user.getLogin()) != null) || (!db.insertUser(user))) {
+        if ((db.selectUser(user.getLogin()) != null) || (!db.insertUser(user))) {
 			throw new ServerException(ServerErrorCode.USERNAME_ALREADY_IN_USE, user.getLogin());
 		}
 	}
 
-	public User getInfo(String login) {
-		return new DataBase().selectUser(login);
+	public User get(String login) {
+        return new DataBase().selectUser(login);
 	}
 	
 

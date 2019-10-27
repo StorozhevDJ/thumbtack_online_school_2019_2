@@ -2,7 +2,7 @@ package net.thumbtack.school.concert.model;
 
 public class Rating {
 
-	private int rating;
+	private long rating;
 	private String songName;
 	private String user;
 
@@ -16,7 +16,7 @@ public class Rating {
 		setUser(user);
 	}
 
-	public int getRating() {
+	public long getRating() {
 		return rating;
 	}
 

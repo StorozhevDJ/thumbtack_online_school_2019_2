@@ -1,21 +1,27 @@
 package net.thumbtack.school.concert.service;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
-
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 
+import net.thumbtack.school.concert.daoimpl.CommentDaoImpl;
 import net.thumbtack.school.concert.daoimpl.RatingDaoImpl;
 import net.thumbtack.school.concert.daoimpl.SessionDaoImpl;
 import net.thumbtack.school.concert.daoimpl.SongDaoImpl;
 import net.thumbtack.school.concert.dto.request.AddSongDtoRequest;
 import net.thumbtack.school.concert.dto.request.GetSongsDtoRequest;
+import net.thumbtack.school.concert.dto.response.GetSongsDtoResponse;
 import net.thumbtack.school.concert.exception.ServerErrorCode;
 import net.thumbtack.school.concert.exception.ServerException;
 import net.thumbtack.school.concert.model.Rating;
@@ -60,23 +66,23 @@ public class SongService {
 		}
 
 		// User session check
-		User user = new SessionDaoImpl().getUser(new Session(newSongs.getToken()));
+		User user = new SessionDaoImpl().get(new Session(newSongs.getToken()));
 		if (user == null) {
 			throw new ServerException(ServerErrorCode.TOKEN_INCORRECT);
 		}
 
 		// Add new Song in the DB
-        // Mapping data
+		// Mapping data
 		List<Song> songsModel = new ArrayList<>();
-        List<Rating> ratingModel = new ArrayList<>();
+		List<Rating> ratingModel = new ArrayList<>();
 		for (AddSongDtoRequest.Song song : newSongs.getSong()) {
 			songsModel.add(new Song(song.getSongName(), song.getComposer(), song.getAuthor(), song.getSinger(),
-                    song.getLength(), user.getLogin()));
-            ratingModel.add(new Rating(song.getSongName(), 5, user.getLogin()));
-        }
+					song.getLength(), user.getLogin()));
+			ratingModel.add(new Rating(song.getSongName(), 5, user.getLogin()));
+		}
 
-		new SongDaoImpl().insert(songsModel, user);                // Insert songs into the DataBase
-        new RatingDaoImpl().insert(ratingModel);//Add initial rating
+		new SongDaoImpl().add(songsModel, user); // Insert songs into the DataBase
+		new RatingDaoImpl().add(ratingModel);// Add default rating
 
 		return new Gson().toJson(null);
 	}
@@ -121,25 +127,38 @@ public class SongService {
 			throw new ServerException(ServerErrorCode.TOKEN_INCORRECT);
 		}
 
-		// Get Songs list
-		/*
-		 * GetSongsDtoRequest getSongsDto = new
-		 * GetSongsDtoRequest(getSongs.getComposer(), getSongs.getAuthor(),
-		 * getSongs.getSinger(), getSongs.getToken());
-		 */
+		// Get Songs list (with filter)
+		List<Song> songList = new SongDaoImpl().get(getSongs.getComposer(), getSongs.getAuthor(),
+				getSongs.getSinger());
 
-		/*
-		 * GetSongsDtoRequest getSong = new GetSongsDtoRequest();
-		 * GetSongsDtoRequest.Song s = new GetSongsDtoRequest().new Song();
-		 * ArrayList<GetSongsDtoRequest.Song> song = new ArrayList<>();
-		 * getSong.setToken("testToken"); song.add(s) getSong.setSong(song);
-		 */
+		// Get average Song Rating from DataBase
+		Map<Song, Float> ratingSongMap = new HashMap<>();
+		RatingDaoImpl rat = new RatingDaoImpl();
+		for (Song s : songList) {
+			ratingSongMap.put(s, rat.get(s.getSongName()));
+		}
+		// Sorting rating Map
+		Map<Song, Float> sortedRatingMap = ratingSongMap.entrySet().stream()
+				.sorted(Collections.reverseOrder(Map.Entry.comparingByValue())).collect(Collectors.toMap(
+						Map.Entry::getKey, Map.Entry::getValue, (oldValue, newValue) -> oldValue, LinkedHashMap::new));
 
-		getSongs.getAuthor();
+		// Add Songs with rating and comments into GetSongsDtoResponse List
+		List<GetSongsDtoResponse> respList = new ArrayList<>();
+		int time = 0;
+		for (Map.Entry<Song, Float> entry : sortedRatingMap.entrySet()) {
+			if (time + entry.getKey().getLength() < 3600) {
+				time += entry.getKey().getLength() + 10;
+				String[] comments = new CommentDaoImpl().get(entry.getKey().getSongName())
+						.toArray(new String[0]);
 
-		// ArrayList<GetSongsDtoResponse> songsDtoResponse = new ArrayList<>();
+				respList.add(new GetSongsDtoResponse(entry.getKey().getSongName(),
+						entry.getKey().getComposer().toArray(new String[0]),
+						entry.getKey().getAuthor().toArray(new String[0]), entry.getKey().getSinger(),
+						entry.getKey().getUserLogin(), entry.getValue(), comments));
+			}
+		}
 
-		return requestJsonString;
+		return new Gson().toJson(respList);
 	}
 
 }

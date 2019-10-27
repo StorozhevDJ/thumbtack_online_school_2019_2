@@ -4,6 +4,7 @@ public class Comment {
 
 	private String comment;
 	private String author;
+	private String songName;
 
 	public String getComment() {
 		return comment;
@@ -19,5 +20,13 @@ public class Comment {
 
 	public void setAuthor(String author) {
 		this.author = author;
+	}
+
+	public String getSongName() {
+		return songName;
+	}
+
+	public void setSongName(String songName) {
+		this.songName = songName;
 	}
 }
