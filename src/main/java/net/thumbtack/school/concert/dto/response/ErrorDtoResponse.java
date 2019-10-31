@@ -2,7 +2,10 @@ package net.thumbtack.school.concert.dto.response;
 
 public class ErrorDtoResponse {
 	private String error;
-	
+
+	public ErrorDtoResponse() {
+	}
+
 	public ErrorDtoResponse(String error) {
 		setError(error);
 	}
@@ -15,5 +18,4 @@ public class ErrorDtoResponse {
 		this.error = error;
 	}
 
-	
 }

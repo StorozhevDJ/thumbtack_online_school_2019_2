@@ -12,17 +12,19 @@ public class CommentDaoImpl implements CommentDao {
         return new DataBase().insertComment(comment);
     }
     
-    public List<String> get(String songName){
+    public List<Comment> get(String songName){
     	return new DataBase().selectComment(songName, null);
+    }
+    
+    public String get(String songName, String author){
+    	return new DataBase().selectComment(songName, author).get(0).getComment();
     }
 
     public boolean delete (Comment comment){
-        // TODO add code
-        return false;
+        return new DataBase().deleteComment(comment);
     }
 
     public boolean delete (String songName, String author){
-        // TODO add code
-        return false;
+        return new DataBase().deleteComment(songName, author);
     }
 }

@@ -14,7 +14,7 @@ public class AddSongDtoRequest {
 		private String songName; // название песни
 		private List<@NotBlank(message = "Композитор не указан. ") @Pattern(regexp = "^[а-яА-ЯёЁa-zA-Z-_]{1,50}$", message = "Композитор может содержать только буквы и быть длинной от 1 до 50 символов. ") String> composer; // композитора
 		private List<@NotBlank(message = "Автор не указан. ") @Pattern(regexp = "^[а-яА-ЯёЁa-zA-Z-_]{1,50}$", message = "Автор может содержать только буквы и быть длинной от 1 до 50 символов. ") String> author; // автора слов
-		@NotBlank(message = "Исполнитель песни не задано. ")
+		@NotBlank(message = "Исполнитель песни не задан. ")
 		@Pattern(regexp = "^[а-яА-ЯёЁa-zA-Z0-9 -_\\.?!*]{1,50}$", message = "Исполнитель песни может содержать только буквы, цифры, символы и быть длинной от 1 до 50 символов. ")
 		private String singer; // исполнителя (фамилия или название группы)
 		@Positive(message = "Продолжительность песни должна быть положительной. ")

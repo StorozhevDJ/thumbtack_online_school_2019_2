@@ -171,6 +171,17 @@ public class Server {
 			return jsonError(e);
 		}
 	}
+	
+	public String deleteSong(String jsonRequest) {
+		if (!isServerStarted()) {
+			return jsonError(new ServerException(ServerErrorCode.SERVER_NOT_STARTED));
+		}
+		try {
+			return songService.deleteSong(jsonRequest);
+		} catch (ServerException e) {
+			return jsonError(e);
+		}
+	}
 
 	/**
 	 * Convert ServerException error to JSON string

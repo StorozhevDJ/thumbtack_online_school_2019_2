@@ -23,12 +23,13 @@ public interface RatingDao {
 	boolean add(List<Rating> ratings);
 
 	/**
-	 * Delete Rating from DB
+	 * Delete Rating with Song Name and User Login from DB
 	 *
-	 * @param rating
+	 * @param songName
+	 * @param user
 	 * @return
 	 */
-	boolean delete(Rating rating);
+	boolean delete(String songName, String user);
 
 	/**
 	 * Update existing rating

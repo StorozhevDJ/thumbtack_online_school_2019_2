@@ -82,7 +82,8 @@ public class DataBase {
 	 * @return true if user was added, false if already exist
 	 */
 	public boolean insertUser(User user) {
-		if (selectUser(user.getLogin())!=null) return false;
+		if (selectUser(user.getLogin()) != null)
+			return false;
 		return users.add(user);
 	}
 
@@ -94,7 +95,7 @@ public class DataBase {
 	 * @return
 	 */
 	public User selectUser(Session session) {
-		if ((session != null) && (sessions != null)) {
+		if ((session != null) && (!sessions.isEmpty())) {
 			return selectUser(sessions.getKey(session));
 		}
 		return null;
@@ -107,7 +108,7 @@ public class DataBase {
 	 * @return
 	 */
 	public User selectUser(String login) {
-		if ((users != null) && (login != null) && (!login.isEmpty())) {
+		if ((!users.isEmpty()) && (login != null) && (!login.isEmpty())) {
 			for (User user : users) {
 				if (user.getLogin().equals(login)) {
 					return user;
@@ -154,7 +155,10 @@ public class DataBase {
 	 * @return
 	 */
 	public boolean insertSession(User user, Session session) {
-		return sessions.put(user.getLogin(), session) != null;
+		if ((user != null) && (session != null)) {
+			return sessions.put(user.getLogin(), session) == null;
+		}
+		return false;
 	}
 
 	/**
@@ -177,8 +181,9 @@ public class DataBase {
 		if ((song == null) || (song.isEmpty())) {
 			return false;
 		}
-		for (Song s: song) {
-			if (selectSong(s.getSongName())!=null) return false;
+		for (Song s : song) {
+			if (selectSong(s.getSongName()) != null)
+				return false;
 		}
 		return songs.addAll(song);
 	}
@@ -193,7 +198,8 @@ public class DataBase {
 		if (song == null) {
 			return false;
 		}
-		if (selectSong(song.getSongName())!=null) return false;
+		if (selectSong(song.getSongName()) != null)
+			return false;
 		return songs.add(song);
 	}
 
@@ -217,7 +223,8 @@ public class DataBase {
 	}
 
 	/**
-	 * Find a list of songs with any parameters: the Song Name, Composer, Author, Singer, User
+	 * Find a list of songs with any parameters: the Song Name, Composer, Author,
+	 * Singer, User
 	 * 
 	 * @param song - parameters for searching songs
 	 * @return Song List
@@ -230,12 +237,12 @@ public class DataBase {
 					continue;
 				}
 			}
-			if ((song.getComposer() != null) && (!song.getComposer().isEmpty())) {
+			if (song.getComposer() != null) {
 				if (!s.getComposer().equals(song.getComposer())) {
 					continue;
 				}
 			}
-			if ((song.getAuthor() != null) && (!song.getAuthor().isEmpty())) {
+			if (song.getAuthor() != null) {
 				if (!s.getAuthor().equals(song.getAuthor())) {
 					continue;
 				}
@@ -296,7 +303,7 @@ public class DataBase {
 	 * @param rating
 	 * @return
 	 */
-	public boolean insertRating(Set<Rating> rating) {
+	public boolean insertRating(List<Rating> rating) {
 		return ratings.addAll(rating);
 	}
 
@@ -363,12 +370,12 @@ public class DataBase {
 	 */
 	public boolean deleteRating(String songName, String user) {
 		List<Rating> rating = selectRating(songName, user);
-		if (rating != null) {
+		if (!rating.isEmpty()) {
 			return ratings.removeAll(rating);
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Delete Rating for this songName and user from rating
 	 * 
@@ -394,10 +401,10 @@ public class DataBase {
 	 * 
 	 * @param songName
 	 * @param author
-	 * @return 
+	 * @return
 	 */
-	public List<String> selectComment(String songName, String author) {
-		List<String> comment = new ArrayList<>();
+	public List<Comment> selectComment(String songName, String author) {
+		List<Comment> comment = new ArrayList<>();
 		for (Comment c : comments) {
 			if ((songName != null) && (!songName.isEmpty())) {
 				if (!c.getSongName().equals(songName))
@@ -407,11 +414,11 @@ public class DataBase {
 				if (!c.getAuthor().equals(author))
 					continue;
 			}
-			comment.add(c.getComment());
+			comment.add(c);
 		}
 		return comment;
 	}
-	
+
 	/**
 	 * Get all comments for songName
 	 * 
@@ -419,15 +426,7 @@ public class DataBase {
 	 * @return
 	 */
 	public List<Comment> selectComment(String songName) {
-		List<Comment> comment = new ArrayList<>();
-		for (Comment c : comments) {
-			if ((songName != null) && (!songName.isEmpty())) {
-				if (!c.getSongName().equals(songName))
-					continue;
-			}
-			comment.add(c);
-		}
-		return comment;
+		return selectComment(songName, null);
 	}
 
 	/**
@@ -450,9 +449,9 @@ public class DataBase {
 	 * @return
 	 */
 	public boolean deleteComment(Comment comment) {
-		return comments.remove(comment);
+		return deleteComment(comment.getSongName(), comment.getAuthor());
 	}
-	
+
 	public boolean deleteComment(String songName, String author) {
 		return comments.removeAll(selectComment(songName, author));
 	}

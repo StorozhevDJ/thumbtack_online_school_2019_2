@@ -14,9 +14,37 @@ public interface CommentDao {
 	 */
 	boolean add(Comment comment);
 
-	List<String> get(String songName);
+	/**
+	 * Get all comments for this songName
+	 * 
+	 * @param songName
+	 * @return
+	 */
+	List<Comment> get(String songName);
+	
+	/**
+	 * Get comment for this singName with the author
+	 * 
+	 * @param songName
+	 * @param author
+	 * @return
+	 */
+	String get(String songName, String author);
 
+	/**
+	 * Delete comment for Song
+	 * 
+	 * @param comment
+	 * @return
+	 */
 	boolean delete (Comment comment);
 
+	/**
+	 * Delete comment for this songName and author
+	 * 
+	 * @param songName
+	 * @param author
+	 * @return
+	 */
 	boolean delete (String songName, String author);
 }

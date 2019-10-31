@@ -6,6 +6,16 @@ public class Comment {
 	private String author;
 	private String songName;
 
+	public Comment() {
+
+	}
+
+	public Comment(String songName, String author, String comment) {
+		setComment(comment);
+		setAuthor(author);
+		setSongName(songName);
+	}
+
 	public String getComment() {
 		return comment;
 	}

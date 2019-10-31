@@ -21,10 +21,19 @@ public class ServerException extends Exception {
 		// super(message);
 	}
 
+	/**
+	 * Get server error text code
+	 * 
+	 * @return String text error code
+	 */
 	public String getServerErrorText() {
 		return serverErrorText;
 	}
 
+	/**
+	 * Get Server Error Code w/o text
+	 * @return ServerErrorCode
+	 */
 	public ServerErrorCode getServerErrorCode() {
 		return serverErrorCode;
 	}

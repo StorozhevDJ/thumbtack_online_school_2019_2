@@ -1,6 +1,6 @@
 package net.thumbtack.school.concert.daoimpl;
 
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.List;
 
 import net.thumbtack.school.concert.dao.RatingDao;
@@ -15,12 +15,12 @@ public class RatingDaoImpl implements RatingDao {
     }
 
     public boolean add(List<Rating> ratings) {
-        new DataBase().insertRating(new HashSet<>(ratings));
+        new DataBase().insertRating(new ArrayList<>(ratings));
         return false;
     }
 
-    public boolean delete(Rating rating) {
-        new DataBase().deleteRating(rating.getSongName(), rating.getUser());
+    public boolean delete(String songName, String user) {
+        new DataBase().deleteRating(songName, user);
         return false;
     }
 

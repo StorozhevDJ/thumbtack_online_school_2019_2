@@ -8,19 +8,18 @@ import net.thumbtack.school.concert.model.User;
 public class SessionDaoImpl implements SessionDao {
 
 	public void login(User user, Session session) {
-        new DataBase().insertSession(user, session);
+		new DataBase().insertSession(user, session);
 	}
 
 	public void logout(Session session) {
-        new DataBase().deleteSession(session);
-    }
+		new DataBase().deleteSession(session);
+	}
 
-    public boolean checkSession(Session session) {
+	public boolean checkSession(Session session) {
+		return new DataBase().selectUser(session) != null;
+	}
 
-        return true;
-    }
-
-    public User get(Session session) {
-        return new DataBase().selectUser(session);
-    }
+	public User get(Session session) {
+		return new DataBase().selectUser(session);
+	}
 }
