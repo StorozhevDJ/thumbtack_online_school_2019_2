@@ -45,28 +45,7 @@ public class SongService {
 	 */
 	public String addSong(String jsonRequest) throws ServerException {
 		// Parse jsonRequest to AddSongDtoRequest
-		AddSongDtoRequest newSongs;
-		try {
-			newSongs = new Gson().fromJson(jsonRequest, AddSongDtoRequest.class);
-		} catch (JsonSyntaxException e) {
-			throw new ServerException(ServerErrorCode.JSON_SYNTAX_ERROR);
-		}
-		// Validate AddSongDtoRequest
-		ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory();
-		Validator validator = validatorFactory.getValidator();
-		Set<ConstraintViolation<AddSongDtoRequest>> violations;
-		try {
-			violations = validator.validate(newSongs);
-		} catch (IllegalArgumentException e) {
-			throw new ServerException(ServerErrorCode.JSON_SYNTAX_ERROR);
-		}
-		if (!violations.isEmpty()) {
-			StringBuilder err = new StringBuilder();
-			for (ConstraintViolation<AddSongDtoRequest> cv : violations) {
-				err.append(cv.getMessage());
-			}
-			throw new ServerException(ServerErrorCode.BAD_REQUEST, err.toString());
-		}
+		AddSongDtoRequest newSongs = fromJson(AddSongDtoRequest.class, jsonRequest);
 
 		// User session check
 		User user = new SessionDaoImpl().get(new Session(newSongs.getToken()));
@@ -93,6 +72,29 @@ public class SongService {
 	/**
 	 * Радиослушатель получает список песен.
 	 * 
+	 * В любой момент любой радиослушатель может получить следующие списки
+	 * 
+	 * Все заявленные в концерт песни.
+	 *  Все заявленные в концерт песни указанного композитора или композиторов.
+	 *  Все заявленные в концерт песни указанного автора слов или авторов слов.
+	 *  Все заявленные в концерт песни указанного исполнителя.
+	 * 
+	 * 
+	 * В любой момент любой радиослушатель может получить текущую пробную программу концерта.
+	 * Пробная программа - это концерт из песен, набравших наибольшие суммы оценок при условии, 
+	 * что суммарная продолжительность концерта не превышает 60 минут с учетом того, 
+	 * что между каждыми двумя песнями делается пауза продолжительностью в 10 секунд. 
+	 * В случае, если очередная песня из списка наиболее популярных не может быть добавлена в концерт, 
+	 * потому что при этом будет превышено время концерта, эта песня пропускается, 
+	 * и делается попытка добавить следующую по популярности песню и т.д.
+	 * В концерт должно включаться максимально возможное количество песен. 
+	 * 
+	 * В пробную программу концерта для каждой песни включаются
+	 *  Название песни, композитор(ы), автор(ы) слов, исполнитель 
+	 *  Данные о радиослушателе, предложившем песню. 
+	 *  Средняя оценка песни. 
+	 *  Все комментарии к этому предложению.
+	 * 
 	 * @param requestJsonString содержит параметры для отбора песен и token,
 	 *                          полученный как результат выполнения команды
 	 *                          регистрации радиослушателя.
@@ -102,28 +104,7 @@ public class SongService {
 	 */
 	public String getSongs(String requestJsonString) throws ServerException {
 		// Parse jsonRequest to GetSongsDtoRequest
-		GetSongsDtoRequest getSongs;
-		try {
-			getSongs = new Gson().fromJson(requestJsonString, GetSongsDtoRequest.class);
-		} catch (JsonSyntaxException e) {
-			throw new ServerException(ServerErrorCode.JSON_SYNTAX_ERROR);
-		}
-		// Validate GetSongsDtoRequest
-		ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory();
-		Validator validator = validatorFactory.getValidator();
-		Set<ConstraintViolation<GetSongsDtoRequest>> violations;
-		try {
-			violations = validator.validate(getSongs);
-		} catch (IllegalArgumentException e) {
-			throw new ServerException(ServerErrorCode.JSON_SYNTAX_ERROR);
-		}
-		if (!violations.isEmpty()) {
-			StringBuilder err = new StringBuilder();
-			for (ConstraintViolation<GetSongsDtoRequest> cv : violations) {
-				err.append(cv.getMessage());
-			}
-			throw new ServerException(ServerErrorCode.BAD_REQUEST, err.toString());
-		}
+		GetSongsDtoRequest getSongs = fromJson(GetSongsDtoRequest.class, requestJsonString);
 
 		// User session check
 		if (!new SessionDaoImpl().checkSession(new Session(getSongs.getToken()))) {
@@ -132,6 +113,12 @@ public class SongService {
 
 		// Get Songs list (with filter)
 		List<Song> songList = new SongDaoImpl().get(getSongs.getComposer(), getSongs.getAuthor(), getSongs.getSinger());
+
+		/*if (((getSongs.getComposer() == null) || getSongs.getComposer().isEmpty())
+				&& ((getSongs.getAuthor() == null) || getSongs.getAuthor().isEmpty())
+				&& ((getSongs.getSinger() == null) || getSongs.getSinger().isEmpty())) {
+
+		}*/
 
 		// Get average Song Rating from DataBase
 		Map<Song, Float> ratingSongMap = new HashMap<>();
@@ -152,7 +139,6 @@ public class SongService {
 				time += entry.getKey().getLength() + 10;
 
 				// String[] comments = new
-				// CommentDaoImpl().get(entry.getKey().getSongName()).toArray(new String[0]);
 				List<Comment> commentsList = new CommentDaoImpl().get(entry.getKey().getSongName());
 				List<String> commentsStringList = new ArrayList<>();
 				for (Comment comment : commentsList) {
@@ -171,34 +157,14 @@ public class SongService {
 	/**
 	 * Delete song from server
 	 * 
-	 * @param requestJsonString contains Song Name and User Token * @return Метод
-	 *                          при успешном выполнении возвращает пустой json.
+	 * @param requestJsonString contains Song Name and User Token
+	 * @return Метод при успешном выполнении возвращает пустой json.
 	 * @throws ServerException
 	 */
 	public String deleteSong(String requestJsonString) throws ServerException {
 		// Parse jsonRequest to DeleteSongDtoRequest
-		DeleteSongDtoRequest deleteSongDto;
-		try {
-			deleteSongDto = new Gson().fromJson(requestJsonString, DeleteSongDtoRequest.class);
-		} catch (JsonSyntaxException e) {
-			throw new ServerException(ServerErrorCode.JSON_SYNTAX_ERROR);
-		}
-		// Validate DeleteSongDtoRequest
-		ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory();
-		Validator validator = validatorFactory.getValidator();
-		Set<ConstraintViolation<DeleteSongDtoRequest>> violations;
-		try {
-			violations = validator.validate(deleteSongDto);
-		} catch (IllegalArgumentException e) {
-			throw new ServerException(ServerErrorCode.JSON_SYNTAX_ERROR);
-		}
-		if (!violations.isEmpty()) {
-			StringBuilder err = new StringBuilder();
-			for (ConstraintViolation<DeleteSongDtoRequest> cv : violations) {
-				err.append(cv.getMessage());
-			}
-			throw new ServerException(ServerErrorCode.BAD_REQUEST, err.toString());
-		}
+		DeleteSongDtoRequest deleteSongDto = fromJson(DeleteSongDtoRequest.class, requestJsonString);
+
 		// User session check
 		User user = new SessionDaoImpl().get(new Session(deleteSongDto.getToken()));
 		if (user == null) {
@@ -220,6 +186,42 @@ public class SongService {
 		ratingDaoImpl.delete(song.getSongName(), user.getLogin());
 
 		return new Gson().toJson(new ErrorDtoResponse());
+	}
+
+	/**
+	 * Parse JSON string and validate data
+	 *
+	 * @param <T> clazz
+	 * @param jsonRequest
+	 * @return
+	 * @throws ServerException
+	 */
+	private <T> T fromJson(Class<T> clazz, String jsonRequest) throws ServerException {
+		// Parse jsonRequest to LogoutUserDtoRequest
+		T data;
+		try {
+			data = new Gson().fromJson(jsonRequest, clazz);
+		} catch (JsonSyntaxException e) {
+			throw new ServerException(ServerErrorCode.JSON_SYNTAX_ERROR);
+		}
+		// Validate received date
+		ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory();
+		Validator validator = validatorFactory.getValidator();
+		Set<ConstraintViolation<T>> violations;
+		try {
+			violations = validator.validate(data);
+		} catch (IllegalArgumentException e) {
+			throw new ServerException(ServerErrorCode.JSON_SYNTAX_ERROR);
+		}
+		if (!violations.isEmpty()) {
+			StringBuilder err = new StringBuilder();
+			for (ConstraintViolation<T> cv : violations) {
+				// System.err.println(cv.getMessage());
+				err.append(cv.getMessage());
+			}
+			throw new ServerException(ServerErrorCode.BAD_REQUEST, err.toString());
+		}
+		return data;
 	}
 
 }

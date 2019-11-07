@@ -14,8 +14,8 @@ public class GetSongsDtoRequest {
     @NotBlank(message = "Сессия пользователя отсутствует. ")
     @Pattern(regexp = "^[0-9A-Fa-f]{8}\\-[0-9A-Fa-f]{4}\\-[0-9A-Fa-f]{4}\\-[0-9A-Fa-f]{4}\\-[0-9A-Fa-f]{12}$", message = "Не корректная сессия пользователя. ")
     private String token;
-
-    public GetSongsDtoRequest(){
+    
+	public GetSongsDtoRequest(){
     }
     
     public GetSongsDtoRequest(List<String> composer, List<String> author, String singer, String token) {
@@ -48,13 +48,13 @@ public class GetSongsDtoRequest {
     public void setSinger(String singer) {
         this.singer = singer;
     }
-
+    
     public String getToken() {
-        return token;
-    }
+		return token;
+	}
 
-    public void setToken(String token) {
-        this.token = token;
-    }
+	public void setToken(String token) {
+		this.token = token;
+	}
 
 }

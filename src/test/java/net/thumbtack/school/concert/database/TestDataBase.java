@@ -74,22 +74,22 @@ public class TestDataBase {
 
 		Set<User> users = db.getUsers();
 		assertNotNull(users);
-		assertEquals(users.size(), 3);
+		assertEquals(users.size(), 4);
 		User user = users.iterator().next();
 		assertFalse(db.insertUser(user));
-		assertEquals(db.getUsers().size(), 3);
+		assertEquals(db.getUsers().size(), 4);
 		assertEquals(user, db.selectUser(user.getLogin()));
 		assertNull(db.selectUser(""));
 		assertTrue(db.insertUser(new User("fn", "ln", "testlogin", "testpwd")));
-		assertEquals(db.getUsers().size(), 4);
+		assertEquals(db.getUsers().size(), 5);
 		assertTrue(db.deleteUser("testlogin"));
 		assertFalse(db.deleteUser("errUser"));
 		assertFalse(db.deleteUser(""));
 		assertFalse(db.deleteUser((String) null));
-		assertEquals(db.getUsers().size(), 3);
+		assertEquals(db.getUsers().size(), 4);
 		assertTrue(db.insertUser(new User("fn", "ln", "testlogin", "testpwd")));
 		assertTrue(db.deleteUser(new User("fn", "ln", "testlogin", "testpwd")));
-		assertEquals(db.getUsers().size(), 3);
+		assertEquals(db.getUsers().size(), 4);
 		db.close();
 	}
 
@@ -242,11 +242,11 @@ public class TestDataBase {
 
 		assertEquals(db.selectComment("").size(), comSize);
 		assertEquals(db.selectComment(null).size(), comSize);
-		assertEquals(db.selectComment("songName11").size(), 1);
+		assertEquals(db.selectComment("songName11").size(), 2);
 
 		assertEquals(db.selectComment("", "").size(), comSize);
 		assertEquals(db.selectComment(null, null).size(), comSize);
-		assertEquals(db.selectComment("songName11", null).size(), 1);
+		assertEquals(db.selectComment("songName11", null).size(), 2);
 		assertEquals(db.selectComment(null, "User10").size(), 2);
 
 		assertTrue(db.updateComment(new Comment(db.selectComment("").get(0).getSongName(),

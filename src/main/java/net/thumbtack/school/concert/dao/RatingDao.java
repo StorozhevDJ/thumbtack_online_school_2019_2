@@ -33,6 +33,7 @@ public interface RatingDao {
 
 	/**
 	 * Update existing rating
+	 * 
 	 * @param rating
 	 * @return
 	 */

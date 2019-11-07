@@ -49,6 +49,12 @@ public class TestSongService {
 
 		SongService ss = new SongService();
 		try {
+			ss.addSong("");
+			fail();
+		} catch (ServerException e) {
+			assertEquals(ServerErrorCode.JSON_SYNTAX_ERROR, e.getServerErrorCode());
+		}
+		try {
 			ss.addSong("!\"song\":[{\"songName\":\"testSocd135299\"}");
 			fail();
 		} catch (ServerException e) {
@@ -75,7 +81,6 @@ public class TestSongService {
 		}
 		GetSongsDtoRequest getSongs = new GetSongsDtoRequest();
 		// getSongs.setAuthor();
-		getSongs.setToken("fea8056a-cd2e-4d9b-8d73-c165cd135299");
 		getSongs.setSinger("test Singer Д");
 		List<String> alstr2 = new ArrayList<String>();
 		alstr2.add("testCom-poser Ф.");
@@ -84,6 +89,7 @@ public class TestSongService {
 		List<String> alstr = new ArrayList<String>();
 		alstr.add("test Author");
 		getSongs.setAuthor(alstr);
+		getSongs.setToken("fea8056a-cd2e-4d9b-8d73-c165cd135299");
 		new Gson().toJson(getSongs);
 		try {
 			ss.getSongs(
@@ -105,6 +111,12 @@ public class TestSongService {
 
 		SongService ss = new SongService();
 		try {
+			ss.getSongs("");
+			fail();
+		} catch (ServerException e) {
+			assertEquals(ServerErrorCode.JSON_SYNTAX_ERROR, e.getServerErrorCode());
+		}
+		try {
 			ss.getSongs("{\"composer\":[\"tes");
 			fail();
 		} catch (ServerException e) {
@@ -117,25 +129,18 @@ public class TestSongService {
 		} catch (ServerException e) {
 			assertEquals(ServerErrorCode.BAD_REQUEST, e.getServerErrorCode());
 		}
-		try {
-			ss.getSongs(
-					"{\"composer\":[\"testCom\",\"test2\"],\"author\":[\"test\"],\"singer\":\"test\",\"token\":\"ffffffff-ffff-4d9b-8d73-c165cd135299\"}");
-			fail();
-		} catch (ServerException e) {
-			assertEquals(ServerErrorCode.TOKEN_INCORRECT, e.getServerErrorCode());
-		}
 		String result = new String();
 		try {
 			result = ss.getSongs(
 					"{\"composer\":[\"testCom-poser Ф.\",\"test Composer2\"],\"author\":[\"test Author\"],\"singer\":\"test Singer Д\",\"token\":\"aeb9610c-6053-4061-bea8-d9282a42ba48\"}");
 		} catch (ServerException e) {
-			fail(e.getMessage());
+			fail(e.getServerErrorText());
 		}
 		assertEquals("[]", result);
 		try {
 			result = ss.getSongs("{\"singer\":\"\",\"token\":\"aeb9610c-6053-4061-bea8-d9282a42ba48\"}");
 		} catch (ServerException e) {
-			fail(e.getMessage());
+			fail(e.getServerErrorText());
 		}
 		List<GetSongsDtoResponse> respList = new Gson().fromJson(result, new TypeToken<List<GetSongsDtoResponse>>() {
 		}.getType());
@@ -160,6 +165,12 @@ public class TestSongService {
 			assertEquals(ServerErrorCode.JSON_SYNTAX_ERROR, e.getServerErrorCode());
 		}
 		try {
+			ss.deleteSong("");
+			fail();
+		} catch (ServerException e) {
+			assertEquals(ServerErrorCode.JSON_SYNTAX_ERROR, e.getServerErrorCode());
+		}
+		try {
 			ss.deleteSong("{\"token\":\"aeb942ba48\"}");
 			fail();
 		} catch (ServerException e) {
@@ -175,7 +186,7 @@ public class TestSongService {
 		try {
 			response = ss.getSongs("{\"token\":\"aeb9610c-6053-4061-bea8-d9282a42ba48\"}");
 		} catch (ServerException e) {
-			fail(e.getMessage());
+			fail(e.getServerErrorText());
 		}
 
 		int oldSongSize =db.getSongs().size();
@@ -184,14 +195,14 @@ public class TestSongService {
 			response = ss
 					.deleteSong("{\"songName\":\"songName130\", \"token\":\"aeb9610c-6053-4061-bea8-d9282a42ba48\"}");
 		} catch (ServerException e) {
-			fail(e.getMessage());
+			fail(e.getServerErrorText());
 		}
 		assertEquals("{}", response);
 		try {
 			response = ss
 					.deleteSong("{\"songName\":\"songName13\", \"token\":\"aeb9610c-6053-4061-bea8-d9282a42ba48\"}");
 		} catch (ServerException e) {
-			fail(e.getMessage());
+			fail(e.getServerErrorText());
 		}
 		assertEquals("{}", response);
 		assertTrue(oldSongSize > db.getSongs().size());
@@ -202,10 +213,10 @@ public class TestSongService {
 			response = ss
 					.deleteSong("{\"songName\":\"songName11\", \"token\":\"2f9be182-68d0-47a9-b21e-39c436c6183f\"}");
 		} catch (ServerException e) {
-			fail(e.getMessage());
+			fail(e.getServerErrorText());
 		}
 		assertEquals("{}", response);
-		assertTrue(oldSongSize == db.getSongs().size());
+		assertEquals(oldSongSize , db.getSongs().size());
 		assertTrue(oldRatingSize > db.getRatings().size());
 
 	}

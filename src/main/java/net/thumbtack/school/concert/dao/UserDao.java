@@ -21,5 +21,5 @@ public interface UserDao {
      */
 	User get(String login);
     
-    
+    void delete(String login);
 }

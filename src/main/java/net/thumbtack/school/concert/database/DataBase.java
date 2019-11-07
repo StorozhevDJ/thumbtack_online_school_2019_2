@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -32,7 +33,7 @@ public class DataBase {
 	private static Set<User> users = new HashSet<>();
 	private static BidiMap<String, Session> sessions = new DualHashBidiMap<>();
 	private static Set<Song> songs = new HashSet<>();
-	private static Set<Comment> comments = new HashSet<>();
+	private static Set<Comment> comments = new LinkedHashSet<>();
 	private static Set<Rating> ratings = new HashSet<>();
 
 	public Set<User> getUsers() {
@@ -168,7 +169,7 @@ public class DataBase {
 	 * @return
 	 */
 	public boolean deleteSession(Session session) {
-		return sessions.entrySet().removeIf(entries -> entries.getValue() == session);
+		return sessions.entrySet().removeIf(entries -> entries.getValue().equals(session));
 	}
 
 	/**

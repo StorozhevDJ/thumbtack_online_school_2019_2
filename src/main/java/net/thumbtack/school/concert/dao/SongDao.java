@@ -24,7 +24,8 @@ public interface SongDao {
      * @param author   filter for one or more author
      * @param singer   filter for singer
      * @return Song array
-     * @throws ServerException
      */
     List<Song> get(List<String> composer, List<String> author, String singer);
+
+    List<Song> get(String user);
 }

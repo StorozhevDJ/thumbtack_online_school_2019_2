@@ -18,6 +18,8 @@ public class UserDaoImpl implements UserDao {
 	public User get(String login) {
         return new DataBase().selectUser(login);
 	}
-	
 
+	public void delete(String login) {
+		new DataBase().deleteUser(login);
+	}
 }

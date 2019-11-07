@@ -10,6 +10,12 @@ public enum ServerErrorCode {
 	TOKEN_INCORRECT("Неверный идентификатор пользователя или пользователь отсутствует. "),
 	BAD_REQUEST("Не корректный запрос! %s"),
 	JSON_SYNTAX_ERROR("JSON syntax error"),
+	ADD_RATING_ERROR("Невозможно добавить новую оценку. "),
+	CHANGE_RATING_ERROR("Невозможно изменить рейтинг%s. "),
+	DELETE_RATING_ERROR("Невозможно удалить рейтинг%s. "),
+	ADD_COMMENT_ERROR("Невозможно добавить новый комментарий. "),
+	CHANGE_COMMENT_ERROR("Невозможно изменить комментарий%s. "),
+	DELETE_COMMENT_ERROR("Невозможно удалить комментарий. "),
 	OTHER_ERROR("%s");
 
 	private String errorString;

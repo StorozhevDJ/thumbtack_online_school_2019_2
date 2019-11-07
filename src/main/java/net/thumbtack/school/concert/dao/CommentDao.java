@@ -30,6 +30,22 @@ public interface CommentDao {
 	 * @return
 	 */
 	String get(String songName, String author);
+	
+	/**
+	 * Get last Comment for this song
+	 * 
+	 * @param songName
+	 * @return
+	 */
+	Comment getLast(String songName);
+	
+	/**
+	 * Update comment
+	 * 
+	 * @param comment
+	 * @return
+	 */
+	boolean update (Comment comment);
 
 	/**
 	 * Delete comment for Song

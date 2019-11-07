@@ -29,16 +29,28 @@ public class SongDaoImpl implements SongDao {
 		return new DataBase().selectSong(new Song(null, composer, author, singer, 0, null));
 	}
 
+	public List<Song> get(String user) {
+		return new DataBase().selectSong(new Song(null, null, null, null, 0, user));
+	}
+
 	public Song get(String songName, String user) {
 		Song song = new DataBase().selectSong(songName);
 		if (song == null) {
 			return null;
 		}
-		return song.getUserLogin().equals(user) ? song : null;
+		if (user != null) {
+			return song.getUserLogin().equals(user) ? song : null;
+		} else {
+			return song;
+		}
 	}
 
 	public boolean delete(Song song) {
 		return new DataBase().deleteSong(song);
+	}
+
+	public boolean update(Song song) {
+		return new DataBase().updateSong(song);
 	}
 
 }

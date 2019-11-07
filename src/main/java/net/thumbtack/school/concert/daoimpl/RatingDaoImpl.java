@@ -10,23 +10,19 @@ import net.thumbtack.school.concert.model.Rating;
 public class RatingDaoImpl implements RatingDao {
 
     public boolean add(Rating rating) {
-        new DataBase().insertRating(rating);
-        return false;
+        return new DataBase().insertRating(rating);
     }
 
     public boolean add(List<Rating> ratings) {
-        new DataBase().insertRating(new ArrayList<>(ratings));
-        return false;
+        return new DataBase().insertRating(new ArrayList<>(ratings));
     }
 
     public boolean delete(String songName, String user) {
-        new DataBase().deleteRating(songName, user);
-        return false;
+        return new DataBase().deleteRating(songName, user);
     }
 
     public boolean update(Rating rating) {
-        new DataBase().updateRating(rating);
-        return false;
+        return new DataBase().updateRating(rating);
     }
 
     public List<Rating> getRatingList(String songName) {
