@@ -20,18 +20,22 @@ public class CommentDaoImpl implements CommentDao {
 		List<Comment> com = new DataBase().selectComment(songName, author);
 		return com.isEmpty()?null:com.get(0).getComment();
 	}
+	
+	public List<Comment> getList(String songName, String author) {
+		return new DataBase().selectComment(songName, author);
+	}
 
 	public Comment getLast(String songName) {
 		List<Comment> comment = new DataBase().selectComment(songName, null);
-		if (comment.size() >= 1) {
-			return comment.get(comment.size() - 1);
-		} else {
-			return null;
-		}
+		return (comment.size() >= 1)?comment.get(comment.size() - 1):null;
 	}
 
 	public boolean update(Comment comment) {
 		return new DataBase().updateComment(comment);
+	}
+	
+	public boolean update(List<Comment> comments) {
+		return new DataBase().updateComment(comments);
 	}
 
 	public boolean delete(Comment comment) {

@@ -4,8 +4,6 @@ import java.util.List;
 
 import net.thumbtack.school.concert.dao.SongDao;
 import net.thumbtack.school.concert.database.DataBase;
-import net.thumbtack.school.concert.exception.ServerErrorCode;
-import net.thumbtack.school.concert.exception.ServerException;
 import net.thumbtack.school.concert.model.Song;
 import net.thumbtack.school.concert.model.User;
 
@@ -17,11 +15,8 @@ import net.thumbtack.school.concert.model.User;
  */
 public class SongDaoImpl implements SongDao {
 
-	public void add(List<Song> songModel, User user) throws ServerException {
+	public void add(List<Song> songModel, User user) /*throws ServerException*/ {
 		DataBase db = new DataBase();
-		if (db.selectUser(user.getLogin()) == null) {
-			throw new ServerException(ServerErrorCode.USERNAME_ALREADY_IN_USE, user.getLogin());
-		}
 		db.insertSongs(songModel); // Add new songs into the DataBase
 	}
 
@@ -48,9 +43,17 @@ public class SongDaoImpl implements SongDao {
 	public boolean delete(Song song) {
 		return new DataBase().deleteSong(song);
 	}
+	
+	public boolean delete(List<Song> songs) {
+		return new DataBase().deleteSong(songs);
+	}
 
 	public boolean update(Song song) {
 		return new DataBase().updateSong(song);
+	}
+	
+	public boolean update(List<Song> songs) {
+		return new DataBase().updateSong(songs);
 	}
 
 }

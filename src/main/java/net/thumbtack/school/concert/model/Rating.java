@@ -2,41 +2,41 @@ package net.thumbtack.school.concert.model;
 
 public class Rating {
 
-	private long rating;
-	private String songName;
-	private String user;
+    private long rating;
+    private String songName;
+    private String user;
 
-	public Rating() {
+    public Rating() {
 
-	}
+    }
 
-	public Rating(String songName, int rating, String user) {
-		setSongName(songName);
-		setRating(rating);
-		setUser(user);
-	}
+    public Rating(String songName, int rating, String user) {
+        setSongName(songName);
+        setRating(rating);
+        setUser(user);
+    }
 
-	public long getRating() {
-		return rating;
-	}
+    public long getRating() {
+        return rating;
+    }
 
-	public void setRating(int rating) {
-		this.rating = rating;
-	}
+    public void setRating(int rating) {
+        this.rating = rating;
+    }
 
-	public String getSongName() {
-		return songName;
-	}
+    public String getSongName() {
+        return songName;
+    }
 
-	public void setSongName(String songName) {
-		this.songName = songName;
-	}
+    public void setSongName(String songName) {
+        this.songName = songName;
+    }
 
-	public String getUser() {
-		return user;
-	}
+    public String getUser() {
+        return user;
+    }
 
-	public void setUser(String user) {
-		this.user = user;
-	}
+    public void setUser(String user) {
+        this.user = user;
+    }
 }
