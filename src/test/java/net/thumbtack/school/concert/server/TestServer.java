@@ -249,7 +249,7 @@ public class TestServer {
         response = server.getSongs("{\"token\":\"aeb9610c-6053-4061-bea8-d9282a42ba48\"}");
         List<GetSongsDtoResponse> r = new Gson().fromJson(response, new TypeToken<List<GetSongsDtoResponse>>() {
         }.getType());
-        assertEquals(2, r.size());
+        assertEquals(4, r.size());
 
         try {
             server.stopServer(null);
