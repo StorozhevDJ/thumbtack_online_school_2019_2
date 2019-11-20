@@ -64,11 +64,7 @@ public class RatingService {
      */
     public String changeRating(String jsonRequest) throws ServerException {
         AddRatingDtoRequest newRating = fromJsonString(jsonRequest);
-        // Find User
-        User user = new SessionDaoImpl().get(new Session(newRating.getToken()));
-        if (user == null) {
-            throw new ServerException(ServerErrorCode.TOKEN_INCORRECT);
-        }
+        User user = findUser(newRating.getToken());
         // If user added this Song
         SongDaoImpl songDaoImpl = new SongDaoImpl();
         if (songDaoImpl.get(newRating.getSongName(), user.getLogin()) != null) {
@@ -106,11 +102,7 @@ public class RatingService {
         if (delRating == null) {
             throw new ServerException(ServerErrorCode.JSON_SYNTAX_ERROR);
         }
-        // Find User
-        User user = new SessionDaoImpl().get(new Session(delRating.getToken()));
-        if (user == null) {
-            throw new ServerException(ServerErrorCode.TOKEN_INCORRECT);
-        }
+        User user = findUser(delRating.getToken());
         // If user added this Song
         SongDaoImpl songDaoImpl = new SongDaoImpl();
         if (songDaoImpl.get(delRating.getSongName(), user.getLogin()) != null) {
@@ -161,6 +153,21 @@ public class RatingService {
             throw new ServerException(ServerErrorCode.BAD_REQUEST, err.toString());
         }
         return newRating;
+    }
+
+    /**
+     * Find and check User by token
+     *
+     * @param token
+     * @return
+     * @throws ServerException
+     */
+    private User findUser(String token) throws ServerException {
+        User user = new SessionDaoImpl().get(new Session(token));
+        if (user == null) {
+            throw new ServerException(ServerErrorCode.TOKEN_INCORRECT);
+        }
+        return user;
     }
 
 }

@@ -32,11 +32,7 @@ public class CommentService {
      */
     public String addComment(String jsonRequest) throws ServerException {
         AddCommentDtoRequest newComment = fromJsonString(jsonRequest);
-        // Find and check User
-        User user = new SessionDaoImpl().get(new Session(newComment.getToken()));
-        if (user == null) {
-            throw new ServerException(ServerErrorCode.TOKEN_INCORRECT);
-        }
+        User user = findUser(newComment.getToken());
         // Find Song
         SongDaoImpl songDaoImpl = new SongDaoImpl();
         if (songDaoImpl.get(newComment.getSongName(), null) == null) {
@@ -66,11 +62,7 @@ public class CommentService {
      */
     public String changeComment(String jsonRequest) throws ServerException {
         AddCommentDtoRequest newComment = fromJsonString(jsonRequest);
-        // Find and check User
-        User user = new SessionDaoImpl().get(new Session(newComment.getToken()));
-        if (user == null) {
-            throw new ServerException(ServerErrorCode.TOKEN_INCORRECT);
-        }
+        User user = findUser(newComment.getToken());
         CommentDaoImpl commentDao = new CommentDaoImpl();
         Comment lastComment = commentDao.getLast(newComment.getSongName());
         String oldComment = commentDao.get(newComment.getSongName(), user.getLogin());
@@ -85,7 +77,8 @@ public class CommentService {
         } else {// Else change author to empty from old comment and add new comment
             lastComment = new Comment(newComment.getSongName(), "", oldComment); // Delete user from comment
             commentDao.add(lastComment); // Write to DB
-            commentDao.add(new Comment(newComment.getSongName(), user.getLogin(), newComment.getComment())); // Add new comment
+            commentDao.add(new Comment(newComment.getSongName(), user.getLogin(), newComment.getComment())); // Add new
+            // comment
         }
         return new Gson().toJson(new ErrorDtoResponse());
     }
@@ -99,11 +92,7 @@ public class CommentService {
      */
     public String disclaimComment(String jsonRequest) throws ServerException {
         AddCommentDtoRequest deleteComment = fromJsonString(jsonRequest);
-        // Find and check User
-        User user = new SessionDaoImpl().get(new Session(deleteComment.getToken()));
-        if (user == null) {
-            throw new ServerException(ServerErrorCode.TOKEN_INCORRECT);
-        }
+        User user = findUser(deleteComment.getToken());
         // Replace the author of this comment to empty
         CommentDaoImpl commentDao = new CommentDaoImpl();
         Comment comment = new Comment(deleteComment.getSongName(), user.getLogin(), null);
@@ -145,6 +134,21 @@ public class CommentService {
             throw new ServerException(ServerErrorCode.BAD_REQUEST, err.toString());
         }
         return addCommentDto;
+    }
+
+    /**
+     * Find and check User by token
+     *
+     * @param token
+     * @return
+     * @throws ServerException
+     */
+    private User findUser(String token) throws ServerException {
+        User user = new SessionDaoImpl().get(new Session(token));
+        if (user == null) {
+            throw new ServerException(ServerErrorCode.TOKEN_INCORRECT);
+        }
+        return user;
     }
 
 }

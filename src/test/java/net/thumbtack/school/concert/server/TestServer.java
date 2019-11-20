@@ -3,11 +3,14 @@ package net.thumbtack.school.concert.server;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.io.File;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -16,6 +19,13 @@ import org.junit.jupiter.api.io.TempDir;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import net.thumbtack.school.concert.dto.request.AddCommentDtoRequest;
+import net.thumbtack.school.concert.dto.request.AddRatingDtoRequest;
+import net.thumbtack.school.concert.dto.request.AddSongDtoRequest;
+import net.thumbtack.school.concert.dto.request.DeleteSongDtoRequest;
+import net.thumbtack.school.concert.dto.request.GetSongsDtoRequest;
+import net.thumbtack.school.concert.dto.request.LoginUserDtoRequest;
+import net.thumbtack.school.concert.dto.request.RegisterUserDtoRequest;
 import net.thumbtack.school.concert.dto.response.ErrorDtoResponse;
 import net.thumbtack.school.concert.dto.response.GetSongsDtoResponse;
 import net.thumbtack.school.concert.dto.response.LoginUserDtoResponse;
@@ -249,7 +259,7 @@ public class TestServer {
         response = server.getSongs("{\"token\":\"aeb9610c-6053-4061-bea8-d9282a42ba48\"}");
         List<GetSongsDtoResponse> r = new Gson().fromJson(response, new TypeToken<List<GetSongsDtoResponse>>() {
         }.getType());
-        assertEquals(4, r.size());
+        assertEquals(5, r.size());
 
         try {
             server.stopServer(null);
@@ -334,6 +344,175 @@ public class TestServer {
         assertFalse(new Gson().fromJson(response, ErrorDtoResponse.class).getError().isEmpty());
         response = server.disclaimComment("{\"songName\":\"songName10\",\"token\":\"aeb9610c-6053-4061-bea8-d9282a42ba48\"}");
         assertNull(new Gson().fromJson(response, ErrorDtoResponse.class).getError());
+
+        try {
+            server.stopServer(null);
+        } catch (ServerException e) {
+            fail(e.getServerErrorText());
+        }
+    }
+
+    @Test
+    public void testPositiveAll() {
+        Server server = new Server();
+        try {
+            server.startServer("dbfile.json");
+        } catch (ServerException e) {
+            fail(e.getServerErrorText());
+        }
+        String userLogin = "ivanov123";
+        String userPassword = "passIvanov";
+        //Register new User
+        RegisterUserDtoRequest registerUserDtoRequest = new RegisterUserDtoRequest();
+        registerUserDtoRequest.setFirstName("Иван");
+        registerUserDtoRequest.setLastName("Иванов");
+        registerUserDtoRequest.setLogin(userLogin);
+        registerUserDtoRequest.setPassword(userPassword);
+        String response = server.registerUser(new Gson().toJson(registerUserDtoRequest));
+        String token = new Gson().fromJson(response, LoginUserDtoResponse.class).getToken();
+        assertEquals(token.length(), 36);
+        //Login user
+        LoginUserDtoRequest loginUserDtoRequest = new LoginUserDtoRequest();
+        loginUserDtoRequest.setLogin(userLogin);
+        loginUserDtoRequest.setPassword(userPassword);
+        response = server.loginUser(new Gson().toJson(loginUserDtoRequest));
+        token = new Gson().fromJson(response, LoginUserDtoResponse.class).getToken();
+
+        //Get songs list
+        GetSongsDtoRequest getSongsDtoRequest = new GetSongsDtoRequest();
+        getSongsDtoRequest.setToken(token);
+        response = server.getSongs(new Gson().toJson(getSongsDtoRequest));
+        List<GetSongsDtoResponse> respList = new Gson().fromJson(response, new TypeToken<List<GetSongsDtoResponse>>() {
+        }.getType());
+        assertEquals(5, respList.size());
+        //Add filter by singer
+        getSongsDtoRequest.setSinger("singer");
+        response = server.getSongs(new Gson().toJson(getSongsDtoRequest));
+        respList = new Gson().fromJson(response, new TypeToken<List<GetSongsDtoResponse>>() {
+        }.getType());
+        assertEquals(2, respList.size());
+
+        //Add rating
+        GetSongsDtoResponse song = respList.get(0);
+        AddRatingDtoRequest addRatingDtoRequest = new AddRatingDtoRequest();
+        addRatingDtoRequest.setToken(token);
+        addRatingDtoRequest.setSongName(song.getSongName());
+        addRatingDtoRequest.setRating(1);
+        response = server.addRating(new Gson().toJson(addRatingDtoRequest));
+        assertEquals("{}", response);
+        response = server.getSongs(new Gson().toJson(getSongsDtoRequest));
+        respList = new Gson().fromJson(response, new TypeToken<List<GetSongsDtoResponse>>() {
+        }.getType());
+        assertNotEquals(song.getSongName(), respList.get(0).getSongName());
+        assertTrue(Math.abs(respList.get(1).getRating() - 3) < 0.0001);
+        //Change rating
+        addRatingDtoRequest.setRating(2);
+        response = server.changeRating(new Gson().toJson(addRatingDtoRequest));
+        assertEquals("{}", response);
+        response = server.getSongs(new Gson().toJson(getSongsDtoRequest));
+        respList = new Gson().fromJson(response, new TypeToken<List<GetSongsDtoResponse>>() {
+        }.getType());
+        assertTrue(Math.abs(respList.get(1).getRating() - 3.5) < 0.0001);
+        //Delete rating
+        response = server.deleteRating(new Gson().toJson(addRatingDtoRequest));
+        assertEquals("{}", response);
+        response = server.getSongs(new Gson().toJson(getSongsDtoRequest));
+        respList = new Gson().fromJson(response, new TypeToken<List<GetSongsDtoResponse>>() {
+        }.getType());
+        assertEquals(song.getSongName(), respList.get(0).getSongName());
+        assertTrue(Math.abs(respList.get(0).getRating() - 5) < 0.0001);
+
+        //Add new comment
+        String testComment = "Test comment";
+        AddCommentDtoRequest addCommentDtoRequest = new AddCommentDtoRequest();
+        addCommentDtoRequest.setToken(token);
+        addCommentDtoRequest.setSongName(song.getSongName());
+        addCommentDtoRequest.setComment(testComment);
+        response = server.addComment(new Gson().toJson(addCommentDtoRequest));
+        assertEquals("{}", response);
+        response = server.getSongs(new Gson().toJson(getSongsDtoRequest));
+        respList = new Gson().fromJson(response, new TypeToken<List<GetSongsDtoResponse>>() {
+        }.getType());
+        String[] comments = respList.get(0).getComents();
+        boolean err = true;
+        for (String comment : comments) {
+            if (comment.equals(testComment)) {
+                err = false;
+                break;
+            }
+        }
+        assertFalse(err);
+        //Change comment
+        int oldCommentSize = comments.length;
+        testComment = "My Test comment";
+        addCommentDtoRequest.setComment(testComment);
+        response = server.changeComment(new Gson().toJson(addCommentDtoRequest));
+        assertEquals("{}", response);
+        response = server.getSongs(new Gson().toJson(getSongsDtoRequest));
+        respList = new Gson().fromJson(response, new TypeToken<List<GetSongsDtoResponse>>() {
+        }.getType());
+        comments = respList.get(0).getComents();
+        assertEquals(oldCommentSize, comments.length);
+        err = true;
+        for (String comment : comments) {
+            if (comment.equals(testComment)) {
+                err = false;
+                break;
+            }
+        }
+        assertFalse(err);
+        //Delete comment
+        response = server.disclaimComment(new Gson().toJson(addCommentDtoRequest));
+        assertEquals("{}", response);
+        response = server.getSongs(new Gson().toJson(getSongsDtoRequest));
+        respList = new Gson().fromJson(response, new TypeToken<List<GetSongsDtoResponse>>() {
+        }.getType());
+        comments = respList.get(0).getComents();
+        assertEquals(oldCommentSize, comments.length);
+        response = server.changeComment(new Gson().toJson(addCommentDtoRequest));
+        assertNotEquals("{}", response);
+
+        //Add new Song
+        List<AddSongDtoRequest.Song> songList = new ArrayList<>();
+        songList.add(new AddSongDtoRequest().new Song("newTestSongName1", Arrays.asList("composer"), Arrays.asList("author"), "singer", 123));
+        AddSongDtoRequest addSongDtoRequest = new AddSongDtoRequest();
+        addSongDtoRequest.setToken(token);
+        addSongDtoRequest.setSong(songList);
+        response = server.addSongs(new Gson().toJson(addSongDtoRequest));
+        assertEquals("{}", response);
+        //Add more new Songs
+        songList.clear();
+        songList.add(new AddSongDtoRequest().new Song("newTestSongName2", Arrays.asList("composer"), Arrays.asList("author2", "author2"), "singer2", 222));
+        songList.add(new AddSongDtoRequest().new Song("newTestSongName3", Arrays.asList("composer2", "composer3"), Arrays.asList("author"), "singer2", 333));
+        addSongDtoRequest.setSong(songList);
+        response = server.addSongs(new Gson().toJson(addSongDtoRequest));
+        assertEquals("{}", response);
+        //Get songs (with added songs)
+        getSongsDtoRequest = new GetSongsDtoRequest();
+        getSongsDtoRequest.setToken(token);
+        response = server.getSongs(new Gson().toJson(getSongsDtoRequest));
+        respList = new Gson().fromJson(response, new TypeToken<List<GetSongsDtoResponse>>() {
+        }.getType());
+        assertEquals(5 + 3, respList.size());
+        //
+        getSongsDtoRequest.setSinger("singer");
+        response = server.getSongs(new Gson().toJson(getSongsDtoRequest));
+        respList = new Gson().fromJson(response, new TypeToken<List<GetSongsDtoResponse>>() {
+        }.getType());
+        assertEquals(2 + 1, respList.size());
+        //Delete song
+        DeleteSongDtoRequest deleteSongDtoRequest = new DeleteSongDtoRequest();
+        deleteSongDtoRequest.setToken(token);
+        deleteSongDtoRequest.setSongName("newTestSongName2");
+        response = server.deleteSong(new Gson().toJson(deleteSongDtoRequest));
+        assertEquals("{}", response);
+        //Get song list
+        getSongsDtoRequest = new GetSongsDtoRequest();
+        getSongsDtoRequest.setToken(token);
+        response = server.getSongs(new Gson().toJson(getSongsDtoRequest));
+        respList = new Gson().fromJson(response, new TypeToken<List<GetSongsDtoResponse>>() {
+        }.getType());
+        assertEquals(5 + 2, respList.size());
 
         try {
             server.stopServer(null);

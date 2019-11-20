@@ -179,7 +179,7 @@ public class TestUserService {
         assertEquals(userCnt, db.getUsers().size() + 1);
         assertEquals(sessionsCnt, db.getSessions().size() + 1);
         assertEquals(ratingCnt, db.getRatings().size() + 3);
-        assertEquals(songsCnt, db.getSongs().size() + 1);
+        assertEquals(songsCnt, db.getSongs().size() + 0);
 
         userCnt = db.getUsers().size();
         ratingCnt = db.getRatings().size();
@@ -192,7 +192,7 @@ public class TestUserService {
         }
         assertEquals(userCnt, db.getUsers().size() + 1);
         assertEquals(sessionsCnt, db.getSessions().size() + 1);
-        assertEquals(ratingCnt, db.getRatings().size() + 2);
+        assertEquals(ratingCnt, db.getRatings().size() + 3);
         assertEquals(songsCnt, db.getSongs().size() + 2);
 
         db.close();

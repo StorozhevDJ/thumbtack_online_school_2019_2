@@ -47,13 +47,7 @@ public class SongService {
     public String addSong(String jsonRequest) throws ServerException {
         // Parse jsonRequest to AddSongDtoRequest
         AddSongDtoRequest newSongs = fromJson(AddSongDtoRequest.class, jsonRequest);
-
-        // User session check
-        User user = new SessionDaoImpl().get(new Session(newSongs.getToken()));
-        if (user == null) {
-            throw new ServerException(ServerErrorCode.TOKEN_INCORRECT);
-        }
-
+        User user = findUser(newSongs.getToken());
         // Add new Song in the DB
         // Mapping data
         List<Song> songsModel = new ArrayList<>();
@@ -106,11 +100,7 @@ public class SongService {
     public String getSongs(String requestJsonString) throws ServerException {
         // Parse jsonRequest to GetSongsDtoRequest
         GetSongsDtoRequest getSongs = fromJson(GetSongsDtoRequest.class, requestJsonString);
-
-        // User session check
-        if (!new SessionDaoImpl().checkSession(new Session(getSongs.getToken()))) {
-            throw new ServerException(ServerErrorCode.TOKEN_INCORRECT);
-        }
+        findUser(getSongs.getToken());
         // Get Songs list (with filter)
         List<Song> songList = new SongDaoImpl().get(getSongs.getComposer(), getSongs.getAuthor(), getSongs.getSinger());
         //Get rating list for song list
@@ -158,19 +148,13 @@ public class SongService {
     public String deleteSong(String requestJsonString) throws ServerException {
         // Parse jsonRequest to DeleteSongDtoRequest
         DeleteSongDtoRequest deleteSongDto = fromJson(DeleteSongDtoRequest.class, requestJsonString);
-
-        // User session check
-        User user = new SessionDaoImpl().get(new Session(deleteSongDto.getToken()));
-        if (user == null) {
-            throw new ServerException(ServerErrorCode.TOKEN_INCORRECT);
-        }
+        User user = findUser(deleteSongDto.getToken());
         // Find song with this name from this user
         SongDaoImpl songDaoImpl = new SongDaoImpl();
         Song song = songDaoImpl.get(deleteSongDto.getSongName(), user.getLogin());
         if (song == null) {
             throw new ServerException(ServerErrorCode.SONG_NOT_FOUND);
         }
-
         // Delete song or rating
         RatingDaoImpl ratingDaoImpl = new RatingDaoImpl();
         List<Rating> ratingList = ratingDaoImpl.getRatingList(song.getSongName());
@@ -219,6 +203,21 @@ public class SongService {
             throw new ServerException(ServerErrorCode.BAD_REQUEST, err.toString());
         }
         return data;
+    }
+
+    /**
+     * Find and check User by token
+     *
+     * @param token
+     * @return
+     * @throws ServerException
+     */
+    private User findUser(String token) throws ServerException {
+        User user = new SessionDaoImpl().get(new Session(token));
+        if (user == null) {
+            throw new ServerException(ServerErrorCode.TOKEN_INCORRECT);
+        }
+        return user;
     }
 
 }
