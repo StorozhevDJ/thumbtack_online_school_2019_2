@@ -1,35 +1,25 @@
 package net.thumbtack.school.concert.service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
-
-import javax.validation.Validation;
-import javax.validation.Validator;
-import javax.validation.ValidatorFactory;
-
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
-
-import javax.validation.ConstraintViolation;
-
+import net.thumbtack.school.concert.dao.CommentDao;
+import net.thumbtack.school.concert.dao.RatingDao;
+import net.thumbtack.school.concert.dao.SongDao;
 import net.thumbtack.school.concert.dao.UserDao;
-import net.thumbtack.school.concert.daoimpl.CommentDaoImpl;
-import net.thumbtack.school.concert.daoimpl.RatingDaoImpl;
-import net.thumbtack.school.concert.daoimpl.SessionDaoImpl;
-import net.thumbtack.school.concert.daoimpl.SongDaoImpl;
-import net.thumbtack.school.concert.daoimpl.UserDaoImpl;
+import net.thumbtack.school.concert.daoimpl.*;
 import net.thumbtack.school.concert.dto.request.LoginUserDtoRequest;
 import net.thumbtack.school.concert.dto.request.LogoutUserDtoRequest;
 import net.thumbtack.school.concert.dto.request.RegisterUserDtoRequest;
 import net.thumbtack.school.concert.exception.ServerErrorCode;
 import net.thumbtack.school.concert.exception.ServerException;
-import net.thumbtack.school.concert.model.Comment;
-import net.thumbtack.school.concert.model.Rating;
-import net.thumbtack.school.concert.model.Session;
-import net.thumbtack.school.concert.model.Song;
-import net.thumbtack.school.concert.model.User;
+import net.thumbtack.school.concert.model.*;
+
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class UserService {
 
@@ -101,46 +91,45 @@ public class UserService {
      * @throws ServerException
      */
     public String deleteUser(String jsonRequest) throws ServerException {
+        //Parse and check JSON string
         LogoutUserDtoRequest logoutUser = fromJson(LogoutUserDtoRequest.class, jsonRequest);
-        // Find User
+        // Find User by token
         Session session = new Session(logoutUser.getToken());
         User user = new SessionDaoImpl().get(session);
         if (user == null) {
             throw new ServerException(ServerErrorCode.TOKEN_INCORRECT);
         }
         // Delete all ratings from this user
-        RatingDaoImpl ratingDaoImpl = new RatingDaoImpl();
-        ratingDaoImpl.delete(null, user.getLogin());
+        RatingDao ratingDao = new RatingDaoImpl();
+        ratingDao.delete(null, user.getLogin());
         // "Delete" all comments
-        CommentDaoImpl commentDaoImpl = new CommentDaoImpl();
-        List<Comment> commentList = commentDaoImpl.getList(null, user.getLogin());
-        for (Comment comment : commentList) {
-            comment.setAuthor("");
-        }
-        commentDaoImpl.update(commentList);
-        // Get all songs with ratings from this user
-        SongDaoImpl songDaoImpl = new SongDaoImpl();
-        List<Song> songs = songDaoImpl.get(user.getLogin());// Get all songs from this user
-        List<String> songNameList = new ArrayList<>();
-        for (Song s : songs) {
-            songNameList.add(s.getSongName());
-        }
-        List<Rating> ratingList = ratingDaoImpl.getRatingList(songNameList);
-        // Delete user from songs with ratings from other users
-        List<Song> songsToUpdate = new ArrayList<>();
-        for (Song s : songs) {
+        CommentDao commentDao = new CommentDaoImpl();
+        List<Comment> commentList = commentDao.getList(null, user.getLogin());
+        commentList.replaceAll(c -> {
+            c.setAuthor("");
+            return c;
+        });
+        commentDao.update(commentList);
+        // Get all songs from this user
+        SongDao songDao = new SongDaoImpl();
+        Map<String, Song> songs = songDao.get(user.getLogin());
+        List<String> songIdList = songs.entrySet().stream().map(Map.Entry::getKey).collect(Collectors.toList());
+        // Delete this User Login from his songs with ratings from other users
+        List<Rating> ratingList = ratingDao.getRatingList(songIdList);
+        Map<String, Song> songsToUpdate = new HashMap<>();
+        for (Map.Entry<String, Song> me : songs.entrySet()) {
             for (Rating r : ratingList) {
-                if (s.getSongName().equals(r.getSongName())) {
-                    s.setUserLogin("");
-                    songsToUpdate.add(s);
+                if (me.getKey().equals(r.getSongId())) {
+                    me.getValue().setUserLogin("");
+                    songsToUpdate.put(me.getKey(), me.getValue());
                     break;
                 }
             }
         }
-        songDaoImpl.update(songsToUpdate);
-        // Delete all songs if no ratings from other users
-        List<Song> songsToDelete = songDaoImpl.get(user.getLogin());// Get all songs from this user
-        songDaoImpl.delete(songsToDelete);
+        songDao.update(songsToUpdate);
+        // Delete songs without ratings from other users
+        Map<String, Song> songsToDelete = songDao.get(user.getLogin());// Get all songs from this user
+        songDao.delete(songsToDelete.entrySet().stream().map(Map.Entry::getKey).collect(Collectors.toList()));
         // User token delete from DB
         new SessionDaoImpl().logout(session);
         // Delete User

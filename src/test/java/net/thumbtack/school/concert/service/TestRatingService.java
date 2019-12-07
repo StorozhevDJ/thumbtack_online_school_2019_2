@@ -44,36 +44,36 @@ public class TestRatingService {
 			assertEquals(ServerErrorCode.JSON_SYNTAX_ERROR, e.getServerErrorCode());
 		}
 		try {
-			rs.addRating("{\"songName\":\"songName1011\",\"rating\":\"4\",\"token\":\"aeb9610c-6053-4061-bea8-d9282a42ba48\"}");
+			rs.addRating("{\"songId\":\"songT1111\",\"rating\":\"4\",\"token\":\"aeb9610c-6053-4061-bea8-d9282a42ba48\"}");
 			fail();
 		} catch (ServerException e) {
 			assertEquals(ServerErrorCode.ADD_RATING_ERROR, e.getServerErrorCode());
 		}
 		try {
-			rs.addRating("{\"songName\":\"songName10\",\"rating\":\"6\",\"token\":\"aeb9610c-6053-4061-bea8-d9282a42ba48\"}");
+			rs.addRating("{\"songId\":\"songT1\",\"rating\":\"6\",\"token\":\"aeb9610c-6053-4061-bea8-d9282a42ba48\"}");
 			fail();
 		} catch (ServerException e) {
 			assertEquals(ServerErrorCode.BAD_REQUEST, e.getServerErrorCode());
 		}
 		try {
-			rs.addRating("{\"songName\":\"songName10\",\"rating\":\"4\",\"token\":\"ffffffff-0000-1234-bea8-d9282a42ba48\"}");
+			rs.addRating("{\"songId\":\"songT1\",\"rating\":\"4\",\"token\":\"ffffffff-0000-1234-bea8-d9282a42ba48\"}");
 			fail();
 		} catch (ServerException e) {
 			assertEquals(ServerErrorCode.TOKEN_INCORRECT, e.getServerErrorCode());
 		}
 		try {
-			rs.addRating("{\"songName\":\"songName10\",\"rating\":\"4\",\"token\":\"aeb9610c-6053-4061-bea8-d9282a42ba48\"}");
+			rs.addRating("{\"songId\":\"songT1\",\"rating\":\"4\",\"token\":\"aeb9610c-6053-4061-bea8-d9282a42ba48\"}");
 		} catch (ServerException e) {
 			fail(e.getServerErrorText());
 		}
 		try {
-			rs.addRating("{\"songName\":\"songName10\",\"rating\":\"4\",\"token\":\"aeb9610c-6053-4061-bea8-d9282a42ba48\"}");
+			rs.addRating("{\"songId\":\"songT1\",\"rating\":\"4\",\"token\":\"aeb9610c-6053-4061-bea8-d9282a42ba48\"}");
 			fail();
 		} catch (ServerException e) {
 			assertEquals(ServerErrorCode.ADD_RATING_ERROR, e.getServerErrorCode());
 		}
 		try {
-			rs.addRating("{\"songName\":\"songName10\",\"rating\":\"3\",\"token\":\"aeb9610c-6053-4061-bea8-d9282a42ba48\"}");
+			rs.addRating("{\"songId\":\"songT1\",\"rating\":\"3\",\"token\":\"aeb9610c-6053-4061-bea8-d9282a42ba48\"}");
 			fail();
 		} catch (ServerException e) {
 			assertEquals(ServerErrorCode.ADD_RATING_ERROR, e.getServerErrorCode());
@@ -95,31 +95,31 @@ public class TestRatingService {
 		RatingService rs = new RatingService();
 		
 		try {
-			rs.changeRating("{\"songName\":\"songName10\",\"rating\":\"4\",\"token\":\"ffffffff-0000-1234-bea8-d9282a42ba48\"}");
+			rs.changeRating("{\"songId\":\"songT1\",\"rating\":\"4\",\"token\":\"ffffffff-0000-1234-bea8-d9282a42ba48\"}");
 			fail();
 		} catch (ServerException e) {
 			assertEquals(ServerErrorCode.TOKEN_INCORRECT, e.getServerErrorCode());
 		}
 		try {
-			rs.changeRating("{\"songName\":\"songName10\",\"rating\":\"3\",\"token\":\"aeb9610c-6053-4061-bea8-d9282a42ba48\"}");
+			rs.changeRating("{\"songId\":\"songT1\",\"rating\":\"3\",\"token\":\"aeb9610c-6053-4061-bea8-d9282a42ba48\"}");
 			fail();
 		} catch (ServerException e) {
 			assertEquals(ServerErrorCode.CHANGE_RATING_ERROR, e.getServerErrorCode());
 		}
 		try {
-			rs.changeRating("{\"songName\":\"songName10\",\"rating\":\"3\",\"token\":\"aeb9610c-6053-4061-bea8-d9282a42ba48\"}");
+			rs.changeRating("{\"songId\":\"songT1\",\"rating\":\"3\",\"token\":\"aeb9610c-6053-4061-bea8-d9282a42ba48\"}");
 			fail();
 		} catch (ServerException e) {
 			assertEquals(ServerErrorCode.CHANGE_RATING_ERROR, e.getServerErrorCode());
 		}
 		try {
-			rs.changeRating("{\"songName\":\"songName10\",\"rating\":\"3\",\"token\":\"bc7844a3-94be-4606-b9eb-1e5876b75eef\"}");
+			rs.changeRating("{\"songId\":\"songT1\",\"rating\":\"3\",\"token\":\"bc7844a3-94be-4606-b9eb-1e5876b75eef\"}");
 			fail();
 		} catch (ServerException e) {
 			assertEquals(ServerErrorCode.CHANGE_RATING_ERROR, e.getServerErrorCode());
 		}
 		try {
-			rs.changeRating("{\"songName\":\"songName12\",\"rating\":\"3\",\"token\":\"aeb9610c-6053-4061-bea8-d9282a42ba48\"}");
+			rs.changeRating("{\"songId\":\"songT3\",\"rating\":\"3\",\"token\":\"aeb9610c-6053-4061-bea8-d9282a42ba48\"}");
 		} catch (ServerException e) {
 			fail(e.getServerErrorText());
 		}
@@ -158,25 +158,25 @@ public class TestRatingService {
 			assertEquals(ServerErrorCode.JSON_SYNTAX_ERROR, e.getServerErrorCode());
 		}
 		try {
-			rs.deleteRating("{\"songName\":\"songName10\",\"token\":\"ffffffff-0000-1234-bea8-d9282a42ba48\"}");
+			rs.deleteRating("{\"songId\":\"songT1\",\"token\":\"ffffffff-0000-1234-bea8-d9282a42ba48\"}");
 			fail();
 		} catch (ServerException e) {
 			assertEquals(ServerErrorCode.TOKEN_INCORRECT, e.getServerErrorCode());
 		}
 		try {
-			rs.deleteRating("{\"songName\":\"songName13\",\"token\":\"aeb9610c-6053-4061-bea8-d9282a42ba48\"}");
+			rs.deleteRating("{\"songId\":\"songT4\",\"token\":\"aeb9610c-6053-4061-bea8-d9282a42ba48\"}");
 			fail();
 		} catch (ServerException e) {
 			assertEquals(ServerErrorCode.DELETE_RATING_ERROR, e.getServerErrorCode());
 		}
 		try {
-			rs.deleteRating("{\"songName\":\"songName10\",\"token\":\"aeb9610c-6053-4061-bea8-d9282a42ba48\"}");
+			rs.deleteRating("{\"songId\":\"songT1\",\"token\":\"aeb9610c-6053-4061-bea8-d9282a42ba48\"}");
 			fail();
 		} catch (ServerException e) {
 			assertEquals(ServerErrorCode.DELETE_RATING_ERROR, e.getServerErrorCode());
 		}
 		try {
-			rs.deleteRating("{\"songName\":\"songName12\",\"token\":\"aeb9610c-6053-4061-bea8-d9282a42ba48\"}");
+			rs.deleteRating("{\"songId\":\"songT3\",\"token\":\"aeb9610c-6053-4061-bea8-d9282a42ba48\"}");
 		} catch (ServerException e) {
 			fail(e.getServerErrorText());
 		}

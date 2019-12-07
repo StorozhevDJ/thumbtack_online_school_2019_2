@@ -1,8 +1,8 @@
 package net.thumbtack.school.concert.database;
 
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
@@ -13,9 +13,9 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
-
+import java.util.Map;
 import org.junit.Test;
 
 import com.google.gson.JsonSyntaxException;
@@ -72,10 +72,10 @@ public class TestDataBase {
             fail(e.getMessage());
         }
 
-        Set<User> users = db.getUsers();
+        Map<String, User> users = db.getUsers();
         assertNotNull(users);
         assertEquals(users.size(), 4);
-        User user = users.iterator().next();
+        User user = users.entrySet().iterator().next().getValue();
         assertFalse(db.insertUser(user));
         assertEquals(db.getUsers().size(), 4);
         assertEquals(user, db.selectUser(user.getLogin()));
@@ -107,7 +107,7 @@ public class TestDataBase {
         } catch (JsonSyntaxException | IOException e) {
             fail(e.getMessage());
         }
-        User user = db.getUsers().iterator().next();// new User("fn", "ln", "testlogin", "testpwd");
+        User user = db.getUsers().entrySet().iterator().next().getValue();// new User("fn", "ln", "testlogin", "testpwd");
 
         assertFalse(db.insertSession(user, session));
         assertFalse(db.insertSession(null, session));
@@ -134,56 +134,48 @@ public class TestDataBase {
         }
         int dbSongSize = db.getSongs().size();
 
-        List<Song> song = new ArrayList<>();
-        song.add(new Song("songName1", Arrays.asList("composer"), Arrays.asList("author1", "author2"), "", 25, "User"));
-        song.add(new Song("songName2", Arrays.asList("composer"), Arrays.asList("author"), "singer", 52, "User"));
-        song.add(new Song("songName3", Arrays.asList("composer2"), Arrays.asList("author1"), "singer2", 5, "User2"));
-        song.add(new Song("songName4", Arrays.asList("composer3"), Arrays.asList("author"), "singer", 150, "User2"));
+        Map<String, Song> song = new HashMap<>();
+        song.put("Song1", new Song("songName1", Arrays.asList("composer"), Arrays.asList("author1", "author2"), "", 25, "User"));
+        song.put("Song2", new Song("songName2", Arrays.asList("composer"), Arrays.asList("author"), "singer", 52, "User"));
+        song.put("Song3", new Song("songName3", Arrays.asList("composer2"), Arrays.asList("author1"), "singer2", 5, "User2"));
+        song.put("Song4", new Song("songName4", Arrays.asList("composer3"), Arrays.asList("author"), "singer", 150, "User2"));
 
         assertTrue(db.insertSongs(song));
         assertEquals(db.getSongs().size(), dbSongSize + song.size());
-        assertFalse(db.insertSongs(song));
         assertFalse(db.insertSongs(null));
-        assertFalse(db.insertSongs(new ArrayList<Song>()));
-        assertFalse(db.insertSong(null));
-        assertFalse(db.insertSong(new Song("songName1", Arrays.asList("c"), Arrays.asList("a1"), "", 25, "")));
+        assertFalse(db.insertSongs(new HashMap<String, Song>()));
+        assertFalse(db.insertSong(null, null));
 
-        assertNotNull(db.selectSong("songName1"));
-        assertEquals(db.selectSong("songName1"), song.get(0));
-        assertNull(db.selectSong("songName"));
+        assertNotNull(db.selectSong("Song1"));
+        assertEquals(db.selectSong("Song1"), song.get("Song1"));
+        assertNull(db.selectSong("songErr"));
         assertNull(db.selectSong(""));
         assertNull(db.selectSong((String) null));
-        assertEquals(db.selectSong(
-                new Song("songName1", Arrays.asList("composer"), Arrays.asList("author1", "author2"), "", 0, ""))
-                .get(0), song.get(0));
-        assertEquals(
-                db.selectSong(new Song("songName1", null, Arrays.asList("author1", "author2"), null, 0, "User")).get(0),
-                song.get(0));
-        assertEquals(db.selectSong(new Song("", Arrays.asList("composer"), null, "", 0, "")).get(0), song.get(0));
-        assertEquals(db
-                .selectSong(
-                        new Song(null, Arrays.asList("composer"), Arrays.asList("author1", "author2"), null, 0, null))
-                .get(0), song.get(0));
-        assertTrue(db.selectSong(
-                new Song("songName1", Arrays.asList("composer2"), Arrays.asList("author1", "author2"), "", 0, ""))
+        assertEquals(db.selectSong(new Song("songName1", Arrays.asList("composer"), Arrays.asList("author1", "author2"), "", 0, ""))
+                .get("Song1"), song.get("Song1"));
+        assertEquals(db.selectSong(new Song("songName1", null, Arrays.asList("author1", "author2"), null, 0, "User")).get("Song1"),
+                song.get("Song1"));
+        assertEquals(db.selectSong(new Song("", Arrays.asList("composer"), null, "", 0, "")).get("Song2"), song.get("Song2"));
+        assertEquals(db.selectSong(new Song(null, Arrays.asList("composer"), Arrays.asList("author1", "author2"), null, 0, null))
+                .get("Song1"), song.get("Song1"));
+        assertTrue(db.selectSong(new Song("songName1", Arrays.asList("composer2"), Arrays.asList("author1", "author2"), "", 0, ""))
                 .isEmpty());
-        assertEquals(db.selectSong(new Song("songName1", null, null, "", 0, "")).get(0), song.get(0));
-        assertEquals(db.selectSong(new Song("songName2", null, null, "", 0, "")).get(0), song.get(1));
+        assertEquals(db.selectSong(new Song("songName1", null, null, "", 0, "")).get("Song1"), song.get("Song1"));
+        assertEquals(db.selectSong(new Song("songName2", null, null, "", 0, "")).get("Song2"), song.get("Song2"));
         assertTrue(db.selectSong(new Song("songName1", Arrays.asList("composer"), null, "singer", 0, "")).isEmpty());
         assertTrue(db.selectSong(new Song("songName1", Arrays.asList("composer"), null, "", 0, "User2")).isEmpty());
         assertTrue(db.updateSong(new Song("songName1", Arrays.asList("composer"), Arrays.asList("author1", "author2"),
-                "", 25, "newUser")));
+                "", 25, "newUser"), "Song1"));
 
-        assertFalse(db.updateSong(new Song("NameErr", Arrays.asList("com"), Arrays.asList("author", ""), "", 25, "")));
+        assertFalse(db.updateSong(new Song("NameName1", Arrays.asList("com"), Arrays.asList("author", ""), "", 25, ""), "SongErr"));
         assertEquals(db.selectSong(new Song("", null, null, "", 0, "")).size(), db.getSongs().size());
         assertEquals(db.selectSong(new Song("", null, null, "singer", 0, "")).size(), 4);
-        assertNotEquals(db.selectSong("songName1"), song.get(0));
-        assertTrue(db.deleteSong(song.get(1)));
+        assertNotEquals(db.selectSong("Song1"), song.get("Song1"));
+        assertTrue(db.deleteSong("Song1"));
         assertEquals(db.getSongs().size(), dbSongSize + song.size() - 1);
-        assertTrue(db.updateSong(song));
-        assertTrue(db.deleteSong(song));
-        assertFalse(db.deleteSong(song));
-        assertFalse(db.updateSong(song));
+        assertTrue(db.insertSong(new Song("songName1", Arrays.asList("c"), Arrays.asList("a1"), "", 25, ""), "Song1"));
+        assertTrue(db.deleteSong("Song1"));
+        assertFalse(db.deleteSong("Song1"));
 
         db.close();
     }
@@ -213,14 +205,14 @@ public class TestDataBase {
         assertEquals(db.selectRating("", "", false).size(), ratSize + ratings.size());
         assertEquals(db.selectRating(null, "UserTest").size(), ratings.size());
         assertEquals(db.selectRating("SongName1Test", null).size(), 1);
-        List<String> songNameList = Arrays.asList("songName11", "songName10");
+        List<String> songNameList = Arrays.asList("songT1", "songT2");
         assertEquals(db.selectRating(songNameList).size(), 3);
 
         assertTrue(db.updateRating(new Rating("SongName2Test", 3, "UserTest")));
         assertFalse(db.updateRating(new Rating("SongNameTest", 3, "UserTest")));
 
-        assertTrue(db.deleteRating(ratings.get(0).getSongName(), ratings.get(0).getUser()));
-        assertFalse(db.deleteRating(ratings.get(0).getSongName(), ratings.get(0).getUser()));
+        assertTrue(db.deleteRating(ratings.get(0).getSongId(), ratings.get(0).getUser()));
+        assertFalse(db.deleteRating(ratings.get(0).getSongId(), ratings.get(0).getUser()));
         assertFalse(db.deleteRating("SongNameErr", "UserTest"));
 
         db.close();
@@ -250,16 +242,16 @@ public class TestDataBase {
         assertTrue(db.deleteComment(new Comment("SongName3Test", "UserTest", "Test comment1")));
         assertEquals(db.getComments().size(), comSize);
 
-        assertEquals(db.selectComment("").size(), comSize);
-        assertEquals(db.selectComment(null).size(), comSize);
-        assertEquals(db.selectComment("songName11").size(), 2);
+        assertEquals(comSize, db.selectComment("").size());
+        assertEquals(db.selectComment((String)null).size(), comSize);
+        assertEquals(db.selectComment("songT2").size(), 2);
 
         assertEquals(db.selectComment("", "").size(), comSize);
         assertEquals(db.selectComment(null, null).size(), comSize);
-        assertEquals(db.selectComment("songName11", null).size(), 2);
+        assertEquals(db.selectComment("songT2", null).size(), 2);
         assertEquals(db.selectComment(null, "User10").size(), 2);
 
-        assertTrue(db.updateComment(new Comment(db.selectComment("").get(0).getSongName(),
+        assertTrue(db.updateComment(new Comment(db.selectComment("").get(0).getSongId(),
                 db.selectComment("").get(0).getAuthor(), "New comment")));
         assertFalse(db.updateComment(new Comment("songNameErr", null, null)));
 

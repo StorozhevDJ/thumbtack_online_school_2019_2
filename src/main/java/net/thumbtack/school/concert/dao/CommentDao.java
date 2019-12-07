@@ -15,38 +15,38 @@ public interface CommentDao {
     boolean add(Comment comment);
 
     /**
-     * Get all comments for this songName
+     * Get all comments for this song ID
      *
-     * @param songName
+     * @param songId
      * @return
      */
-    List<Comment> get(String songName);
+    List<Comment> get(String songId);
 
     /**
-     * Get comment for this singName with the author
+     * Get comment for this sing ID with the author
      *
-     * @param songName
+     * @param songId
      * @param author
      * @return
      */
-    String get(String songName, String author);
+    String get(String songId, String author);
 
     /**
-     * Get all comment for this song name and/or author
+     * Get all comment for this song ID and/or author
      *
-     * @param songName
+     * @param songId
      * @param author
      * @return
      */
-    List<Comment> getList(String songName, String author);
+    List<Comment> getList(String songId, String author);
 
     /**
      * Get last Comment for this song
      *
-     * @param songName
+     * @param songId
      * @return
      */
-    Comment getLast(String songName);
+    Comment getLast(String songId);
 
     /**
      * Update comment
@@ -75,9 +75,9 @@ public interface CommentDao {
     /**
      * Delete comment for this songName and author
      *
-     * @param songName
+     * @param songId
      * @param author
      * @return
      */
-    boolean delete(String songName, String author);
+    boolean delete(String songId, String author);
 }

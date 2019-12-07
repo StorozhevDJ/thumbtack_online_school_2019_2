@@ -1,17 +1,11 @@
 package net.thumbtack.school.concert.daoimpl;
 
 import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 import net.thumbtack.school.concert.dao.RatingDao;
 import net.thumbtack.school.concert.database.DataBase;
 import net.thumbtack.school.concert.model.Rating;
-import net.thumbtack.school.concert.model.Song;
-import net.thumbtack.school.concert.model.User;
 
 public class RatingDaoImpl implements RatingDao {
 
@@ -25,26 +19,26 @@ public class RatingDaoImpl implements RatingDao {
 
     public boolean update(Rating rating) {
         if (((rating.getUser() != null) && (!rating.getUser().isEmpty()))
-                && ((rating.getSongName() != null) && (!rating.getSongName().isEmpty()))) {
+                && ((rating.getSongId() != null) && (!rating.getSongId().isEmpty()))) {
             return new DataBase().updateRating(rating);
         }
         return false;
     }
 
-    public List<Rating> getRatingList(String songName) {
-        return new DataBase().selectRating(songName, null);
+    public List<Rating> getRatingList(String songId) {
+        return new DataBase().selectRating(songId, null);
     }
 
-    public List<Rating> getRatingList(String songName, String user) {
-        return new DataBase().selectRating(songName, user);
+    public List<Rating> getRatingList(String songId, String user) {
+        return new DataBase().selectRating(songId, user);
     }
 
-    public List<Rating> getRatingList(List<String> songName) {
-        return new DataBase().selectRating(songName);
+    public List<Rating> getRatingList(List<String> songId) {
+        return new DataBase().selectRating(songId);
     }
 
-    public float get(String songName) {
-        List<Rating> ratingList = new DataBase().selectRating(songName, null);
+    public float get(String songId) {
+        List<Rating> ratingList = new DataBase().selectRating(songId, null);
         float rating = 0;
         for (Rating r : ratingList) {
             rating += r.getRating();
@@ -52,16 +46,12 @@ public class RatingDaoImpl implements RatingDao {
         return rating / ratingList.size();
     }
 
-    public List<Rating> get(List<Song> songs) {
-        List<String> songNameList = new ArrayList<>();
-        for (Song s : songs) {
-            songNameList.add(s.getSongName());
-        }
-        return new DataBase().selectRating(songNameList);
+    public List<Rating> get(List<String> songsIdList) {
+        return new DataBase().selectRating(songsIdList);
     }
 
-    public boolean delete(String songName, String user) {
-        return new DataBase().deleteRating(songName, user);
+    public boolean delete(String songId, String user) {
+        return new DataBase().deleteRating(songId, user);
     }
 
 }

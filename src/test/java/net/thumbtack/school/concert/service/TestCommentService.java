@@ -46,21 +46,21 @@ public class TestCommentService {
         }
         try {
             cs.addComment(
-                    "{\"songName\":\"songName1011\",\"comment\":\"TestComment\",\"token\":\"aeb9610c-6053-4061-bea8-d9282a42ba48\"}");
+                    "{\"songId\":\"songT000\",\"comment\":\"TestComment\",\"token\":\"aeb9610c-6053-4061-bea8-d9282a42ba48\"}");
             fail();
         } catch (ServerException e) {
             assertEquals(ServerErrorCode.ADD_COMMENT_ERROR, e.getServerErrorCode());
         }
         try {
             cs.addComment(
-                    "{\"songName\":\"\",\"comment\":\"TestComment\",\"token\":\"aeb9610c-6053-4061-bea8-d9282a42ba48\"}");
+                    "{\"songId\":\"\",\"comment\":\"TestComment\",\"token\":\"aeb9610c-6053-4061-bea8-d9282a42ba48\"}");
             fail();
         } catch (ServerException e) {
             assertEquals(ServerErrorCode.BAD_REQUEST, e.getServerErrorCode());
         }
         try {
             cs.addComment(
-                    "{\"songName\":\"songName14\",\"comment\":\"TestComment\",\"token\":\"ffffffff-0000-1234-bea8-d9282a42ba48\"}");
+                    "{\"songId\":\"songT5\",\"comment\":\"TestComment\",\"token\":\"ffffffff-0000-1234-bea8-d9282a42ba48\"}");
             fail();
         } catch (ServerException e) {
             assertEquals(ServerErrorCode.TOKEN_INCORRECT, e.getServerErrorCode());
@@ -68,7 +68,7 @@ public class TestCommentService {
         int comSize = db.getComments().size();
         try {
             cs.addComment(
-                    "{\"songName\":\"songName14\",\"comment\":\"TestComment\",\"token\":\"aeb9610c-6053-4061-bea8-d9282a42ba48\"}");
+                    "{\"songId\":\"songT5\",\"comment\":\"TestComment\",\"token\":\"aeb9610c-6053-4061-bea8-d9282a42ba48\"}");
         } catch (ServerException e) {
             fail(e.getServerErrorText());
         }
@@ -76,7 +76,7 @@ public class TestCommentService {
         comSize = db.getComments().size();
         try {
             cs.addComment(
-                    "{\"songName\":\"songName14\",\"comment\":\"TestComment2\",\"token\":\"aeb9610c-6053-4061-bea8-d9282a42ba48\"}");
+                    "{\"songId\":\"songT5\",\"comment\":\"TestComment2\",\"token\":\"aeb9610c-6053-4061-bea8-d9282a42ba48\"}");
         } catch (ServerException e) {
             fail(e.getServerErrorText());
         }
@@ -84,7 +84,7 @@ public class TestCommentService {
         comSize = db.getComments().size();
         try {
             cs.addComment(
-                    "{\"songName\":\"songName14\",\"comment\":\"TestComment2\",\"token\":\"bc7844a3-94be-4606-b9eb-1e5876b75eef\"}");
+                    "{\"songId\":\"songT5\",\"comment\":\"TestComment2\",\"token\":\"bc7844a3-94be-4606-b9eb-1e5876b75eef\"}");
         } catch (ServerException e) {
             fail(e.getServerErrorText());
         }
@@ -107,21 +107,21 @@ public class TestCommentService {
 
         try {
             cs.changeComment(
-                    "{\"songName\":\"songName10\",\"comment\":\"TestComment\",\"token\":\"ffffffff-0000-1234-bea8-d9282a42ba48\"}");
+                    "{\"songId\":\"songT1\",\"comment\":\"TestComment\",\"token\":\"ffffffff-0000-1234-bea8-d9282a42ba48\"}");
             fail();
         } catch (ServerException e) {
             assertEquals(ServerErrorCode.TOKEN_INCORRECT, e.getServerErrorCode());
         }
         try {
             cs.changeComment(
-                    "{\"songName\":\"songName103\",\"comment\":\"TestComment\",\"token\":\"aeb9610c-6053-4061-bea8-d9282a42ba48\"}");
+                    "{\"songId\":\"songT13\",\"comment\":\"TestComment\",\"token\":\"aeb9610c-6053-4061-bea8-d9282a42ba48\"}");
             fail();
         } catch (ServerException e) {
             assertEquals(ServerErrorCode.CHANGE_COMMENT_ERROR, e.getServerErrorCode());
         }
         try {
             cs.changeComment(
-                    "{\"songName\":\"songName11\",\"comment\":\"TestComment\",\"token\":\"aeb9610c-6053-4061-bea8-d9282a42ba48\"}");
+                    "{\"songId\":\"songT2\",\"comment\":\"TestComment\",\"token\":\"aeb9610c-6053-4061-bea8-d9282a42ba48\"}");
             fail();
         } catch (ServerException e) {
             assertEquals(ServerErrorCode.CHANGE_COMMENT_ERROR, e.getServerErrorCode());
@@ -129,7 +129,7 @@ public class TestCommentService {
         int comSize = db.getComments().size();
         try {
             cs.changeComment(
-                    "{\"songName\":\"songName11\",\"comment\":\"NewTestComment\",\"token\":\"bc7844a3-94be-4606-b9eb-1e5876b75eef\"}");
+                    "{\"songId\":\"songT2\",\"comment\":\"NewTestComment\",\"token\":\"bc7844a3-94be-4606-b9eb-1e5876b75eef\"}");
         } catch (ServerException e) {
             fail(e.getServerErrorText());
         }
@@ -137,7 +137,7 @@ public class TestCommentService {
         comSize = db.getComments().size();
         try {
             cs.changeComment(
-                    "{\"songName\":\"songName11\",\"comment\":\"NewTestComment2\",\"token\":\"bc7844a3-94be-4606-b9eb-1e5876b75eef\"}");
+                    "{\"songId\":\"songT2\",\"comment\":\"NewTestComment2\",\"token\":\"bc7844a3-94be-4606-b9eb-1e5876b75eef\"}");
         } catch (ServerException e) {
             fail(e.getServerErrorText());
         }
@@ -160,21 +160,21 @@ public class TestCommentService {
 
         try {
             cs.disclaimComment(
-                    "{\"songName\":\"songName10\",\"token\":\"ffffffff-0000-1234-bea8-d9282a42ba48\"}");
+                    "{\"songId\":\"songName10\",\"token\":\"ffffffff-0000-1234-bea8-d9282a42ba48\"}");
             fail();
         } catch (ServerException e) {
             assertEquals(ServerErrorCode.TOKEN_INCORRECT, e.getServerErrorCode());
         }
         try {
             cs.disclaimComment(
-                    "{\"songName\":\"songName103\",\"token\":\"aeb9610c-6053-4061-bea8-d9282a42ba48\"}");
+                    "{\"songId\":\"songName103\",\"token\":\"aeb9610c-6053-4061-bea8-d9282a42ba48\"}");
             fail();
         } catch (ServerException e) {
             assertEquals(ServerErrorCode.DELETE_COMMENT_ERROR, e.getServerErrorCode());
         }
         try {
             cs.disclaimComment(
-                    "{\"songName\":\"songName11\",\"token\":\"aeb9610c-6053-4061-bea8-d9282a42ba48\"}");
+                    "{\"songId\":\"songT2\",\"token\":\"aeb9610c-6053-4061-bea8-d9282a42ba48\"}");
             fail();
         } catch (ServerException e) {
             assertEquals(ServerErrorCode.DELETE_COMMENT_ERROR, e.getServerErrorCode());
@@ -182,7 +182,7 @@ public class TestCommentService {
         int comSize = db.getComments().size();
         try {
             cs.disclaimComment(
-                    "{\"songName\":\"songName11\",\"token\":\"bc7844a3-94be-4606-b9eb-1e5876b75eef\"}");
+                    "{\"songId\":\"songT2\",\"token\":\"bc7844a3-94be-4606-b9eb-1e5876b75eef\"}");
         } catch (ServerException e) {
             fail(e.getServerErrorText());
         }
@@ -190,7 +190,7 @@ public class TestCommentService {
         comSize = db.getComments().size();
         try {
             cs.disclaimComment(
-                    "{\"songName\":\"songName11\",\"token\":\"bc7844a3-94be-4606-b9eb-1e5876b75eef\"}");
+                    "{\"songId\":\"songT2\",\"token\":\"bc7844a3-94be-4606-b9eb-1e5876b75eef\"}");
         } catch (ServerException e) {
             fail(e.getServerErrorText());
         }

@@ -1,48 +1,30 @@
 package net.thumbtack.school.concert.database;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import org.apache.commons.collections4.BidiMap;
-import org.apache.commons.collections4.bidimap.DualHashBidiMap;
-
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
+import net.thumbtack.school.concert.model.*;
+import org.apache.commons.collections4.BidiMap;
+import org.apache.commons.collections4.bidimap.DualHashBidiMap;
 
-import net.thumbtack.school.concert.model.Comment;
-import net.thumbtack.school.concert.model.Rating;
-import net.thumbtack.school.concert.model.Session;
-import net.thumbtack.school.concert.model.Song;
-import net.thumbtack.school.concert.model.User;
+import java.io.*;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class DataBase {
 
-    private static Set<User> users = new HashSet<>();
+    private static Map<String, User> users = new HashMap<>();
     private static BidiMap<String, Session> sessions = new DualHashBidiMap<>();
-    private static Set<Song> songs = new HashSet<>();
+    private static Map<String, Song> songs = new HashMap<>();
     private static Set<Comment> comments = new LinkedHashSet<>();
     private static Set<Rating> ratings = new HashSet<>();
 
-    public Set<User> getUsers() {
+    public Map<String, User> getUsers() {
         return users;
     }
 
-    public void setUsers(Set<User> users) {
-        DataBase.users = users;
+    public void setUsers(Map<String, User> usersMap) {
+        DataBase.users = usersMap;
     }
 
     public Map<String, Session> getSessions() {
@@ -53,12 +35,12 @@ public class DataBase {
         DataBase.sessions = sessions;
     }
 
-    public Set<Song> getSongs() {
+    public Map<String, Song> getSongs() {
         return songs;
     }
 
-    public void setSongs(Set<Song> songs) {
-        DataBase.songs = songs;
+    public void setSongs(Map<String, Song> songsMap) {
+        DataBase.songs = songsMap;
     }
 
     public Set<Comment> getComments() {
@@ -84,15 +66,14 @@ public class DataBase {
      * @return true if user was added, false if already exist
      */
     public boolean insertUser(User user) {
-        if (selectUser(user.getLogin()) != null) {// If user login is already exist
-            return false;
+        if (!users.containsKey(user.getLogin())) {
+            return users.put(user.getLogin(), user) == null;
         }
-        return users.add(user);
+        return false;
     }
 
     /**
-     * Find User with the session Equivalent "SELECT * FROM user, session WHERE
-     * session.login=session.login AND user.login=session.login"
+     * Find User with the session
      *
      * @param session for find User
      * @return
@@ -112,9 +93,7 @@ public class DataBase {
      */
     public User selectUser(String login) {
         if ((!users.isEmpty()) && (login != null) && (!login.isEmpty())) {
-            List<User> matchingObjects = users.stream().filter(u -> u.getLogin().equals(login))
-                    .collect(Collectors.toList());
-            return matchingObjects.isEmpty() ? null : matchingObjects.iterator().next();
+            return users.get(login);
         }
         return null;
     }
@@ -126,7 +105,7 @@ public class DataBase {
      * @return
      */
     public boolean deleteUser(User user) {
-        return users.remove(user);
+        return users.remove(user.getLogin(), user);
     }
 
     /**
@@ -140,8 +119,7 @@ public class DataBase {
         if ((login == null) || (login.isEmpty())) {
             return false;
         }
-        List<User> du = users.stream().filter(u -> u.getLogin().equals(login)).collect(Collectors.toList());
-        return du.isEmpty() ? false : deleteUser(du.iterator().next());
+        return users.remove(login) != null;
     }
 
     /**
@@ -172,18 +150,14 @@ public class DataBase {
      * Insert new songs in DataBase
      *
      * @param song - List of new songs to add in DB
-     * @return true if new songs was added in DataBase, false if song exist
+     * @return true if new songs was added in DataBase
      */
-    public boolean insertSongs(List<Song> song) {
+    public boolean insertSongs(Map<String, Song> song) {
         if ((song == null) || (song.isEmpty())) {
             return false;
         }
-        for (Song s : song) {
-            if (selectSong(s.getSongName()) != null) {
-                return false;
-            }
-        }
-        return songs.addAll(song);
+        songs.putAll(song);
+        return true;
     }
 
     /**
@@ -192,29 +166,24 @@ public class DataBase {
      * @param song - new songs to add in DB
      * @return true if new song was added in DataBase, false if song exist
      */
-    public boolean insertSong(Song song) {
-        if (song == null) {
+    public boolean insertSong(Song song, String id) {
+        if ((song == null) || (id == null) || (id.isEmpty())) {
             return false;
         }
-        if (selectSong(song.getSongName()) != null) {
-            return false;
-        }
-        return songs.add(song);
+        return songs.put(id, song) == null;
     }
 
     /**
-     * Find song with name equals songName Equivalent "SELECT * FROM songs WHERE
-     * somgName=songName"
+     * Find song with id
      *
-     * @param songName
+     * @param id for finding song
      * @return Song
      */
-    public Song selectSong(String songName) {
-        if ((songName == null) || (songName.isEmpty())) {
+    public Song selectSong(String id) {
+        if ((id == null) || (id.isEmpty())) {
             return null;
         }
-        List<Song> ss = songs.stream().filter(s -> s.getSongName().equals(songName)).collect(Collectors.toList());
-        return ss.isEmpty() ? null : ss.iterator().next();
+        return songs.get(id);
     }
 
     /**
@@ -222,71 +191,61 @@ public class DataBase {
      * Singer, User
      *
      * @param song - parameters for searching songs
-     * @return Song List
+     * @return Map Songs
      */
-    public List<Song> selectSong(Song song) {
-        return songs.stream()
+    public Map<String, Song> selectSong(Song song) {
+        return songs.entrySet().stream()
                 .filter(u -> (song.getSongName() == null) || song.getSongName().isEmpty()
-                        || song.getSongName().equals(u.getSongName()))
-                .filter(u -> (song.getComposer() == null) || song.getComposer().equals(u.getComposer()))
-                .filter(u -> (song.getAuthor() == null) || song.getAuthor().equals(u.getAuthor()))
+                        || song.getSongName().equals(u.getValue().getSongName()))
+                .filter(u -> (song.getComposer() == null) || song.getComposer().equals(u.getValue().getComposer()))
+                .filter(u -> (song.getAuthor() == null) || song.getAuthor().equals(u.getValue().getAuthor()))
                 .filter(u -> (song.getSinger() == null) || song.getSinger().isEmpty()
-                        || song.getSinger().equals(u.getSinger()))
+                        || song.getSinger().equals(u.getValue().getSinger()))
                 .filter(u -> (song.getUserLogin() == null) || song.getUserLogin().isEmpty()
-                        || song.getUserLogin().equals(u.getUserLogin()))
-                .collect(Collectors.toList());
+                        || song.getUserLogin().equals(u.getValue().getUserLogin()))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 
     /**
-     * Update info for song with old name equal new name. Equivalent "UPDATE song
-     * SET * composer=composer, author=author, singer=singer, length=length,
-     * userLigin=userLogin WHERE songName=songName"
+     * Update info for song with old name equal new name.
      *
      * @param song
      * @return true if update is successful
      */
-    public boolean updateSong(Song song) {
-        if (deleteSong(selectSong(song.getSongName()))) {
-            return insertSong(song);
-        }
-        return false;
+    public boolean updateSong(Song song, String songId) {
+        return songs.replace(songId, song) != null;
     }
 
     /**
-     * Update info for songs list with old name equal this name
+     * Update info for songs list with Id
      *
-     * @param songs
-     * @return true if update is successful
+     * @param song - Map String Songs Id, Song songs
      */
-    public boolean updateSong(List<Song> songs) {
-        List<Song> songList = new ArrayList<>();
-        for (Song song : songs) {
-            songList.add(selectSong(song.getSongName()));
-        }
-        if (deleteSong(songList)) {
-            return insertSongs(songs);
-        }
-        return false;
+    public void updateSong(Map<String, Song> song) {
+        song.forEach((k, v) -> songs.replace(k, v));
     }
 
     /**
      * Delete song from DataBase
      *
-     * @param song
+     * @param id song
      * @return
      */
-    public boolean deleteSong(Song song) {
-        return songs.remove(song);
+    public boolean deleteSong(String id) {
+        return songs.remove(id) != null;
     }
 
     /**
      * Delete songs from DataBase
      *
-     * @param songList
+     * @param idList
      * @return
      */
-    public boolean deleteSong(List<Song> songList) {
-        return songs.removeAll(songList);
+    public boolean deleteSong(List<String> idList) {
+        for (String id : idList) {
+            if (songs.remove(id) == null) return false;
+        }
+        return true;
     }
 
     /**
@@ -312,42 +271,41 @@ public class DataBase {
     /**
      * Get songs rating with defined songName and/or user
      *
-     * @param songName
+     * @param songId
      * @param user
      * @return
      */
-    public List<Rating> selectRating(String songName, String user) {
+    public List<Rating> selectRating(String songId, String user) {
         return ratings.stream()
-                .filter(sn -> (songName == null) || songName.isEmpty() || songName.equals(sn.getSongName()))
+                .filter(sn -> (songId == null) || songId.isEmpty() || songId.equals(sn.getSongId()))
                 .filter(u -> (user == null) || user.isEmpty() || user.equals(u.getUser())).collect(Collectors.toList());
     }
 
     /**
      * Get rating list for list song name
      *
-     * @param songNameList
+     * @param songIdList
      * @return rating list
      */
-    public List<Rating> selectRating(List<String> songNameList) {
-        return ratings.stream()
-                .filter(sn -> songNameList.stream().anyMatch(sn.getSongName()::equals))
+    public List<Rating> selectRating(List<String> songIdList) {
+        return ratings.stream().filter(sn -> songIdList.stream().anyMatch(sn.getSongId()::equals))
                 .collect(Collectors.toList());
     }
 
     /**
      * Get sorted songs rating list with defined songName and/or user
      *
-     * @param songName
+     * @param songId
      * @param user
-     * @param desc     - true for descending sorting, false for Ascending sorting
+     * @param desc   - true for descending sorting, false for Ascending sorting
      * @return rating list
      */
-    public List<Rating> selectRating(String songName, String user, boolean desc) {
-        List<Rating> rating = new ArrayList<>(selectRating(songName, user));
+    public List<Rating> selectRating(String songId, String user, boolean desc) {
+        List<Rating> rating = new ArrayList<>(selectRating(songId, user));
         if (desc) {
-            Collections.sort(rating, Comparator.comparing(Rating::getRating).reversed());
+            rating.sort(Comparator.comparing(Rating::getRating).reversed());
         } else {
-            Collections.sort(rating, Comparator.comparing(Rating::getRating));
+            rating.sort(Comparator.comparing(Rating::getRating));
         }
         return rating;
     }
@@ -368,12 +326,12 @@ public class DataBase {
     /**
      * Delete Rating for this songName and user
      *
-     * @param songName
+     * @param songId
      * @param user
      * @return true if rating with song name and user was deleted
      */
-    public boolean deleteRating(String songName, String user) {
-        List<Rating> rating = selectRating(songName, user);
+    public boolean deleteRating(String songId, String user) {
+        List<Rating> rating = selectRating(songId, user);
         if (!rating.isEmpty()) {
             return ratings.removeAll(rating);
         }
@@ -387,7 +345,7 @@ public class DataBase {
      * @return true if rating with this song name and user was deleted
      */
     public boolean deleteRating(Rating rating) {
-        return deleteRating(rating.getSongName(), rating.getUser());
+        return deleteRating(rating.getSongId(), rating.getUser());
     }
 
     /**
@@ -413,13 +371,13 @@ public class DataBase {
     /**
      * Find and return all comments for song "songName" with author "author"
      *
-     * @param songName
+     * @param songId
      * @param author
      * @return
      */
-    public List<Comment> selectComment(String songName, String author) {
+    public List<Comment> selectComment(String songId, String author) {
         return comments.stream()
-                .filter(sn -> (songName == null) || songName.isEmpty() || songName.equals(sn.getSongName()))
+                .filter(sn -> (songId == null) || songId.isEmpty() || songId.equals(sn.getSongId()))
                 .filter(a -> (author == null) || author.isEmpty() || author.equals(a.getAuthor()))
                 .collect(Collectors.toList());
     }
@@ -427,11 +385,18 @@ public class DataBase {
     /**
      * Get all comments for songName
      *
-     * @param songName
+     * @param songId
      * @return
      */
-    public List<Comment> selectComment(String songName) {
-        return selectComment(songName, null);
+    public List<Comment> selectComment(String songId) {
+        return selectComment(songId, null);
+    }
+
+    /**
+     *
+     */
+    public List<Comment> selectComment(List<String> songId) {
+        return comments.stream().filter(c -> songId.contains(c.getSongId())).collect(Collectors.toList());
     }
 
     /**
@@ -467,7 +432,7 @@ public class DataBase {
      * @return
      */
     public boolean deleteComment(Comment comment) {
-        return deleteComment(comment.getSongName(), comment.getAuthor());
+        return deleteComment(comment.getSongId(), comment.getAuthor());
     }
 
     /**
@@ -477,22 +442,18 @@ public class DataBase {
      * @return
      */
     public boolean deleteComment(List<Comment> comment) {
-        List<Comment> commentList = new ArrayList<>();
-        for (Comment com : comment) {
-            commentList.addAll(selectComment(com.getSongName(), com.getAuthor()));
-        }
-        return comments.removeAll(commentList);
+        return comments.removeIf(comment::contains);
     }
 
     /**
      * Delete comments for this Song and User string
      *
-     * @param songName
+     * @param songId
      * @param author
      * @return
      */
-    public boolean deleteComment(String songName, String author) {
-        return comments.removeAll(selectComment(songName, author));
+    public boolean deleteComment(String songId, String author) {
+        return comments.removeAll(selectComment(songId, author));
     }
 
     /**
@@ -505,11 +466,11 @@ public class DataBase {
     public void open(String fileName) throws JsonSyntaxException, IOException {
         File dbFile = new File(fileName);
         try (BufferedReader reader = new BufferedReader(new FileReader(dbFile))) {
-            setUsers(new Gson().fromJson(reader.readLine(), new TypeToken<Set<User>>() {
+            setUsers(new Gson().fromJson(reader.readLine(), new TypeToken<DualHashBidiMap<String, User>>() {
             }.getType()));
             setSessions(new Gson().fromJson(reader.readLine(), new TypeToken<DualHashBidiMap<String, Session>>() {
             }.getType()));
-            setSongs(new Gson().fromJson(reader.readLine(), new TypeToken<Set<Song>>() {
+            setSongs(new Gson().fromJson(reader.readLine(), new TypeToken<DualHashBidiMap<String, Song>>() {
             }.getType()));
             setComments(new Gson().fromJson(reader.readLine(), new TypeToken<Set<Comment>>() {
             }.getType()));
@@ -522,9 +483,9 @@ public class DataBase {
      * Initialize DataBase with default data
      */
     public void open() {
-        setUsers(new HashSet<>());
+        setUsers(new HashMap<String, User>());
         setSessions(new DualHashBidiMap<>());
-        setSongs(new HashSet<>());
+        setSongs(new HashMap<String, Song>());
         setComments(new HashSet<>());
         setRatings(new HashSet<>());
     }
@@ -556,4 +517,6 @@ public class DataBase {
         comments.clear();
         ratings.clear();
     }
+
+
 }

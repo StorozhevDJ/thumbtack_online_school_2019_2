@@ -8,41 +8,45 @@ import net.thumbtack.school.concert.model.Comment;
 
 public class CommentDaoImpl implements CommentDao {
 
-	public boolean add(Comment comment) {
-		return new DataBase().insertComment(comment);
-	}
+    public boolean add(Comment comment) {
+        return new DataBase().insertComment(comment);
+    }
 
-	public List<Comment> get(String songName) {
-		return new DataBase().selectComment(songName, null);
-	}
+    public List<Comment> get(String songId) {
+        return new DataBase().selectComment(songId, null);
+    }
 
-	public String get(String songName, String author) {
-		List<Comment> com = new DataBase().selectComment(songName, author);
-		return com.isEmpty()?null:com.get(0).getComment();
-	}
-	
-	public List<Comment> getList(String songName, String author) {
-		return new DataBase().selectComment(songName, author);
-	}
+    public List<Comment> get(List<String> songId) {
+        return new DataBase().selectComment(songId);
+    }
 
-	public Comment getLast(String songName) {
-		List<Comment> comment = new DataBase().selectComment(songName, null);
-		return (comment.size() >= 1)?comment.get(comment.size() - 1):null;
-	}
+    public String get(String songId, String author) {
+        List<Comment> com = new DataBase().selectComment(songId, author);
+        return com.isEmpty() ? null : com.get(0).getComment();
+    }
 
-	public boolean update(Comment comment) {
-		return new DataBase().updateComment(comment);
-	}
-	
-	public boolean update(List<Comment> comments) {
-		return new DataBase().updateComment(comments);
-	}
+    public List<Comment> getList(String songId, String author) {
+        return new DataBase().selectComment(songId, author);
+    }
 
-	public boolean delete(Comment comment) {
-		return new DataBase().deleteComment(comment);
-	}
+    public Comment getLast(String songId) {
+        List<Comment> comment = new DataBase().selectComment(songId, null);
+        return (comment.size() >= 1) ? comment.get(comment.size() - 1) : null;
+    }
 
-	public boolean delete(String songName, String author) {
-		return new DataBase().deleteComment(songName, author);
-	}
+    public boolean update(Comment comment) {
+        return new DataBase().updateComment(comment);
+    }
+
+    public boolean update(List<Comment> comments) {
+        return new DataBase().updateComment(comments);
+    }
+
+    public boolean delete(Comment comment) {
+        return new DataBase().deleteComment(comment);
+    }
+
+    public boolean delete(String songId, String author) {
+        return new DataBase().deleteComment(songId, author);
+    }
 }

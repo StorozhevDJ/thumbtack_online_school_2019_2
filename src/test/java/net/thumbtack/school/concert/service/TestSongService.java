@@ -33,9 +33,9 @@ public class TestSongService {
 
         DataBase db = new DataBase();
 
-        Set<User> su = new HashSet<>();
-        su.add(new User("fname", "lname", "login", "pass"));
-        db.setUsers(su);
+        Map<String, User> mu = new HashMap<>();
+        mu.put("login", new User("fname", "lname", "login", "pass"));
+        db.setUsers(mu);
         BidiMap<String, Session> sessions = new DualHashBidiMap<>();
         sessions.put("login", new Session("fea8056a-cd2e-4d9b-8d73-c165cd135299"));
         db.setSessions(sessions);
@@ -82,11 +82,11 @@ public class TestSongService {
         GetSongsDtoRequest getSongs = new GetSongsDtoRequest();
         // getSongs.setAuthor();
         getSongs.setSinger("test Singer Д");
-        List<String> alstr2 = new ArrayList<String>();
+        List<String> alstr2 = new ArrayList<>();
         alstr2.add("testCom-poser Ф.");
         alstr2.add("test Composer2");
         getSongs.setComposer(alstr2);
-        List<String> alstr = new ArrayList<String>();
+        List<String> alstr = new ArrayList<>();
         alstr.add("test Author");
         getSongs.setAuthor(alstr);
         getSongs.setToken("fea8056a-cd2e-4d9b-8d73-c165cd135299");
@@ -191,7 +191,7 @@ public class TestSongService {
             assertEquals(ServerErrorCode.BAD_REQUEST, e.getServerErrorCode());
         }
         try {
-            ss.deleteSong("{\"songName\":\"songName13\", \"token\":\"ffffffff-0000-1111-bea8-d9282a42ba48\"}");
+            ss.deleteSong("{\"songId\":\"songT4\", \"token\":\"ffffffff-0000-1111-bea8-d9282a42ba48\"}");
             fail();
         } catch (ServerException e) {
             assertEquals(ServerErrorCode.TOKEN_INCORRECT, e.getServerErrorCode());
@@ -207,7 +207,7 @@ public class TestSongService {
         int oldRatingSize = db.getRatings().size();
         try {
             response = ss
-                    .deleteSong("{\"songName\":\"songName13\", \"token\":\"aeb9610c-6053-4061-bea8-d9282a42ba48\"}");
+                    .deleteSong("{\"songId\":\"songT4\", \"token\":\"aeb9610c-6053-4061-bea8-d9282a42ba48\"}");
         } catch (ServerException e) {
             fail(e.getServerErrorText());
         }
@@ -216,7 +216,7 @@ public class TestSongService {
         assertTrue(oldRatingSize > db.getRatings().size());
         try {
             response = ss
-                    .deleteSong("{\"songName\":\"songName13\", \"token\":\"aeb9610c-6053-4061-bea8-d9282a42ba48\"}");
+                    .deleteSong("{\"songId\":\"songT4\", \"token\":\"aeb9610c-6053-4061-bea8-d9282a42ba48\"}");
             fail();
         } catch (ServerException e) {
             assertEquals(ServerErrorCode.SONG_NOT_FOUND, e.getServerErrorCode());
@@ -225,7 +225,7 @@ public class TestSongService {
         oldRatingSize = db.getRatings().size();
         try {
             response = ss
-                    .deleteSong("{\"songName\":\"songName10\", \"token\":\"bc7844a3-94be-4606-b9eb-1e5876b75eef\"}");
+                    .deleteSong("{\"songId\":\"songT1\", \"token\":\"bc7844a3-94be-4606-b9eb-1e5876b75eef\"}");
         } catch (ServerException e) {
             fail(e.getServerErrorText());
         }

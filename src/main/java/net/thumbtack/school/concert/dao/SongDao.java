@@ -1,10 +1,10 @@
 package net.thumbtack.school.concert.dao;
 
 import java.util.List;
+import java.util.Map;
 
 import net.thumbtack.school.concert.exception.ServerException;
 import net.thumbtack.school.concert.model.Song;
-import net.thumbtack.school.concert.model.User;
 
 public interface SongDao {
 
@@ -12,10 +12,9 @@ public interface SongDao {
      * Add the Song in the DataBase
      *
      * @param songModel Song Model to add to the DataBase
-     * @param user      - User song uploader
      * @throws ServerException
      */
-    void add(List<Song> songModel, User user) /*throws ServerException*/;
+    void add(Map<String, Song> songModel);
 
     /**
      * Get all song with filter
@@ -25,7 +24,7 @@ public interface SongDao {
      * @param singer   filter for singer
      * @return Song array
      */
-    List<Song> get(List<String> composer, List<String> author, String singer);
+    Map<String, Song> get(List<String> composer, List<String> author, String singer);
 
     /**
      * Get songs list from this user
@@ -33,46 +32,47 @@ public interface SongDao {
      * @param user
      * @return
      */
-    List<Song> get(String user);
+    Map<String, Song> get(String user);
 
     /**
      * Get song from this user and/or song name
      *
-     * @param songName
+     * @param songId
      * @param user
      * @return
      */
-    Song get(String songName, String user);
+    Song get(String songId, String user);
 
     /**
      * Delete this song
      *
-     * @param song
+     * @param songId
      * @return
      */
-    boolean delete(Song song);
+    boolean delete(String songId);
 
     /**
      * Delete Song List
      *
-     * @param songs list
+     * @param songsId list
      * @return
      */
-    boolean delete(List<Song> songs);
+    boolean delete(List<String> songsId);
 
     /**
      * Update song
      *
      * @param song
+     * @param songId
      * @return
      */
-    boolean update(Song song);
+    boolean update(Song song, String songId);
 
     /**
      * Update song list
      *
-     * @param songs
+     * @param songs - map
      * @return
      */
-    boolean update(List<Song> songs);
+    void update(Map<String, Song> songs);
 }

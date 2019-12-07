@@ -10,6 +10,8 @@ import javax.validation.ValidatorFactory;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 
+import net.thumbtack.school.concert.dao.RatingDao;
+import net.thumbtack.school.concert.dao.SongDao;
 import net.thumbtack.school.concert.daoimpl.RatingDaoImpl;
 import net.thumbtack.school.concert.daoimpl.SessionDaoImpl;
 import net.thumbtack.school.concert.daoimpl.SongDaoImpl;
@@ -38,8 +40,8 @@ public class RatingService {
             throw new ServerException(ServerErrorCode.TOKEN_INCORRECT);
         }
         // Find Ratings for this song
-        RatingDaoImpl ratingDaoImpl = new RatingDaoImpl();
-        List<Rating> ratingList = ratingDaoImpl.getRatingList(newRating.getSongName());
+        RatingDao ratingDao = new RatingDaoImpl();
+        List<Rating> ratingList = ratingDao.getRatingList(newRating.getSongId());
         if (ratingList.isEmpty()) {
             throw new ServerException(ServerErrorCode.ADD_RATING_ERROR);
         }
@@ -50,7 +52,7 @@ public class RatingService {
             }
         }
         // Add new Rating in to DataBase
-        ratingDaoImpl.add(new Rating(newRating.getSongName(), newRating.getRating(), user.getLogin()));
+        ratingDao.add(new Rating(newRating.getSongId(), newRating.getRating(), user.getLogin()));
 
         return new Gson().toJson(new ErrorDtoResponse());
     }
@@ -66,17 +68,17 @@ public class RatingService {
         AddRatingDtoRequest newRating = fromJsonString(jsonRequest);
         User user = findUser(newRating.getToken());
         // If user added this Song
-        SongDaoImpl songDaoImpl = new SongDaoImpl();
-        if (songDaoImpl.get(newRating.getSongName(), user.getLogin()) != null) {
+        SongDao songDao = new SongDaoImpl();
+        if (songDao.get(newRating.getSongId(), user.getLogin()) != null) {
             throw new ServerException(ServerErrorCode.CHANGE_RATING_ERROR, " своей песни");
         }
         // Find Ratings for this song
-        RatingDaoImpl ratingDaoImpl = new RatingDaoImpl();
-        List<Rating> ratingList = ratingDaoImpl.getRatingList(newRating.getSongName());
+        RatingDao ratingDao = new RatingDaoImpl();
+        List<Rating> ratingList = ratingDao.getRatingList(newRating.getSongId());
         // Find and change Rating from this User
         for (Rating rating : ratingList) {
             if (rating.getUser().equals(user.getLogin())) {
-                ratingDaoImpl.update(new Rating(newRating.getSongName(), newRating.getRating(), user.getLogin()));
+                ratingDao.update(new Rating(newRating.getSongId(), newRating.getRating(), user.getLogin()));
                 return new Gson().toJson(new ErrorDtoResponse());
             }
         }
@@ -104,17 +106,17 @@ public class RatingService {
         }
         User user = findUser(delRating.getToken());
         // If user added this Song
-        SongDaoImpl songDaoImpl = new SongDaoImpl();
-        if (songDaoImpl.get(delRating.getSongName(), user.getLogin()) != null) {
+        SongDao songDao = new SongDaoImpl();
+        if (songDao.get(delRating.getSongId(), user.getLogin()) != null) {
             throw new ServerException(ServerErrorCode.DELETE_RATING_ERROR, " своей песни");
         }
         // Find Ratings for this song
-        RatingDaoImpl ratingDaoImpl = new RatingDaoImpl();
-        List<Rating> ratingList = ratingDaoImpl.getRatingList(delRating.getSongName());
+        RatingDao ratingDao = new RatingDaoImpl();
+        List<Rating> ratingList = ratingDao.getRatingList(delRating.getSongId());
         // Find and change Rating from this User
         for (Rating rating : ratingList) {
             if (rating.getUser().equals(user.getLogin())) {
-                ratingDaoImpl.delete(delRating.getSongName(), user.getLogin());
+                ratingDao.delete(delRating.getSongId(), user.getLogin());
                 return new Gson().toJson(new ErrorDtoResponse());
             }
         }

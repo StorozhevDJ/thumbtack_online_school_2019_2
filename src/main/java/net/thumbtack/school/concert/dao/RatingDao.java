@@ -3,7 +3,6 @@ package net.thumbtack.school.concert.dao;
 import java.util.List;
 
 import net.thumbtack.school.concert.model.Rating;
-import net.thumbtack.school.concert.model.Song;
 
 public interface RatingDao {
 
@@ -32,45 +31,51 @@ public interface RatingDao {
     boolean update(Rating rating);
 
     /**
-     * Get rating List for songName
+     * Get rating List for song ID
      *
-     * @param songName
+     * @param songId
      * @return
      */
-    List<Rating> getRatingList(String songName);
+    List<Rating> getRatingList(String songId);
 
     /**
-     * Get rating List for songName and user
+     * Get rating List for song ID and user
      *
-     * @param songName
+     * @param songId
      * @return
      */
-    List<Rating> getRatingList(String songName, String user);
+    List<Rating> getRatingList(String songId, String user);
 
     /**
-     * Get rating list for list of song name
+     * Get rating list for list of song ID
      *
-     * @param songName
+     * @param songId
      * @return
      */
-    List<Rating> getRatingList(List<String> songName);
+    List<Rating> getRatingList(List<String> songId);
 
     /**
-     * Get an average rating for all rating of the Song with name songname
+     * Get an average rating for all rating of the Song with song ID
      *
-     * @param songName
+     * @param songId
      * @return float - average rating
      */
-    float get(String songName);
-
-    List<Rating> get(List<Song> songs);
+    float get(String songId);
 
     /**
-     * Delete Rating with Song Name and User Login from DB
+     * <i>Get an average rating</i> for all rating of the Song with song ID
      *
-     * @param songName
+     * @param songsIdList
+     * @return float - average rating
+     */
+    List<Rating> get(List<String> songsIdList);
+
+    /**
+     * <tt>Delete</tt> Rating with Song Name and User Login from DB
+     *
+     * @param songId
      * @param user
      * @return <tt>true</tt> if this rating did not already contain in db
      */
-    boolean delete(String songName, String user);
+    boolean delete(String songId, String user);
 }

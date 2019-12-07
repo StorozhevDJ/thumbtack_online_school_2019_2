@@ -3,10 +3,12 @@ package net.thumbtack.school.concert.service;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
@@ -16,6 +18,8 @@ import javax.validation.ValidatorFactory;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 
+import net.thumbtack.school.concert.dao.RatingDao;
+import net.thumbtack.school.concert.dao.SongDao;
 import net.thumbtack.school.concert.daoimpl.CommentDaoImpl;
 import net.thumbtack.school.concert.daoimpl.RatingDaoImpl;
 import net.thumbtack.school.concert.daoimpl.SessionDaoImpl;
@@ -50,15 +54,16 @@ public class SongService {
         User user = findUser(newSongs.getToken());
         // Add new Song in the DB
         // Mapping data
-        List<Song> songsModel = new ArrayList<>();
+        Map<String, Song> songsModel = new HashMap<>();
         List<Rating> ratingModel = new ArrayList<>();
         for (AddSongDtoRequest.Song song : newSongs.getSong()) {
-            songsModel.add(new Song(song.getSongName(), song.getComposer(), song.getAuthor(), song.getSinger(),
+            String songId = UUID.randomUUID().toString();
+            songsModel.put(songId, new Song(song.getSongName(), song.getComposer(), song.getAuthor(), song.getSinger(),
                     song.getLength(), user.getLogin()));
-            ratingModel.add(new Rating(song.getSongName(), 5, user.getLogin()));
+            ratingModel.add(new Rating(songId, 5, user.getLogin()));
         }
 
-        new SongDaoImpl().add(songsModel, user); // Insert songs into the DataBase
+        new SongDaoImpl().add(songsModel); // Insert songs into the DataBase
         new RatingDaoImpl().add(ratingModel);// Add default rating
 
         return new Gson().toJson(new ErrorDtoResponse());
@@ -102,39 +107,46 @@ public class SongService {
         GetSongsDtoRequest getSongs = fromJson(GetSongsDtoRequest.class, requestJsonString);
         findUser(getSongs.getToken());
         // Get Songs list (with filter)
-        List<Song> songList = new SongDaoImpl().get(getSongs.getComposer(), getSongs.getAuthor(), getSongs.getSinger());
-        //Get rating list for song list
-        List<Rating> ratingList = new RatingDaoImpl().get(songList);
+        Map<String, Song> songList = new SongDaoImpl().get(getSongs.getComposer(), getSongs.getAuthor(), getSongs.getSinger());
+        List<String> songIdList = songList.entrySet().stream().map(Map.Entry::getKey).collect(Collectors.toList());
+        //Get rating list for song Id list
+        List<Rating> ratingList = new RatingDaoImpl().get(songIdList);
+        //Get all comments for found songs
+        List<Comment> commentsList = new CommentDaoImpl().get(songIdList);
+
         //Calculate average ratings for song
-        Map<Song, Float> ratingSongMap = new HashMap<>();
-        for (Song s : songList) {
-            Long sumOdd = ratingList.stream().filter(r -> r.getSongName().equals(s.getSongName())).mapToLong(ob -> (ob.getRating())).reduce(0, (a, b) -> a + b);
-            Long cnt = ratingList.stream().filter(r -> r.getSongName().equals(s.getSongName())).count();
-            float ratAvg = (float) sumOdd / (float) cnt;
-            ratingSongMap.put(s, ratAvg);
+        Map<String, Float> ratingSongMap = new HashMap<>();
+        for (Map.Entry<String, Song> me : songList.entrySet()) {
+            Long sumOdd = ratingList.stream().filter(r -> r.getSongId().equals(me.getKey())).mapToLong(Rating::getRating).reduce(0, Long::sum);
+            Long cnt = ratingList.stream().filter(r -> r.getSongId().equals(me.getKey())).count();
+            float ratAvg = (float) sumOdd / (float) (cnt > 0 ? cnt : 1);
+            ratingSongMap.put(me.getKey(), ratAvg);
         }
         // Sorting rating Map
-        Map<Song, Float> sortedRatingMap = ratingSongMap.entrySet().stream()
+        Map<String, Float> sortedRatingMap = ratingSongMap.entrySet().stream()
                 .sorted(Collections.reverseOrder(Map.Entry.comparingByValue())).collect(Collectors.toMap(
                         Map.Entry::getKey, Map.Entry::getValue, (oldValue, newValue) -> oldValue, LinkedHashMap::new));
+
         // Add Songs with rating and comments into GetSongsDtoResponse List
         List<GetSongsDtoResponse> respList = new ArrayList<>();
         int time = 0;
-        for (Map.Entry<Song, Float> entry : sortedRatingMap.entrySet()) {
-            if (time + entry.getKey().getLength() < 60 * 60) {
-                time += entry.getKey().getLength() + 10;
-                List<Comment> commentsList = new CommentDaoImpl().get(entry.getKey().getSongName());
-                List<String> commentsStringList = new ArrayList<>();
-                for (Comment comment : commentsList) {
-                    commentsStringList.add(comment.getComment());
-                }
-                respList.add(new GetSongsDtoResponse(entry.getKey().getSongName(),
-                        entry.getKey().getComposer().toArray(new String[0]),
-                        entry.getKey().getAuthor().toArray(new String[0]), entry.getKey().getSinger(),
-                        entry.getKey().getUserLogin(), entry.getValue(), commentsStringList.toArray(new String[0])));
+        for (Map.Entry<String, Float> entry : sortedRatingMap.entrySet()) {
+            Song song = songList.get(entry.getKey());
+            if (time + song.getLength() < 60 * 60) {
+                time += song.getLength() + 10;
+                List<String> songCommentsList = commentsList.stream().
+                        filter(s -> s.getSongId().equals(entry.getKey())).
+                        map(Comment::getComment).
+                        collect(Collectors.toList());
+
+                // Making a concert list
+                respList.add(new GetSongsDtoResponse(song.getSongName(),
+                        song.getComposer().stream().toArray(String[]::new),
+                        song.getAuthor().stream().toArray(String[]::new), song.getSinger(),
+                        song.getUserLogin(), entry.getValue().floatValue(),
+                        songCommentsList.stream().toArray(String[]::new), entry.getKey()));
             }
         }
-
         return new Gson().toJson(respList);
     }
 
@@ -150,21 +162,22 @@ public class SongService {
         DeleteSongDtoRequest deleteSongDto = fromJson(DeleteSongDtoRequest.class, requestJsonString);
         User user = findUser(deleteSongDto.getToken());
         // Find song with this name from this user
-        SongDaoImpl songDaoImpl = new SongDaoImpl();
-        Song song = songDaoImpl.get(deleteSongDto.getSongName(), user.getLogin());
+        SongDao songDao = new SongDaoImpl();
+        String songId = deleteSongDto.getSongId();
+        Song song = songDao.get(songId, user.getLogin());
         if (song == null) {
             throw new ServerException(ServerErrorCode.SONG_NOT_FOUND);
         }
         // Delete song or rating
-        RatingDaoImpl ratingDaoImpl = new RatingDaoImpl();
-        List<Rating> ratingList = ratingDaoImpl.getRatingList(song.getSongName());
+        RatingDao ratingDao = new RatingDaoImpl();
+        List<Rating> ratingList = ratingDao.getRatingList(songId);
         if (ratingList.size() == 1) {// If there are ratings from other users, then delete rating
-            songDaoImpl.delete(song);
+            songDao.delete(songId);
         } else {
             song.setUserLogin("");
-            songDaoImpl.update(song);
+            songDao.update(song, songId);
         }
-        ratingDaoImpl.delete(song.getSongName(), user.getLogin());
+        ratingDao.delete(songId, user.getLogin());
 
         return new Gson().toJson(new ErrorDtoResponse());
     }
@@ -197,7 +210,6 @@ public class SongService {
         if (!violations.isEmpty()) {
             StringBuilder err = new StringBuilder();
             for (ConstraintViolation<T> cv : violations) {
-                // System.err.println(cv.getMessage());
                 err.append(cv.getMessage());
             }
             throw new ServerException(ServerErrorCode.BAD_REQUEST, err.toString());

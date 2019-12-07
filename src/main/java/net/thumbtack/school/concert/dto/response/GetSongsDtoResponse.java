@@ -8,13 +8,14 @@ public class GetSongsDtoResponse {
     private String userName; // Имя пользователя предложившего песню
     private float rating; // Средняя оценка песни
     private String[] coments; // Все комментарии к этому предложению
+    private String songId;
 
     public GetSongsDtoResponse() {
 
     }
 
     public GetSongsDtoResponse(String songName, String[] composer, String[] author, String singer, String userName,
-                               float rating, String[] comments) {
+                               float rating, String[] comments, String songId) {
         setSongName(songName);
         setComposer(composer);
         setAuthor(author);
@@ -22,6 +23,7 @@ public class GetSongsDtoResponse {
         setUserName(userName);
         setRating(rating);
         setComents(comments);
+        setSongId(songId);
     }
 
     public String getSongName() {
@@ -79,4 +81,12 @@ public class GetSongsDtoResponse {
     public void setComents(String[] coments) {
         this.coments = coments;
     }
+
+	public String getSongId() {
+		return songId;
+	}
+
+	public void setSongId(String songId) {
+		this.songId = songId;
+	}
 }

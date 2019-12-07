@@ -10,6 +10,8 @@ import javax.validation.ValidatorFactory;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 
+import net.thumbtack.school.concert.dao.CommentDao;
+import net.thumbtack.school.concert.dao.SongDao;
 import net.thumbtack.school.concert.daoimpl.CommentDaoImpl;
 import net.thumbtack.school.concert.daoimpl.SessionDaoImpl;
 import net.thumbtack.school.concert.daoimpl.SongDaoImpl;
@@ -34,20 +36,20 @@ public class CommentService {
         AddCommentDtoRequest newComment = fromJsonString(jsonRequest);
         User user = findUser(newComment.getToken());
         // Find Song
-        SongDaoImpl songDaoImpl = new SongDaoImpl();
-        if (songDaoImpl.get(newComment.getSongName(), null) == null) {
+        SongDao songDao = new SongDaoImpl();
+        if (songDao.get(newComment.getSongId(), null) == null) {
             throw new ServerException(ServerErrorCode.ADD_COMMENT_ERROR);
         }
         // Find last Comment
-        CommentDaoImpl commentDao = new CommentDaoImpl();
-        Comment comment = commentDao.getLast(newComment.getSongName());
+        CommentDao commentDao = new CommentDaoImpl();
+        Comment comment = commentDao.getLast(newComment.getSongId());
         // If this Comment from this author, then replace this comment
         if ((comment != null) && comment.getAuthor().equals(user.getLogin())) {
             comment.setComment(newComment.getComment());
             commentDao.update(comment);
         } else {
             // Else add new Comments for this song
-            commentDao.add(new Comment(newComment.getSongName(), user.getLogin(), newComment.getComment()));
+            commentDao.add(new Comment(newComment.getSongId(), user.getLogin(), newComment.getComment()));
         }
 
         return new Gson().toJson(new ErrorDtoResponse());
@@ -63,21 +65,21 @@ public class CommentService {
     public String changeComment(String jsonRequest) throws ServerException {
         AddCommentDtoRequest newComment = fromJsonString(jsonRequest);
         User user = findUser(newComment.getToken());
-        CommentDaoImpl commentDao = new CommentDaoImpl();
-        Comment lastComment = commentDao.getLast(newComment.getSongName());
-        String oldComment = commentDao.get(newComment.getSongName(), user.getLogin());
+        CommentDao commentDao = new CommentDaoImpl();
+        Comment lastComment = commentDao.getLast(newComment.getSongId());
+        String oldComment = commentDao.get(newComment.getSongId(), user.getLogin());
         if (oldComment == null) {
             throw new ServerException(ServerErrorCode.CHANGE_COMMENT_ERROR, " , песня или комментарий не найдены");
         }
         // If the last Comment is from this user, then replace this comment
-        commentDao.delete(newComment.getSongName(), user.getLogin());// Delete old comment from DB
+        commentDao.delete(newComment.getSongId(), user.getLogin());// Delete old comment from DB
         if (lastComment.getAuthor().equals(user.getLogin())) {
             lastComment.setComment(newComment.getComment()); // Update text comment
             commentDao.add(lastComment); // Write to DB
         } else {// Else change author to empty from old comment and add new comment
-            lastComment = new Comment(newComment.getSongName(), "", oldComment); // Delete user from comment
+            lastComment = new Comment(newComment.getSongId(), "", oldComment); // Delete user from comment
             commentDao.add(lastComment); // Write to DB
-            commentDao.add(new Comment(newComment.getSongName(), user.getLogin(), newComment.getComment())); // Add new
+            commentDao.add(new Comment(newComment.getSongId(), user.getLogin(), newComment.getComment())); // Add new
             // comment
         }
         return new Gson().toJson(new ErrorDtoResponse());
@@ -94,8 +96,8 @@ public class CommentService {
         AddCommentDtoRequest deleteComment = fromJsonString(jsonRequest);
         User user = findUser(deleteComment.getToken());
         // Replace the author of this comment to empty
-        CommentDaoImpl commentDao = new CommentDaoImpl();
-        Comment comment = new Comment(deleteComment.getSongName(), user.getLogin(), null);
+        CommentDao commentDao = new CommentDaoImpl();
+        Comment comment = new Comment(deleteComment.getSongId(), user.getLogin(), null);
         if (commentDao.update(comment)) {
             return new Gson().toJson(new ErrorDtoResponse());
         }
