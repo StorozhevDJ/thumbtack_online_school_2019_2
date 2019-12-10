@@ -156,20 +156,20 @@ public class RatingService {
         }
         return newRating;
     }
-
+    
     /**
-     * Find and check User by token
-     *
-     * @param token
-     * @return
-     * @throws ServerException
-     */
-    private User findUser(String token) throws ServerException {
-        User user = new SessionDaoImpl().get(new Session(token));
-        if (user == null) {
-            throw new ServerException(ServerErrorCode.TOKEN_INCORRECT);
-        }
-        return user;
-    }
+	 * Find and check User by token
+	 * 
+	 * @param token
+	 * @return
+	 * @throws ServerException
+	 */
+	private User findUser(String token) throws ServerException {
+		User user = new SessionDaoImpl().get(new Session(token));
+		if (user == null) {
+			throw new ServerException(ServerErrorCode.TOKEN_INCORRECT);
+		}
+		return user;
+	}
 
 }

@@ -82,11 +82,11 @@ public class TestSongService {
         GetSongsDtoRequest getSongs = new GetSongsDtoRequest();
         // getSongs.setAuthor();
         getSongs.setSinger("test Singer Д");
-        List<String> alstr2 = new ArrayList<>();
+        List<String> alstr2 = new ArrayList<String>();
         alstr2.add("testCom-poser Ф.");
         alstr2.add("test Composer2");
         getSongs.setComposer(alstr2);
-        List<String> alstr = new ArrayList<>();
+        List<String> alstr = new ArrayList<String>();
         alstr.add("test Author");
         getSongs.setAuthor(alstr);
         getSongs.setToken("fea8056a-cd2e-4d9b-8d73-c165cd135299");
@@ -159,6 +159,25 @@ public class TestSongService {
         respList = new Gson().fromJson(result, new TypeToken<List<GetSongsDtoResponse>>() {
         }.getType());
         assertFalse(respList.isEmpty());
+    }
+    
+    @Test
+    public void testGetAllSongList() {
+        DataBase db = new DataBase();
+        try {
+            db.open("dbfile.json");
+        } catch (JsonSyntaxException | IOException e) {
+            fail(e.getMessage());
+        }
+        String result = new String();
+        try {
+            result = new SongService().getAllSongs("{\"token\":\"aeb9610c-6053-4061-bea8-d9282a42ba48\"}");
+        } catch (ServerException e) {
+            fail(e.getServerErrorText());
+        }
+        List<GetSongsDtoResponse> respList = new Gson().fromJson(result, new TypeToken<List<GetSongsDtoResponse>>() {
+        }.getType());
+        assertEquals(6, respList.size());
     }
 
     @Test

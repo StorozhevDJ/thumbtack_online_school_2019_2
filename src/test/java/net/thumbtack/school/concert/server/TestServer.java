@@ -268,6 +268,29 @@ public class TestServer {
             fail(e.getServerErrorText());
         }
     }
+    
+    @Test
+    public void testGetAllSong() {
+        Server server = new Server();
+        try {
+            server.startServer("dbfile.json");
+        } catch (ServerException e) {
+            fail(e.getServerErrorText());
+        }
+
+        String response = server.getAllSongs("{\"token\":\"ffffffff-6053-4061-bea8-d9282a42ba48\"}");
+        assertFalse(new Gson().fromJson(response, ErrorDtoResponse.class).getError().isEmpty());
+        response = server.getAllSongs("{\"token\":\"aeb9610c-6053-4061-bea8-d9282a42ba48\"}");
+        List<GetSongsDtoResponse> r = new Gson().fromJson(response, new TypeToken<List<GetSongsDtoResponse>>() {
+        }.getType());
+        assertEquals(6, r.size());
+
+        try {
+            server.stopServer(null);
+        } catch (ServerException e) {
+            fail(e.getServerErrorText());
+        }
+    }
 
     @Test
     public void testDeleteSong() {
@@ -497,7 +520,7 @@ public class TestServer {
         String songId = respList.stream().
         		filter(s -> s.getUserName().equals(userLogin)).
         		filter(s -> s.getSongName().equals("newTestSongName2")).
-        		map(GetSongsDtoResponse::getSongId).
+        		map(s -> s.getSongId()).
         		collect(Collectors.toList()).get(0);
         deleteSongDtoRequest.setSongId(songId);
         response = server.deleteSong(new Gson().toJson(deleteSongDtoRequest));

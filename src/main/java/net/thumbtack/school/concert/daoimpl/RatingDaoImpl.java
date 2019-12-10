@@ -2,7 +2,6 @@ package net.thumbtack.school.concert.daoimpl;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import net.thumbtack.school.concert.dao.RatingDao;
 import net.thumbtack.school.concert.database.DataBase;
 import net.thumbtack.school.concert.model.Rating;

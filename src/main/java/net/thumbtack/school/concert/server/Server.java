@@ -229,6 +229,17 @@ public class Server {
             return jsonError(e);
         }
     }
+    
+    public String getAllSongs(String jsonRequest) {
+        if (!isServerStarted()) {
+            return jsonError(new ServerException(ServerErrorCode.SERVER_NOT_STARTED));
+        }
+        try {
+            return songService.getAllSongs(jsonRequest);
+        } catch (ServerException e) {
+            return jsonError(e);
+        }
+    }
 
     /**
      * Delete Song with Song Name
