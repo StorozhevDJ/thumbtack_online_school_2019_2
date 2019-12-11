@@ -116,17 +116,7 @@ public class SongService {
 		List<Comment> commentsList = new CommentDaoImpl().get(songIdList);
 
 		// Calculate average ratings for song
-		Map<String, Float> ratingSongMap = new HashMap<>();
-		Iterator<Map.Entry<String, Song>> iterator = songList.entrySet().iterator();
-		while (iterator.hasNext()) {
-			Map.Entry<String, Song> me = iterator.next();
-
-			Long sumOdd = ratingList.stream().filter(r -> r.getSongId().equals(me.getKey()))
-					.mapToLong(ob -> (ob.getRating())).reduce(0, (a, b) -> a + b);
-			Long cnt = ratingList.stream().filter(r -> r.getSongId().equals(me.getKey())).count();
-			float ratAvg = (float) sumOdd / (float) (cnt > 0 ? cnt : 1);
-			ratingSongMap.put(me.getKey(), ratAvg);
-		}
+		Map<String, Float> ratingSongMap = calculateAvgRating(songList, ratingList);// new HashMap<>();
 		// Sorting rating Map
 		Map<String, Float> sortedRatingMap = ratingSongMap.entrySet().stream()
 				.sorted(Collections.reverseOrder(Map.Entry.comparingByValue())).collect(Collectors.toMap(
@@ -172,16 +162,7 @@ public class SongService {
 		List<Comment> commentsList = new CommentDaoImpl().get((String) null);
 
 		// Calculate average ratings for song
-		Map<String, Float> ratingSongMap = new HashMap<>();
-		Iterator<Map.Entry<String, Song>> iterator = songList.entrySet().iterator();
-		while (iterator.hasNext()) {
-			Map.Entry<String, Song> me = iterator.next();
-			Long sumOdd = ratingList.stream().filter(r -> r.getSongId().equals(me.getKey()))
-					.mapToLong(ob -> (ob.getRating())).reduce(0, (a, b) -> a + b);
-			Long cnt = ratingList.stream().filter(r -> r.getSongId().equals(me.getKey())).count();
-			float ratAvg = (float) sumOdd / (float) (cnt > 0 ? cnt : 1);
-			ratingSongMap.put(me.getKey(), ratAvg);
-		}
+		Map<String, Float> ratingSongMap = calculateAvgRating(songList, ratingList);// new HashMap<>();
 
 		// Add Songs with rating and comments into GetSongsDtoResponse List
 		List<GetSongsDtoResponse> respList = new ArrayList<>();
@@ -277,6 +258,27 @@ public class SongService {
 			throw new ServerException(ServerErrorCode.TOKEN_INCORRECT);
 		}
 		return user;
+	}
+
+	/**
+	 * Calculate average ratings for song
+	 * 
+	 * @param songList
+	 * @param ratingList
+	 * @return ratingSongMap - Map<String, Float>
+	 */
+	private Map<String, Float> calculateAvgRating(Map<String, Song> songList, List<Rating> ratingList) {
+		Map<String, Float> ratingSongMap = new HashMap<>();
+		Iterator<Map.Entry<String, Song>> iterator = songList.entrySet().iterator();
+		while (iterator.hasNext()) {
+			Map.Entry<String, Song> me = iterator.next();
+			Long sumOdd = ratingList.stream().filter(r -> r.getSongId().equals(me.getKey()))
+					.mapToLong(ob -> (ob.getRating())).reduce(0, (a, b) -> a + b);
+			Long cnt = ratingList.stream().filter(r -> r.getSongId().equals(me.getKey())).count();
+			float ratAvg = (float) sumOdd / (float) (cnt > 0 ? cnt : 1);
+			ratingSongMap.put(me.getKey(), ratAvg);
+		}
+		return ratingSongMap;
 	}
 
 }
