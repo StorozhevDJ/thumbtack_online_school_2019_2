@@ -110,7 +110,7 @@ public class JdbcService {
 		String query = "SELECT * FROM trainee;";
 		Connection con = JdbcUtils.getConnection();
 		try (PreparedStatement stmt = con.prepareStatement(query); ResultSet rs = stmt.executeQuery()) {
-			while (rs.first()) {
+			while (rs.next()) {
 				trainee.add(new Trainee(rs.getInt("id"), rs.getString("firstName"), rs.getString("lastName"),
 						rs.getInt("rating")));
 			}
@@ -130,7 +130,7 @@ public class JdbcService {
 		String query = "SELECT * FROM trainee;";
 		Connection con = JdbcUtils.getConnection();
 		try (PreparedStatement stmt = con.prepareStatement(query); ResultSet rs = stmt.executeQuery()) {
-			while (rs.first()) {
+			while (rs.next()) {
 				trainee.add(new Trainee(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getInt(4)));
 			}
 		}
