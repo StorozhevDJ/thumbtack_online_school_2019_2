@@ -322,7 +322,10 @@ public class JdbcService {
 		stmt.setString(2, group.getName());
 		stmt.setString(3, group.getRoom());
 		stmt.executeUpdate();
-		group.setId(school.getId());
+		ResultSet generatedKeys = stmt.getGeneratedKeys();
+		if (generatedKeys.first()) {
+			group.setId(generatedKeys.getInt(1));
+		}
 	}
 
 	/**
