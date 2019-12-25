@@ -2,13 +2,14 @@ package net.thumbtack.school.database.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class Group {
 	/**
 	 * id для Group. Для несохраненной в БД Group это поле имеет значение 0, после
 	 * сохранения значение присваивается БД
 	 */
-	private int id;
+	private int id = 0;
 	/**
 	 * Название группы
 	 */
@@ -20,11 +21,11 @@ public class Group {
 	/**
 	 * Список учащихся
 	 */
-	private List<Trainee> trainees;
+	private List<Trainee> trainees = new ArrayList<>();
 	/**
 	 * Список предметов
 	 */
-	private List<Subject> subjects;
+	private List<Subject> subjects = new ArrayList<>();
 
 	public int getId() {
 		return id;
@@ -115,6 +116,23 @@ public class Group {
 		this(0, name, room);
 	}
 
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof Group)) return false;
+		Group group = (Group) o;
+		return getId() == group.getId() &&
+				Objects.equals(getName(), group.getName()) &&
+				Objects.equals(getRoom(), group.getRoom()) &&
+				Objects.equals(getTrainees(), group.getTrainees()) &&
+				Objects.equals(getSubjects(), group.getSubjects());
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(getId(), getName(), getRoom(), getTrainees(), getSubjects());
+	}
+
 	/**
 	 * Добавляет Trainee в Group
 	 * 
@@ -149,52 +167,6 @@ public class Group {
 	 */
 	public void removeSubject(Subject subject) {
 		subjects.remove(subject);
-	}
-
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + id;
-		result = prime * result + ((name == null) ? 0 : name.hashCode());
-		result = prime * result + ((room == null) ? 0 : room.hashCode());
-		result = prime * result + ((subjects == null) ? 0 : subjects.hashCode());
-		result = prime * result + ((trainees == null) ? 0 : trainees.hashCode());
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Group other = (Group) obj;
-		if (id != other.id)
-			return false;
-		if (name == null) {
-			if (other.name != null)
-				return false;
-		} else if (!name.equals(other.name))
-			return false;
-		if (room == null) {
-			if (other.room != null)
-				return false;
-		} else if (!room.equals(other.room))
-			return false;
-		if (subjects == null) {
-			if (other.subjects != null)
-				return false;
-		} else if (!subjects.equals(other.subjects))
-			return false;
-		if (trainees == null) {
-			if (other.trainees != null)
-				return false;
-		} else if (!trainees.equals(other.trainees))
-			return false;
-		return true;
 	}
 
 }

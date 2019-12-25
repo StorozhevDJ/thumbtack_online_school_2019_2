@@ -23,14 +23,14 @@ public class JdbcService {
 	 * @throws SQLException
 	 */
 	public static void insertTrainee(Trainee trainee) throws SQLException {
-        String insertQuery = "INSERT INTO trainee values(?,?,?,?,?)";
+		String insertQuery = "INSERT INTO trainee values(?,?,?,?,?)";
 		Connection con = JdbcUtils.getConnection();
 		PreparedStatement stmt = con.prepareStatement(insertQuery, Statement.RETURN_GENERATED_KEYS);
 		stmt.setNull(1, java.sql.Types.INTEGER);
-        stmt.setNull(2, java.sql.Types.INTEGER);
-        stmt.setString(3, trainee.getFirstName());
-        stmt.setString(4, trainee.getLastName());
-        stmt.setInt(5, trainee.getRating());
+		stmt.setNull(2, java.sql.Types.INTEGER);
+		stmt.setString(3, trainee.getFirstName());
+		stmt.setString(4, trainee.getLastName());
+		stmt.setInt(5, trainee.getRating());
 		stmt.executeUpdate();
 		ResultSet generatedKeys = stmt.getGeneratedKeys();
 		if (generatedKeys.next()) {
@@ -93,7 +93,7 @@ public class JdbcService {
 		Connection con = JdbcUtils.getConnection();
 		try (PreparedStatement stmt = con.prepareStatement(query); ResultSet rs = stmt.executeQuery()) {
 			if (rs.next()) {
-                return new Trainee(rs.getInt(1), rs.getString(3), rs.getString(4), rs.getInt(5));
+				return new Trainee(rs.getInt(1), rs.getString(3), rs.getString(4), rs.getInt(5));
 			}
 		}
 		return null;
@@ -132,7 +132,7 @@ public class JdbcService {
 		Connection con = JdbcUtils.getConnection();
 		try (PreparedStatement stmt = con.prepareStatement(query); ResultSet rs = stmt.executeQuery()) {
 			while (rs.next()) {
-                trainee.add(new Trainee(rs.getInt(1), rs.getString(3), rs.getString(4), rs.getInt(5)));
+				trainee.add(new Trainee(rs.getInt(1), rs.getString(3), rs.getString(4), rs.getInt(5)));
 			}
 		}
 		return trainee;
@@ -171,12 +171,11 @@ public class JdbcService {
 	 * @throws SQLException
 	 */
 	public static void insertSubject(Subject subject) throws SQLException {
-        String insertQuery = "INSERT INTO subject values(?,?,?)";
+		String insertQuery = "INSERT INTO subject values(?,?)";
 		Connection con = JdbcUtils.getConnection();
 		PreparedStatement stmt = con.prepareStatement(insertQuery, Statement.RETURN_GENERATED_KEYS);
 		stmt.setNull(1, java.sql.Types.INTEGER);
-        stmt.setNull(2, java.sql.Types.INTEGER);
-        stmt.setString(3, subject.getName());
+		stmt.setString(2, subject.getName());
 		stmt.executeUpdate();
 		ResultSet generatedKeys = stmt.getGeneratedKeys();
 		if (generatedKeys.next()) {
@@ -218,7 +217,7 @@ public class JdbcService {
 		Connection con = JdbcUtils.getConnection();
 		try (PreparedStatement stmt = con.prepareStatement(query); ResultSet rs = stmt.executeQuery()) {
 			if (rs.first()) {
-                return new Subject(rs.getInt(1), rs.getString(3));
+				return new Subject(rs.getInt(1), rs.getString(2));
 			}
 		}
 		return null;
@@ -317,18 +316,18 @@ public class JdbcService {
 	 * @throws SQLException
 	 */
 	public static void insertGroup(School school, Group group) throws SQLException {
-        String insertQuery = "INSERT INTO `group` values(?,?,?,?);";
+		String insertQuery = "INSERT INTO `group` values(?,?,?,?);";
 		Connection con = JdbcUtils.getConnection();
 		PreparedStatement stmt = con.prepareStatement(insertQuery, Statement.RETURN_GENERATED_KEYS);
-        stmt.setNull(1, java.sql.Types.INTEGER);
-        stmt.setInt(2, school.getId());
-        stmt.setString(3, group.getName());
-        stmt.setString(4, group.getRoom());
+		stmt.setNull(1, java.sql.Types.INTEGER);
+		stmt.setInt(2, school.getId());
+		stmt.setString(3, group.getName());
+		stmt.setString(4, group.getRoom());
 		stmt.executeUpdate();
-        ResultSet generatedKeys = stmt.getGeneratedKeys();
-        if (generatedKeys.first()) {
-            group.setId(generatedKeys.getInt(1));
-        }
+		ResultSet generatedKeys = stmt.getGeneratedKeys();
+		if (generatedKeys.first()) {
+			group.setId(generatedKeys.getInt(1));
+		}
 	}
 
 	/**
@@ -342,14 +341,14 @@ public class JdbcService {
 	 */
 	public static School getSchoolByIdWithGroups(int id) throws SQLException {
 		String query = "SELECT school.id, school.name AS schoolName, group.name AS groupName, school.year, "
-                + "group.room, group.id AS groupId FROM school JOIN `group` ON school.id=group.shoolId WHERE school.id=" + id + ";";
+				+ "group.room, group.id AS groupId FROM school JOIN `group` ON school.id=group.schoolId WHERE school.id=" + id + ";";
 		Connection con = JdbcUtils.getConnection();
 		School school = new School();
 		try (PreparedStatement stmt = con.prepareStatement(query); ResultSet rs = stmt.executeQuery()) {
 			if (rs.first()) {
 				school = new School(rs.getInt("id"), rs.getString("schoolName"), rs.getInt("year"));
 				do {
-                    school.addGroup(new Group(rs.getInt("groupId"), rs.getString("groupName"), rs.getString("room")));
+					school.addGroup(new Group(rs.getInt("groupId"), rs.getString("groupName"), rs.getString("room")));
 				} while (rs.next());
 			}
 		}
@@ -366,7 +365,7 @@ public class JdbcService {
 	 */
 	public static List<School> getSchoolsWithGroups() throws SQLException {
 		String query = "SELECT school.id, school.name AS schoolName, group.name AS groupName, school.year, "
-                + "group.room, group.id AS groupId FROM school JOIN `group` ON school.id=group.shoolId;";
+				+ "group.room, group.id AS groupId FROM school JOIN `group` ON school.id=group.schoolId;";
 		Connection con = JdbcUtils.getConnection();
 		List<School> schools = new ArrayList<>();
 		try (PreparedStatement stmt = con.prepareStatement(query); ResultSet rs = stmt.executeQuery()) {
@@ -375,7 +374,7 @@ public class JdbcService {
 			while (q) {
 				school = new School(rs.getInt("id"), rs.getString("schoolName"), rs.getInt("year"));
 				while (q && (school.getId() == rs.getInt("id"))) {
-                    school.addGroup(new Group(rs.getInt("groupId"), rs.getString("groupName"), rs.getString("room")));
+					school.addGroup(new Group(rs.getInt("groupId"), rs.getString("groupName"), rs.getString("room")));
 					q = rs.next();
 				}
 				schools.add(school);

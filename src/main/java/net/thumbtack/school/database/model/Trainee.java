@@ -1,12 +1,14 @@
 package net.thumbtack.school.database.model;
 
+import java.util.Objects;
+
 public class Trainee {
 
 	/**
 	 * id для Trainee. Для несохраненного в БД Trainee это поле имеет значение 0,
 	 * после сохранения значение присваивается БД
 	 */
-	private int id;
+	private int id = 0;
 	/**
 	 * Имя студента
 	 */
@@ -89,40 +91,18 @@ public class Trainee {
 	}
 
 	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((firstName == null) ? 0 : firstName.hashCode());
-		result = prime * result + id;
-		result = prime * result + ((lastName == null) ? 0 : lastName.hashCode());
-		result = prime * result + rating;
-		return result;
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof Trainee)) return false;
+		Trainee trainee = (Trainee) o;
+		return getId() == trainee.getId() &&
+				getRating() == trainee.getRating() &&
+				Objects.equals(getFirstName(), trainee.getFirstName()) &&
+				Objects.equals(getLastName(), trainee.getLastName());
 	}
 
 	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Trainee other = (Trainee) obj;
-		if (firstName == null) {
-			if (other.firstName != null)
-				return false;
-		} else if (!firstName.equals(other.firstName))
-			return false;
-		if (id != other.id)
-			return false;
-		if (lastName == null) {
-			if (other.lastName != null)
-				return false;
-		} else if (!lastName.equals(other.lastName))
-			return false;
-		if (rating != other.rating)
-			return false;
-		return true;
+	public int hashCode() {
+		return Objects.hash(getId(), getFirstName(), getLastName(), getRating());
 	}
-
 }
