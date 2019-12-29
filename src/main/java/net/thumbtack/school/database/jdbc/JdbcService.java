@@ -19,22 +19,23 @@ public class JdbcService {
 	 * Добавляет Trainee в базу данных.
 	 * 
 	 * @param trainee
-	 * @return
 	 * @throws SQLException
 	 */
 	public static void insertTrainee(Trainee trainee) throws SQLException {
 		String insertQuery = "INSERT INTO trainee values(?,?,?,?,?)";
 		Connection con = JdbcUtils.getConnection();
-		PreparedStatement stmt = con.prepareStatement(insertQuery, Statement.RETURN_GENERATED_KEYS);
-		stmt.setNull(1, java.sql.Types.INTEGER);
-		stmt.setNull(2, java.sql.Types.INTEGER);
-		stmt.setString(3, trainee.getFirstName());
-		stmt.setString(4, trainee.getLastName());
-		stmt.setInt(5, trainee.getRating());
-		stmt.executeUpdate();
-		ResultSet generatedKeys = stmt.getGeneratedKeys();
-		if (generatedKeys.next()) {
-			trainee.setId(generatedKeys.getInt(1));
+		try (PreparedStatement stmt = con.prepareStatement(insertQuery, Statement.RETURN_GENERATED_KEYS)) {
+			stmt.setNull(1, java.sql.Types.INTEGER);
+			stmt.setNull(2, java.sql.Types.INTEGER);
+			stmt.setString(3, trainee.getFirstName());
+			stmt.setString(4, trainee.getLastName());
+			stmt.setInt(5, trainee.getRating());
+			stmt.executeUpdate();
+			try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
+				if (generatedKeys.next()) {
+					trainee.setId(generatedKeys.getInt(1));
+				}
+			}
 		}
 	}
 
@@ -147,8 +148,9 @@ public class JdbcService {
 	public static void deleteTrainee(Trainee trainee) throws SQLException {
 		String query = "DELETE FROM trainee WHERE id=" + trainee.getId() + ";";// "TRUNCATE TABLE trainee"
 		Connection con = JdbcUtils.getConnection();
-		PreparedStatement stmt = con.prepareStatement(query);
-		stmt.executeUpdate();
+		try (PreparedStatement stmt = con.prepareStatement(query)) {
+			stmt.executeUpdate();
+		}
 	}
 
 	/**
@@ -160,8 +162,9 @@ public class JdbcService {
 	public static void deleteTrainees() throws SQLException {
 		String query = "DELETE FROM trainee;";
 		Connection con = JdbcUtils.getConnection();
-		PreparedStatement stmt = con.prepareStatement(query);
-		stmt.executeUpdate();
+		try (PreparedStatement stmt = con.prepareStatement(query)) {
+			stmt.executeUpdate();
+		}
 	}
 
 	/**
@@ -173,13 +176,15 @@ public class JdbcService {
 	public static void insertSubject(Subject subject) throws SQLException {
 		String insertQuery = "INSERT INTO subject values(?,?)";
 		Connection con = JdbcUtils.getConnection();
-		PreparedStatement stmt = con.prepareStatement(insertQuery, Statement.RETURN_GENERATED_KEYS);
-		stmt.setNull(1, java.sql.Types.INTEGER);
-		stmt.setString(2, subject.getName());
-		stmt.executeUpdate();
-		ResultSet generatedKeys = stmt.getGeneratedKeys();
-		if (generatedKeys.next()) {
-			subject.setId(generatedKeys.getInt(1));
+		try (PreparedStatement stmt = con.prepareStatement(insertQuery, Statement.RETURN_GENERATED_KEYS)) {
+			stmt.setNull(1, java.sql.Types.INTEGER);
+			stmt.setString(2, subject.getName());
+			stmt.executeUpdate();
+			try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
+				if (generatedKeys.next()) {
+					subject.setId(generatedKeys.getInt(1));
+				}
+			}
 		}
 	}
 
@@ -232,8 +237,9 @@ public class JdbcService {
 	public static void deleteSubjects() throws SQLException {
 		String query = "DELETE FROM subject";// "TRUNCATE TABLE subject"
 		Connection con = JdbcUtils.getConnection();
-		PreparedStatement stmt = con.prepareStatement(query);
-		stmt.executeUpdate();
+		try (PreparedStatement stmt = con.prepareStatement(query)) {
+			stmt.executeUpdate();
+		}
 	}
 
 	/**
@@ -245,14 +251,16 @@ public class JdbcService {
 	public static void insertSchool(School school) throws SQLException {
 		String insertQuery = "INSERT INTO school values(?,?,?)";
 		Connection con = JdbcUtils.getConnection();
-		PreparedStatement stmt = con.prepareStatement(insertQuery, Statement.RETURN_GENERATED_KEYS);
-		stmt.setNull(1, java.sql.Types.INTEGER);
-		stmt.setString(2, school.getName());
-		stmt.setInt(3, school.getYear());
-		stmt.executeUpdate();
-		ResultSet generatedKeys = stmt.getGeneratedKeys();
-		if (generatedKeys.first()) {
-			school.setId(generatedKeys.getInt(1));
+		try (PreparedStatement stmt = con.prepareStatement(insertQuery, Statement.RETURN_GENERATED_KEYS)) {
+			stmt.setNull(1, java.sql.Types.INTEGER);
+			stmt.setString(2, school.getName());
+			stmt.setInt(3, school.getYear());
+			stmt.executeUpdate();
+			try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
+				if (generatedKeys.first()) {
+					school.setId(generatedKeys.getInt(1));
+				}
+			}
 		}
 	}
 
@@ -304,8 +312,9 @@ public class JdbcService {
 	public static void deleteSchools() throws SQLException {
 		String query = "DELETE FROM school";
 		Connection con = JdbcUtils.getConnection();
-		PreparedStatement stmt = con.prepareStatement(query);
-		stmt.executeUpdate();
+		try (PreparedStatement stmt = con.prepareStatement(query)) {
+			stmt.executeUpdate();
+		}
 	}
 
 	/**
@@ -318,15 +327,17 @@ public class JdbcService {
 	public static void insertGroup(School school, Group group) throws SQLException {
 		String insertQuery = "INSERT INTO `group` values(?,?,?,?);";
 		Connection con = JdbcUtils.getConnection();
-		PreparedStatement stmt = con.prepareStatement(insertQuery, Statement.RETURN_GENERATED_KEYS);
-		stmt.setNull(1, java.sql.Types.INTEGER);
-		stmt.setInt(2, school.getId());
-		stmt.setString(3, group.getName());
-		stmt.setString(4, group.getRoom());
-		stmt.executeUpdate();
-		ResultSet generatedKeys = stmt.getGeneratedKeys();
-		if (generatedKeys.first()) {
-			group.setId(generatedKeys.getInt(1));
+		try (PreparedStatement stmt = con.prepareStatement(insertQuery, Statement.RETURN_GENERATED_KEYS)) {
+			stmt.setNull(1, java.sql.Types.INTEGER);
+			stmt.setInt(2, school.getId());
+			stmt.setString(3, group.getName());
+			stmt.setString(4, group.getRoom());
+			stmt.executeUpdate();
+			try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
+				if (generatedKeys.first()) {
+					group.setId(generatedKeys.getInt(1));
+				}
+			}
 		}
 	}
 
@@ -369,7 +380,7 @@ public class JdbcService {
 		Connection con = JdbcUtils.getConnection();
 		List<School> schools = new ArrayList<>();
 		try (PreparedStatement stmt = con.prepareStatement(query); ResultSet rs = stmt.executeQuery()) {
-			School school = null;
+			School school;
 			boolean q = rs.first();
 			while (q) {
 				school = new School(rs.getInt("id"), rs.getString("schoolName"), rs.getInt("year"));
