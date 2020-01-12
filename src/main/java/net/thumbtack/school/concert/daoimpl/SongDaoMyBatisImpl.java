@@ -6,14 +6,18 @@ import java.util.Map;
 import net.thumbtack.school.concert.dao.SongDao;
 import net.thumbtack.school.concert.database.DataBase;
 import net.thumbtack.school.concert.model.Song;
+import org.apache.ibatis.session.SqlSession;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Class for save Song date
- * 
- * @author Denis
  *
+ * @author Denis
  */
-public class SongDaoImpl implements SongDao {
+public class SongDaoMyBatisImpl extends DaoMyBatisImplBase implements SongDao {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(SongDaoMyBatisImpl.class);
 
     @Override
     public void add(Map<String, Song> songModel) {
@@ -46,7 +50,19 @@ public class SongDaoImpl implements SongDao {
 
     @Override
     public boolean delete(String songId) {
-        return new DataBase().deleteSong(songId);
+        LOGGER.debug("DAO delete Song by ID {}", songId);
+        try (SqlSession sqlSession = getSession()) {
+            try {
+                getSongMapper(sqlSession).deleteById(Integer.parseInt(songId));
+            } catch (RuntimeException ex) {
+                LOGGER.info("Can't delete Song by ID {}. {}", songId, ex);
+                sqlSession.rollback();
+                //throw ex;
+                return false;
+            }
+            sqlSession.commit();
+        }
+        return true;
     }
 
     @Override
@@ -64,4 +80,17 @@ public class SongDaoImpl implements SongDao {
         new DataBase().updateSong(songs);
     }
 
+    public void deleteAll() {
+        LOGGER.debug("DAO delete all Songs");
+        try (SqlSession sqlSession = getSession()) {
+            try {
+                getSongMapper(sqlSession).deleteAll();
+            } catch (RuntimeException ex) {
+                LOGGER.info("Can't delete all Songs {}.", ex);
+                sqlSession.rollback();
+                //throw ex;
+            }
+            sqlSession.commit();
+        }
+    }
 }

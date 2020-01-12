@@ -2,11 +2,17 @@ package net.thumbtack.school.concert.daoimpl;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import net.thumbtack.school.concert.dao.RatingDao;
 import net.thumbtack.school.concert.database.DataBase;
 import net.thumbtack.school.concert.model.Rating;
+import org.apache.ibatis.session.SqlSession;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class RatingDaoImpl implements RatingDao {
+public class RatingDaoMyBatisImpl extends DaoMyBatisImplBase implements RatingDao {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(RatingDaoMyBatisImpl.class);
 
     @Override
     public boolean add(Rating rating) {
@@ -62,4 +68,17 @@ public class RatingDaoImpl implements RatingDao {
         return new DataBase().deleteRating(songId, user);
     }
 
+    public void deleteAll() {
+        LOGGER.debug("DAO delete all Ratings");
+        try (SqlSession sqlSession = getSession()) {
+            try {
+                getRatingMapper(sqlSession).deleteAll();
+            } catch (RuntimeException ex) {
+                LOGGER.info("Can't delete all Ratings {}.", ex);
+                sqlSession.rollback();
+                //throw ex;
+            }
+            sqlSession.commit();
+        }
+    }
 }

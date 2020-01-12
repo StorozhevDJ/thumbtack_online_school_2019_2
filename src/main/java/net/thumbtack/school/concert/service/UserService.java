@@ -19,6 +19,7 @@ import javax.validation.ConstraintViolation;
 
 import net.thumbtack.school.concert.dao.CommentDao;
 import net.thumbtack.school.concert.dao.RatingDao;
+import net.thumbtack.school.concert.dao.SessionDao;
 import net.thumbtack.school.concert.dao.SongDao;
 import net.thumbtack.school.concert.dao.UserDao;
 import net.thumbtack.school.concert.daoimpl.CommentDaoImpl;
@@ -39,6 +40,12 @@ import net.thumbtack.school.concert.model.User;
 
 public class UserService {
 
+    UserDao userDao = new UserDaoImpl();
+    SessionDao sessionDao = new SessionDaoImpl();
+    SongDao songDao = new SongDaoImpl();
+    CommentDao commentDao = new CommentDaoImpl();
+    RatingDao ratingDao = new RatingDaoImpl();
+
     /**
      * Add new User (Register) in to DataBase
      *
@@ -51,12 +58,11 @@ public class UserService {
         RegisterUserDtoRequest newUser = fromJson(RegisterUserDtoRequest.class, jsonRequest);
 
         // Add new user in the DB
-        UserDao userDao = new UserDaoImpl();
         User userModel = new User(newUser.getFirstName(), newUser.getLastName(), newUser.getLogin(), newUser.getPassword());
         userDao.add(userModel);
         // Login and return UUID for this user
         Session session = new Session(UUID.randomUUID().toString());
-        new SessionDaoImpl().login(userModel, session);
+        sessionDao.login(userModel, session);
         return new Gson().toJson(session);
     }
 
@@ -73,14 +79,14 @@ public class UserService {
 
         // find pair User&password in DB
         User userModel = new User();
-        userModel = new UserDaoImpl().get(user.getLogin());
+        userModel = userDao.get(user.getLogin());
         if ((userModel == null) || (!userModel.getPassword().equals(user.getPassword()))) {
             throw new ServerException(ServerErrorCode.LOGIN_INCORRECT);
         }
 
         // add uuid to session in DB
         Session session = new Session(UUID.randomUUID().toString());
-        new SessionDaoImpl().login(userModel, session);
+        sessionDao.login(userModel, session);
         return new Gson().toJson(session);
     }
 
@@ -94,7 +100,7 @@ public class UserService {
     public String logoutUser(String jsonRequest) throws ServerException {
         LogoutUserDtoRequest logoutUser = fromJson(LogoutUserDtoRequest.class, jsonRequest);
         // User token delete from DB
-        new SessionDaoImpl().logout(new Session(logoutUser.getToken()));
+        sessionDao.logout(new Session(logoutUser.getToken()));
         // Return JSON token with null values
         return new Gson().toJson(new Session());
     }
@@ -111,20 +117,17 @@ public class UserService {
         LogoutUserDtoRequest logoutUser = fromJson(LogoutUserDtoRequest.class, jsonRequest);
         // Find User by token
         Session session = new Session(logoutUser.getToken());
-        User user = new SessionDaoImpl().get(session);
+        User user = sessionDao.get(session);
         if (user == null) {
             throw new ServerException(ServerErrorCode.TOKEN_INCORRECT);
         }
         // Delete all ratings from this user
-        RatingDao ratingDao = new RatingDaoImpl();
         ratingDao.delete(null, user.getLogin());
         // "Delete" all comments
-        CommentDao commentDao = new CommentDaoImpl();
         List<Comment> commentList = commentDao.getList(null, user.getLogin());
         commentList.replaceAll(c -> {c.setAuthor(""); return c;});
         commentDao.update(commentList);
         // Get all songs with ratings from this user
-        SongDao songDao = new SongDaoImpl();
         Map<String, Song> songs = songDao.get(user.getLogin());// Get all songs from this user
         List<String> songIdList = songs.entrySet().stream().map(Map.Entry::getKey).collect(Collectors.toList());
         List<Rating> ratingList = ratingDao.getRatingList(songIdList);
@@ -146,9 +149,9 @@ public class UserService {
         Map<String, Song> songsToDelete = songDao.get(user.getLogin());// Get all songs from this user
         songDao.delete(songsToDelete.entrySet().stream().map(Map.Entry::getKey).collect(Collectors.toList()));
         // User token delete from DB
-        new SessionDaoImpl().logout(session);
+        sessionDao.logout(session);
         // Delete User
-        new UserDaoImpl().delete(user.getLogin());
+        userDao.delete(user.getLogin());
         // Return JSON token with null values
         return new Gson().toJson(new Session());
     }

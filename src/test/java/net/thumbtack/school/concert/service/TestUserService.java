@@ -2,10 +2,19 @@ package net.thumbtack.school.concert.service;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
+
+import net.thumbtack.school.concert.dao.SessionDao;
+import net.thumbtack.school.concert.dao.UserDao;
+import net.thumbtack.school.concert.daoimpl.SessionDaoMyBatisImpl;
+import net.thumbtack.school.concert.daoimpl.UserDaoMyBatisImpl;
 import net.thumbtack.school.concert.database.DataBase;
 import net.thumbtack.school.concert.dto.response.LoginUserDtoResponse;
 import net.thumbtack.school.concert.exception.ServerErrorCode;
 import net.thumbtack.school.concert.exception.ServerException;
+import net.thumbtack.school.concert.utils.MyBatisUtils;
+
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -13,6 +22,21 @@ import java.io.IOException;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TestUserService {
+
+    @BeforeAll()
+    public static void setUp() {
+        boolean initSqlSessionFactory = MyBatisUtils.initSqlSessionFactory();
+        if (!initSqlSessionFactory) {
+            throw new RuntimeException("Can't create connection, stop");
+        }
+    }
+
+    @BeforeEach()
+    public void clearDatabase() {
+        new SessionDaoMyBatisImpl().deleteAll();
+        new UserDaoMyBatisImpl().deleteAll();
+    }
+	
     @Test
     public void testRegisterUser() {
         DataBase db = new DataBase();
@@ -89,13 +113,7 @@ public class TestUserService {
         } catch (ServerException e) {
             assertEquals(ServerErrorCode.BAD_REQUEST, e.getServerErrorCode());
         }
-        try {
-            us.registerUser(
-                    "{\"firstName\":\"fname\", \"lastName\":\"lname\", \"login\":\"login\", \"password\":\"pswd\"}");
-            fail();
-        } catch (ServerException e) {
-            assertEquals(ServerErrorCode.USERNAME_ALREADY_IN_USE, e.getServerErrorCode());
-        }
+
         try {
             response = us.registerUser(
                     "{\"firstName\":\"TestFName\", \"lastName\":\"TestLName\", \"login\":\"testLogin\", \"password\":\"pswd\"}");
@@ -105,6 +123,14 @@ public class TestUserService {
         assertFalse(new Gson().fromJson(response, LoginUserDtoResponse.class).getToken().isEmpty());
         assertEquals(new Gson().fromJson(response, LoginUserDtoResponse.class).getToken().length(), 36);
 
+        try {
+            us.registerUser(
+                    "{\"firstName\":\"TestFName\", \"lastName\":\"TestLName\", \"login\":\"testLogin\", \"password\":\"pswd\"}");
+            fail();
+        } catch (ServerException e) {
+            assertEquals(ServerErrorCode.USERNAME_ALREADY_IN_USE, e.getServerErrorCode());
+        }
+        
         db.close();
     }
 

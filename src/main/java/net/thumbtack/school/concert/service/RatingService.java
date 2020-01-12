@@ -11,6 +11,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 
 import net.thumbtack.school.concert.dao.RatingDao;
+import net.thumbtack.school.concert.dao.SessionDao;
 import net.thumbtack.school.concert.dao.SongDao;
 import net.thumbtack.school.concert.daoimpl.RatingDaoImpl;
 import net.thumbtack.school.concert.daoimpl.SessionDaoImpl;
@@ -25,6 +26,10 @@ import net.thumbtack.school.concert.model.User;
 
 public class RatingService {
 
+    SessionDao sessionDao = new SessionDaoImpl();
+    SongDao songDao = new SongDaoImpl();
+    RatingDao ratingDao = new RatingDaoImpl();
+
     /**
      * Add new Rating into DB
      *
@@ -35,12 +40,11 @@ public class RatingService {
     public String addRating(String jsonRequest) throws ServerException {
         AddRatingDtoRequest newRating = fromJsonString(jsonRequest);
         // Find User
-        User user = new SessionDaoImpl().get(new Session(newRating.getToken()));
+        User user = sessionDao.get(new Session(newRating.getToken()));
         if (user == null) {
             throw new ServerException(ServerErrorCode.TOKEN_INCORRECT);
         }
         // Find Ratings for this song
-        RatingDao ratingDao = new RatingDaoImpl();
         List<Rating> ratingList = ratingDao.getRatingList(newRating.getSongId());
         if (ratingList.isEmpty()) {
             throw new ServerException(ServerErrorCode.ADD_RATING_ERROR);
@@ -68,12 +72,10 @@ public class RatingService {
         AddRatingDtoRequest newRating = fromJsonString(jsonRequest);
         User user = findUser(newRating.getToken());
         // If user added this Song
-        SongDao songDao = new SongDaoImpl();
         if (songDao.get(newRating.getSongId(), user.getLogin()) != null) {
             throw new ServerException(ServerErrorCode.CHANGE_RATING_ERROR, " своей песни");
         }
         // Find Ratings for this song
-        RatingDao ratingDao = new RatingDaoImpl();
         List<Rating> ratingList = ratingDao.getRatingList(newRating.getSongId());
         // Find and change Rating from this User
         for (Rating rating : ratingList) {
@@ -106,12 +108,10 @@ public class RatingService {
         }
         User user = findUser(delRating.getToken());
         // If user added this Song
-        SongDao songDao = new SongDaoImpl();
         if (songDao.get(delRating.getSongId(), user.getLogin()) != null) {
             throw new ServerException(ServerErrorCode.DELETE_RATING_ERROR, " своей песни");
         }
         // Find Ratings for this song
-        RatingDao ratingDao = new RatingDaoImpl();
         List<Rating> ratingList = ratingDao.getRatingList(delRating.getSongId());
         // Find and change Rating from this User
         for (Rating rating : ratingList) {
@@ -165,7 +165,7 @@ public class RatingService {
 	 * @throws ServerException
 	 */
 	private User findUser(String token) throws ServerException {
-		User user = new SessionDaoImpl().get(new Session(token));
+        User user = sessionDao.get(new Session(token));
 		if (user == null) {
 			throw new ServerException(ServerErrorCode.TOKEN_INCORRECT);
 		}

@@ -18,7 +18,9 @@ import javax.validation.ValidatorFactory;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 
+import net.thumbtack.school.concert.dao.CommentDao;
 import net.thumbtack.school.concert.dao.RatingDao;
+import net.thumbtack.school.concert.dao.SessionDao;
 import net.thumbtack.school.concert.dao.SongDao;
 import net.thumbtack.school.concert.daoimpl.CommentDaoImpl;
 import net.thumbtack.school.concert.daoimpl.RatingDaoImpl;
@@ -38,6 +40,11 @@ import net.thumbtack.school.concert.model.Song;
 import net.thumbtack.school.concert.model.User;
 
 public class SongService {
+
+    SessionDao sessionDao = new SessionDaoImpl();
+    SongDao songDao = new SongDaoImpl();
+    CommentDao commentDao = new CommentDaoImpl();
+    RatingDao ratingDao = new RatingDaoImpl();
 
 	/**
 	 * Радиослушатель добавляет новую песню на сервер.
@@ -63,8 +70,8 @@ public class SongService {
 			ratingModel.add(new Rating(songId, 5, user.getLogin()));
 		}
 
-		new SongDaoImpl().add(songsModel); // Insert songs into the DataBase
-		new RatingDaoImpl().add(ratingModel);// Add default rating
+        songDao.add(songsModel); // Insert songs into the DataBase
+        ratingDao.add(ratingModel);// Add default rating
 
 		return new Gson().toJson(new ErrorDtoResponse());
 	}
@@ -107,13 +114,13 @@ public class SongService {
 		GetSongsDtoRequest getSongs = fromJson(GetSongsDtoRequest.class, requestJsonString);
 		findUser(getSongs.getToken());
 		// Get Songs list (with filter)
-		Map<String, Song> songList = new SongDaoImpl().get(getSongs.getComposer(), getSongs.getAuthor(),
+        Map<String, Song> songList = songDao.get(getSongs.getComposer(), getSongs.getAuthor(),
 				getSongs.getSinger());
 		List<String> songIdList = songList.entrySet().stream().map(Map.Entry::getKey).collect(Collectors.toList());
 		// Get rating list for song Id list
-		List<Rating> ratingList = new RatingDaoImpl().get(songIdList);
+        List<Rating> ratingList = ratingDao.get(songIdList);
 		// Get all comments for found songs
-		List<Comment> commentsList = new CommentDaoImpl().get(songIdList);
+        List<Comment> commentsList = commentDao.get(songIdList);
 
 		// Calculate average ratings for song
 		Map<String, Float> ratingSongMap = calculateAvgRating(songList, ratingList);// new HashMap<>();
@@ -155,11 +162,11 @@ public class SongService {
 		GetSongsDtoRequest getSongs = fromJson(GetSongsDtoRequest.class, requestJsonString);
 		findUser(getSongs.getToken());
 		// Get Songs list
-		Map<String, Song> songList = new SongDaoImpl().get(null);
+        Map<String, Song> songList = songDao.get(null);
 		// Get rating list
-		List<Rating> ratingList = new RatingDaoImpl().getRatingList((String) null);
+        List<Rating> ratingList = ratingDao.getRatingList((String) null);
 		// Get all comments
-		List<Comment> commentsList = new CommentDaoImpl().get((String) null);
+        List<Comment> commentsList = commentDao.get((String) null);
 
 		// Calculate average ratings for song
 		Map<String, Float> ratingSongMap = calculateAvgRating(songList, ratingList);// new HashMap<>();
@@ -190,14 +197,12 @@ public class SongService {
 		DeleteSongDtoRequest deleteSongDto = fromJson(DeleteSongDtoRequest.class, requestJsonString);
 		User user = findUser(deleteSongDto.getToken());
 		// Find song with this name from this user
-		SongDao songDao = new SongDaoImpl();
 		String songId = deleteSongDto.getSongId();
 		Song song = songDao.get(songId, user.getLogin());
 		if (song == null) {
 			throw new ServerException(ServerErrorCode.SONG_NOT_FOUND);
 		}
 		// Delete song or rating
-		RatingDao ratingDao = new RatingDaoImpl();
 		List<Rating> ratingList = ratingDao.getRatingList(songId);
 		if (ratingList.size() == 1) {// If there are ratings from other users, then delete rating
 			songDao.delete(songId);
@@ -253,7 +258,7 @@ public class SongService {
 	 * @throws ServerException
 	 */
 	private User findUser(String token) throws ServerException {
-		User user = new SessionDaoImpl().get(new Session(token));
+        User user = sessionDao.get(new Session(token));
 		if (user == null) {
 			throw new ServerException(ServerErrorCode.TOKEN_INCORRECT);
 		}

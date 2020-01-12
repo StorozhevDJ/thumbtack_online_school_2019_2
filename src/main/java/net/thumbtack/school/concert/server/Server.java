@@ -3,6 +3,7 @@ package net.thumbtack.school.concert.server;
 import java.io.FileNotFoundException;
 
 import com.google.gson.Gson;
+import net.thumbtack.school.concert.daoimpl.CommentDaoMyBatisImpl;
 import net.thumbtack.school.concert.database.DataBase;
 import net.thumbtack.school.concert.dto.response.ErrorDtoResponse;
 import net.thumbtack.school.concert.exception.ServerErrorCode;
@@ -11,6 +12,7 @@ import net.thumbtack.school.concert.service.CommentService;
 import net.thumbtack.school.concert.service.RatingService;
 import net.thumbtack.school.concert.service.SongService;
 import net.thumbtack.school.concert.service.UserService;
+import net.thumbtack.school.concert.utils.MyBatisUtils;
 
 public class Server {
 
@@ -19,6 +21,21 @@ public class Server {
     private RatingService ratingService;
     private CommentService commentService;
 
+    //private CommentDaoMyBatisImpl databaseCommon = new CommentDaoMyBatisImpl();
+    private DataBase databaseCommon = new DataBase();
+
+    private static boolean setUpIsDone = false;
+
+    public static void setUp() {
+        if (!setUpIsDone) {
+            boolean initSqlSessionFactory = MyBatisUtils.initSqlSessionFactory();
+            if (!initSqlSessionFactory) {
+                throw new RuntimeException("Can't create connection, stop");
+            }
+            setUpIsDone = true;
+        }
+    }
+    
     /**
      * Производит всю необходимую инициализацию и запускает сервер.
      *
@@ -36,13 +53,15 @@ public class Server {
         if ((savedDataFileName != null) && (!savedDataFileName.isEmpty())) {
             // Start server with settings from config file
             try {
-                new DataBase().open(savedDataFileName);
+                setUp();
+                databaseCommon.open(savedDataFileName);
             } catch (Exception e) {
                 throw new ServerException(ServerErrorCode.CONFIG_FILE_NOT_READ, e.getMessage());
             }
         } else {
             // Start server with default data
-            new DataBase().open();
+            setUp();
+            databaseCommon.open();
         }
         userService = new UserService();
         songService = new SongService();
@@ -67,13 +86,13 @@ public class Server {
         if ((savedDataFileName != null) && (!savedDataFileName.isEmpty())) {
             // Save Date to file
             try {
-                new DataBase().close(savedDataFileName);
+                databaseCommon.close(savedDataFileName);
             } catch (FileNotFoundException e) {
                 throw new ServerException(ServerErrorCode.CONFIG_FILE_NOT_WRITED);
             }
         } else {
             // Exit without saving data
-            new DataBase().close();
+            databaseCommon.close();
         }
         userService = null;
         songService = null;

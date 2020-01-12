@@ -80,4 +80,12 @@ public interface CommentDao {
      * @return
      */
     boolean delete(String songId, String author);
+
+    /**
+     * Get comment list from Song Id list
+     *
+     * @param songId
+     * @return
+     */
+    List<Comment> get(List<String> songId);
 }

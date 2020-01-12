@@ -1,6 +1,7 @@
 package net.thumbtack.school.concert.model;
 
 public class User {
+    private int id;
     private String firstName;
     private String lastName;
     private String login;
@@ -90,6 +91,14 @@ public class User {
         } else if (!password.equals(other.password))
             return false;
         return true;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
 

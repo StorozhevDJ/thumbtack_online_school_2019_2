@@ -11,6 +11,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 
 import net.thumbtack.school.concert.dao.CommentDao;
+import net.thumbtack.school.concert.dao.SessionDao;
 import net.thumbtack.school.concert.dao.SongDao;
 import net.thumbtack.school.concert.daoimpl.CommentDaoImpl;
 import net.thumbtack.school.concert.daoimpl.SessionDaoImpl;
@@ -25,6 +26,10 @@ import net.thumbtack.school.concert.model.User;
 
 public class CommentService {
 
+    SessionDao sessionDao = new SessionDaoImpl();
+    SongDao songDao = new SongDaoImpl();
+    CommentDao commentDao = new CommentDaoImpl();
+
 	/**
 	 * Add new Comment in the DB
 	 *
@@ -36,12 +41,10 @@ public class CommentService {
 		AddCommentDtoRequest newComment = fromJsonString(jsonRequest);
 		User user = findUser(newComment.getToken());
 		// Find Song
-		SongDao songDao = new SongDaoImpl();
 		if (songDao.get(newComment.getSongId(), null) == null) {
 			throw new ServerException(ServerErrorCode.ADD_COMMENT_ERROR);
 		}
 		// Find last Comment
-		CommentDao commentDao = new CommentDaoImpl();
 		Comment comment = commentDao.getLast(newComment.getSongId());
 		// If this Comment from this author, then replace this comment
 		if ((comment != null) && comment.getAuthor().equals(user.getLogin())) {
@@ -65,7 +68,6 @@ public class CommentService {
 	public String changeComment(String jsonRequest) throws ServerException {
 		AddCommentDtoRequest newComment = fromJsonString(jsonRequest);
 		User user = findUser(newComment.getToken());
-		CommentDao commentDao = new CommentDaoImpl();
 		Comment lastComment = commentDao.getLast(newComment.getSongId());
 		String oldComment = commentDao.get(newComment.getSongId(), user.getLogin());
 		if (oldComment == null) {
@@ -96,7 +98,6 @@ public class CommentService {
 		AddCommentDtoRequest deleteComment = fromJsonString(jsonRequest);
 		User user = findUser(deleteComment.getToken());
 		// Replace the author of this comment to empty
-		CommentDao commentDao = new CommentDaoImpl();
 		Comment comment = new Comment(deleteComment.getSongId(), user.getLogin(), null);
 		if (commentDao.update(comment)) {
 			return new Gson().toJson(new ErrorDtoResponse());
@@ -146,7 +147,7 @@ public class CommentService {
 	 * @throws ServerException
 	 */
 	private User findUser(String token) throws ServerException {
-		User user = new SessionDaoImpl().get(new Session(token));
+        User user = sessionDao.get(new Session(token));
 		if (user == null) {
 			throw new ServerException(ServerErrorCode.TOKEN_INCORRECT);
 		}
