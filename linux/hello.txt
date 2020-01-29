@@ -1,0 +1,855 @@
+Hello world
+Storozhev Denis
+Вт. янв. 28 21:51:47 +06 2020
+denis
+.
+..
+.adobe
+aircrack-ng-1.1
+.android
+.apport-ignore.xml
+.audacity-data
+.avidemux
+.bash_history
+.bash_logout
+.bashrc
+.bashrc~
+.bcast
+.cache
+.cinelerra-cv
+cndrvcups-capt_2.71-1_amd64.deb
+cndrvcups-common_3.21-1_amd64.deb
+.compiz-1
+.config
+.cups
+.dbus
+.dc++
+.dmrc
+.dropbox
+.dropbox-dist
+.eclipse
+examples.desktop
+.filezilla
+.flowblade
+.fontconfig
+fozzy_review.xptv
+.freerdp
+.gconf
+.gimp-2.8
+.gitconfig
+.gksu.lock
+.gnome
+.gnome2
+.gnome2_private
+.gnupg
+.goutputstream-0R6RUX
+.goutputstream-1E3NCY
+.goutputstream-2MZQZX
+.goutputstream-3NQ2TY
+.goutputstream-47UD9X
+.goutputstream-4E6FLW
+.goutputstream-4I7VLW
+.goutputstream-5SEI8W
+.goutputstream-6A9KUW
+.goutputstream-6Y0WSX
+.goutputstream-74HJ9W
+.goutputstream-98TKLW
+.goutputstream-A1K7HX
+.goutputstream-CELFLW
+.goutputstream-CLTMKW
+.goutputstream-EIWEMY
+.goutputstream-FMKKMW
+.goutputstream-HT235X
+.goutputstream-I43JJY
+.goutputstream-K573DX
+.goutputstream-LGMYSW
+.goutputstream-LK8ILX
+.goutputstream-LXU3YX
+.goutputstream-NJE9ZX
+.goutputstream-OXRCVW
+.goutputstream-OZ6XQW
+.goutputstream-PZJ4KW
+.goutputstream-QSKXFY
+.goutputstream-R3CG9X
+.goutputstream-SR8FBZ
+.goutputstream-SWLHXY
+.goutputstream-UPF5VW
+.goutputstream-W2ZLE0
+.goutputstream-WF8FHY
+.goutputstream-Y64ND0
+.goutputstream-ZJUP4W
+.gphoto
+.gstreamer-0.10
+.gtk-bookmarks
+.gtk-recordmydesktop
+.gvfs
+.hugin
+.ICEauthority
+.IdeaIC2019.2
+.install4j
+.java
+.jmc
+.jssc
+.JxBrowser
+.kde
+kdenlive
+.kino-history
+.kinorc
+.launchpadlib
+.libquicktime_codecs
+.local
+.luciole
+.m2
+.macromedia
+.mission-control
+.mozilla
+.mysql
+.mysql_history
+MyWebMoney
+.MyWM
+.odbc.ini
+.openshot
+.opera
+output
+.pam_environment
+PDF
+.pki
+.profile
+.ptbt1
+.pulse
+.pulse-cookie
+.purple
+.putty
+Qt
+.remmina
+.rpmdb
+.shotwell
+.Skype
+.ssh
+.swt
+.thumbnails
+.thunderbird
+Ubuntu One
+.ViberPC
+VirtualBox VMs
+.weblaf
+.wine
+.wireshark
+.Xauthority
+.xine
+.xsession-errors
+.xsession-errors.old
+Видео
+Документы
+Загрузки
+Изображения
+Музыка
+Общедоступные
+Рабочий стол
+Шаблоны
+0
+bin
+boot
+cdrom
+dev
+etc
+home
+initrd.img.old
+Kaspersky Rescue Disk 10.0
+lib
+lib32
+lib64
+libnss3.so
+lost+found
+media
+mnt
+opt
+proc
+root
+run
+sbin
+selinux
+srv
+sys
+tftpboot
+tmp
+usr
+var
+vmlinuz.old
+acpi
+adduser.conf
+adjtime
+akonadi
+alternatives
+anacrontab
+apache2
+apg.conf
+apm
+apparmor
+apparmor.d
+apport
+apt
+at.deny
+at-spi2
+authbind
+avahi
+avserver.conf
+bash.bashrc
+bash_completion
+bash_completion.d
+bindresvport.blacklist
+blkid.conf
+blkid.tab
+bluetooth
+bonobo-activation
+brlapi.key
+brltty
+brltty.conf
+ca-certificates
+ca-certificates.conf
+ca-certificates.conf.dpkg-old
+calendar
+ccpd.conf
+ccpd.conf.bak
+chatscripts
+checkbox.d
+chromium-browser
+cngplp
+colord.conf
+compizconfig
+conky
+ConsoleKit
+console-setup
+cron.d
+cron.daily
+cron.hourly
+cron.monthly
+crontab
+cron.weekly
+cups
+cupshelpers
+dbus-1
+debconf.conf
+debian_version
+default
+deluser.conf
+depmod.d
+dhcp
+dhcp3
+dictionaries-common
+dkms
+doc-base
+dpkg
+eclipse.ini
+emacs
+environment
+environment~
+esound
+firefox
+fonts
+foomatic
+fop.conf.d
+fstab
+fstab.BAK
+fstab.d
+fuse.conf
+gai.conf
+gconf
+gdb
+ghostscript
+gimp
+ginn
+gnome
+gnome-app-install
+gnome-settings-daemon
+gnome-vfs-2.0
+groff
+group
+group-
+grub.d
+gshadow
+gshadow-
+gtk-2.0
+gtk-3.0
+hdparm.conf
+host.conf
+hostname
+hosts
+hosts.allow
+hosts.deny
+hp
+icedtea-web
+ifplugd
+ImageMagick
+init
+init.d
+initramfs-tools
+inputrc
+insserv
+insserv.conf
+insserv.conf.d
+iproute2
+issue
+issue.net
+java
+java-6-openjdk
+jvm.cfg
+kbd
+kernel
+kernel-img.conf
+kerneloops.conf
+ldap
+ld.so.cache
+ld.so.conf
+ld.so.conf.d
+legal
+libao.conf
+libnl-3
+libpaper.d
+libreoffice
+libuser.conf
+lightdm
+locale.alias
+locale.nopurge
+localtime
+logcheck
+login.defs
+logrotate.conf
+logrotate.d
+lsb-base
+lsb-base-logging.sh
+lsb-release
+ltrace.conf
+magic
+magic.mime
+mailcap
+mailcap.order
+manpath.config
+maven
+menu
+menu-methods
+mime.types
+miredo
+miredo.conf
+mke2fs.conf
+modprobe.d
+modules
+modules~
+mono
+motd
+mplayer
+mtab
+mtab.fuselock
+mtools.conf
+mysql
+nail.rc
+nanorc
+netscsid.conf
+network
+NetworkManager
+networks
+newt
+nginx
+nsswitch.conf
+nsswitch.conf~
+obex-data-server
+ODBCDataSources
+odbc.ini
+odbcinst.ini
+openal
+opt
+os-release
+pam.conf
+pam.d
+papersize
+passwd
+passwd-
+pcmcia
+perl
+pkcs11
+pm
+pnm2ppa.conf
+polkit-1
+popularity-contest.conf
+ppp
+printcap
+profile
+profile.d
+protocols
+pulse
+purple
+python
+python2.7
+rc0.d
+rc1.d
+rc2.d
+rc3.d
+rc4.d
+rc5.d
+rc6.d
+rc.local
+rc.local~
+rcS.d
+resolvconf
+resolv.conf
+rmt
+rpc
+rsyslog.conf
+rsyslog.d
+samba
+sane.d
+scalpel
+securetty
+security
+sensors3.conf
+sensors.d
+services
+sgml
+shadow
+shadow-
+shells
+skel
+smartd.conf
+smartmontools
+smi.conf
+snmp
+sound
+speech-dispatcher
+ssh
+ssl
+sudoers
+sudoers.d
+su-to-rootrc
+sysctl.conf
+sysctl.conf~
+sysctl.d
+systemd
+terminfo
+thunderbird
+timezone
+timidity
+tomcat7
+ts.conf
+ucf.conf
+udev
+ufw
+updatedb.conf
+update-manager
+update-motd.d
+update-notifier
+UPower
+usb_modeswitch.conf
+usb_modeswitch.d
+vbox
+vdpau_wrapper.cfg
+velocity
+vga
+vim
+vlc
+vtrgb
+wgetrc
+wildmidi
+Wireless
+wireshark
+wodim.conf
+wpa_supplicant
+X11
+xdg
+xml
+xul-ext
+zsh_command_not_found
+итого 1456
+-rw-r--r--  1 root root     2981 авг.  23  2012 adduser.conf
+-rw-r--r--  1 root root       10 сент. 21  2012 adjtime
+-rw-r--r--  1 root root      395 июня  20  2010 anacrontab
+-rw-r--r--  1 root root      112 июня  22  2007 apg.conf
+-rw-r-----  1 root daemon    144 окт.  25  2011 at.deny
+-rw-r--r--  1 root root     9085 янв.  25  2013 avserver.conf
+-rw-r--r--  1 root root     2076 апр.   3  2012 bash.bashrc
+-rw-r--r--  1 root root    58753 марта 31  2012 bash_completion
+-rw-r--r--  1 root root      356 апр.  20  2012 bindresvport.blacklist
+-rw-r--r--  1 root root      321 марта 30  2012 blkid.conf
+lrwxrwxrwx  1 root root       15 июня  18  2014 blkid.tab -> \dev\.blkid.tab
+-rw-r--r--  1 root root       33 авг.  23  2012 brlapi.key
+-rw-r--r--  1 root root    19925 апр.  11  2012 brltty.conf
+-rw-r--r--  1 root root     9353 февр. 25  2016 ca-certificates.conf
+-rw-r--r--  1 root root     8457 февр. 24  2015 ca-certificates.conf.dpkg-old
+-rw-r--r--  1 root root      846 дек.  26 23:10 ccpd.conf
+-rwxr-xr-x  1 root root      787 апр.   7  2017 ccpd.conf.bak
+-rw-r--r--  1 root root      699 февр. 14  2012 colord.conf
+-rw-r--r--  1 root root      722 апр.   2  2012 crontab
+-rw-r--r--  1 root root     2969 марта 15  2012 debconf.conf
+-rw-r--r--  1 root root       11 апр.  19  2012 debian_version
+-rw-r--r--  1 root root      604 окт.  20  2011 deluser.conf
+-rw-r--r--  1 root root      350 апр.   4  2012 eclipse.ini
+-rw-r--r--  1 root root      485 авг.  15 23:44 environment
+-rw-r--r--  1 root root      492 авг.  15 22:43 environment~
+-rw-r--r--  1 root root     1183 нояб. 19  2017 fstab
+-rw-r--r--  1 root root      938 сент. 21  2012 fstab.BAK
+-rw-r-----  1 root fuse      216 окт.  19  2011 fuse.conf
+-rw-r--r--  1 root root     3343 апр.  20  2012 gai.conf
+-rw-r--r--  1 root root      956 апр.   5  2014 group
+-rw-------  1 root root      943 апр.   1  2014 group-
+-rw-r-----  1 root shadow    793 апр.   5  2014 gshadow
+-rw-------  1 root root      783 апр.   1  2014 gshadow-
+-rw-r--r--  1 root root     4728 мая    2  2012 hdparm.conf
+-rw-r--r--  1 root root       92 апр.  19  2012 host.conf
+-rw-r--r--  1 root root        9 сент. 21  2012 hostname
+-rw-r--r--  1 root root      223 сент. 21  2012 hosts
+-rw-r--r--  1 root root      580 авг.  23  2012 hosts.allow
+-rw-r--r--  1 root root      880 авг.  23  2012 hosts.deny
+-rw-r--r--  1 root root     1721 нояб. 22  2011 inputrc
+-rw-r--r--  1 root root      839 апр.  10  2012 insserv.conf
+-rw-r--r--  1 root root       26 июля  30  2014 issue
+-rw-r--r--  1 root root       19 июля  30  2014 issue.net
+-rw-r--r--  1 root root       14 февр. 24  2015 jvm.cfg
+-rw-r--r--  1 root root       91 сент. 21  2012 kernel-img.conf
+-rw-r--r--  1 root root     1309 апр.  19  2012 kerneloops.conf
+-rw-r--r--  1 root root   134268 дек.   4 21:35 ld.so.cache
+-rw-r--r--  1 root root       34 авг.  23  2012 ld.so.conf
+-rw-r--r--  1 root root      267 апр.  19  2012 legal
+-rw-r--r--  1 root root       26 дек.  20  2011 libao.conf
+-rw-r--r--  1 root root     2290 февр. 29  2012 libuser.conf
+-rw-r--r--  1 root root     2570 авг.   5  2010 locale.alias
+-rw-r--r--  1 root root     1308 дек.  13  2012 locale.nopurge
+-rw-r--r--  1 root root     1183 янв.   5  2017 localtime
+-rw-r--r--  1 root root    10551 апр.   9  2012 login.defs
+-rw-r--r--  1 root root      599 окт.   4  2011 logrotate.conf
+-rw-r--r--  1 root root     3279 авг.  11  2011 lsb-base-logging.sh
+-rw-r--r--  1 root root      106 июля  30  2014 lsb-release
+-rw-r--r--  1 root root    15752 июля  25  2009 ltrace.conf
+-rw-r--r--  1 root root      111 нояб.  1  2011 magic
+-rw-r--r--  1 root root      111 нояб.  1  2011 magic.mime
+-rw-r--r--  1 root root    22894 марта 15  2017 mailcap
+-rw-r--r--  1 root root      449 нояб. 15  2010 mailcap.order
+-rw-r--r--  1 root root     5173 апр.   1  2012 manpath.config
+-rw-r--r--  1 root root    23958 нояб. 15  2010 mime.types
+-rw-r--r--  1 root root      264 февр. 22  2012 miredo.conf
+-rw-r--r--  1 root root      956 марта 31  2012 mke2fs.conf
+-rw-r--r--  1 root root      213 апр.  30  2013 modules
+-rw-r--r--  1 root root      202 сент. 21  2012 modules~
+lrwxrwxrwx  1 root root       13 сент. 21  2012 motd -> \var\run\motd
+-rw-r--r--  1 root root     1058 янв.  28 14:09 mtab
+-rw-------  1 root denis       0 сент. 21  2012 mtab.fuselock
+-rw-r--r--  1 root root      624 мая   16  2010 mtools.conf
+-rw-r--r--  1 root root     1911 мая   21  2011 nail.rc
+-rw-r--r--  1 root root     8453 дек.   4  2010 nanorc
+-rw-r--r--  1 root root     2064 нояб. 24  2006 netscsid.conf
+-rw-r--r--  1 root root       91 апр.  19  2012 networks
+-rw-r--r--  1 root root      495 сент. 24  2012 nsswitch.conf
+-rw-r--r--  1 root root      513 авг.  23  2012 nsswitch.conf~
+-rw-r--r--  1 root root        0 марта 13  2012 odbc.ini
+-rw-r--r--  1 root root        0 сент. 21  2012 odbcinst.ini
+-rw-r--r--  1 root root      141 июля  30  2014 os-release
+-rw-r--r--  1 root root      552 февр.  9  2012 pam.conf
+-rw-r--r--  1 root root        3 сент. 21  2012 papersize
+-rw-r--r--  1 root root     1870 дек.  13  2015 passwd
+-rw-------  1 root root     1870 дек.  13  2015 passwd-
+-rw-r--r--  1 root root     7649 авг.  23  2012 pnm2ppa.conf
+-rw-r--r--  1 root root      351 июня  11  2013 popularity-contest.conf
+lrwxrwxrwx  1 root root       22 июня  10  2015 printcap -> \var\run\cups\printcap
+-rw-r--r--  1 root root      665 авг.  14  2014 profile
+-rw-r--r--  1 root root     2933 февр. 14  2012 protocols
+-rwxr-xr-x  1 root root      326 мая    2  2013 rc.local
+-rwxr-xr-x  1 root root      306 авг.  23  2012 rc.local~
+lrwxrwxrwx  1 root root       29 сент. 21  2012 resolv.conf -> ..\run\resolvconf\resolv.conf
+-rwxr-xr-x  1 root root      268 марта 31  2012 rmt
+-rw-r--r--  1 root root      887 февр. 14  2012 rpc
+-rw-r--r--  1 root root     1338 авг.  20  2014 rsyslog.conf
+-rw-r--r--  1 root root     3902 апр.   9  2012 securetty
+-rw-r--r--  1 root root    10333 февр. 21  2012 sensors3.conf
+-rw-r--r--  1 root root    19281 февр. 14  2012 services
+-rw-r-----  1 root shadow   1160 дек.  13  2015 shadow
+-rw-------  1 root root     1160 дек.  13  2015 shadow-
+-rw-r--r--  1 root root       73 авг.  23  2012 shells
+-rw-r--r--  1 root root     7059 июня  20  2011 smartd.conf
+-rw-r--r--  1 root root     1132 мая   18  2011 smi.conf
+-r--r-----  1 root root      723 янв.  31  2012 sudoers
+-rw-r--r--  1 root root       19 мая    1  2011 su-to-rootrc
+-rw-r--r--  1 root root     2100 дек.  14  2012 sysctl.conf
+-rw-r--r--  1 root root     2083 дек.   5  2011 sysctl.conf~
+-rw-r--r--  1 root root       10 янв.   5  2017 timezone
+-rw-r--r--  1 root root      645 февр. 15  2012 ts.conf
+-rw-r--r--  1 root root     1260 мая    2  2011 ucf.conf
+-rw-r--r--  1 root root      326 авг.  17  2011 updatedb.conf
+-rw-r--r--  1 root root      572 марта  7  2012 usb_modeswitch.conf
+-rw-r--r--  1 root root       51 нояб. 30  2012 vdpau_wrapper.cfg
+lrwxrwxrwx  1 root root       23 сент. 21  2012 vtrgb -> \etc\alternatives\vtrgb
+-rw-r--r--  1 root root     4496 февр. 11  2012 wgetrc
+-rw-r--r--  1 root root     1343 янв.  10  2007 wodim.conf
+-rw-r--r--  1 root root      349 янв.  30  2012 zsh_command_not_found
+\etc
+\etc\pkcs11
+\etc\firefox
+\etc\acpi
+\etc\security
+\etc\calendar
+\etc\lightdm
+\etc\cron.weekly
+\etc\insserv.conf.d
+\etc\dhcp3
+\etc\resolvconf
+\etc\apt
+\etc\libreoffice
+\etc\dhcp
+\etc\init
+\etc\sane.d
+\etc\libpaper.d
+\etc\ssl
+\etc\samba
+\etc\cron.daily
+\etc\default
+\etc\pulse
+\etc\ldap
+\etc\update-manager
+\etc\purple
+\etc\chromium-browser
+\etc\compizconfig
+\etc\fonts
+\etc\profile.d
+\etc\alternatives
+\etc\opt
+\etc\newt
+\etc\vim
+\etc\bluetooth
+\etc\rcS.d
+\etc\fstab.d
+\etc\timidity
+\etc\maven
+\etc\ufw
+\etc\ssh
+\etc\gnome-settings-daemon
+\etc\doc-base
+\etc\checkbox.d
+\etc\nginx
+\etc\bonobo-activation
+\etc\apm
+\etc\wildmidi
+\etc\usb_modeswitch.d
+\etc\ConsoleKit
+\etc\avahi
+\etc\cron.monthly
+\etc\lsb-base
+\etc\bash_completion.d
+\etc\rc3.d
+\etc\grub.d
+\etc\kernel
+\etc\gnome-vfs-2.0
+\etc\gtk-3.0
+\etc\skel
+\etc\update-motd.d
+\etc\fop.conf.d
+\etc\rsyslog.d
+\etc\dbus-1
+\etc\foomatic
+\etc\NetworkManager
+\etc\python2.7
+\etc\dpkg
+\etc\console-setup
+\etc\pm
+\etc\ld.so.conf.d
+\etc\ghostscript
+\etc\pam.d
+\etc\systemd
+\etc\initramfs-tools
+\etc\cron.hourly
+\etc\sensors.d
+\etc\snmp
+\etc\python
+\etc\X11
+\etc\logrotate.d
+\etc\mysql
+\etc\hp
+\etc\gnome-app-install
+\etc\iproute2
+\etc\dkms
+\etc\logcheck
+\etc\sudoers.d
+\etc\xdg
+\etc\apparmor
+\etc\ODBCDataSources
+\etc\authbind
+\etc\pcmcia
+\etc\cupshelpers
+\etc\velocity
+\etc\mono
+\etc\apport
+\etc\wireshark
+\etc\gtk-2.0
+\etc\libnl-3
+\etc\tomcat7
+\etc\kbd
+\etc\update-notifier
+\etc\cups
+\etc\groff
+\etc\at-spi2
+\etc\sound
+\etc\emacs
+\etc\akonadi
+\etc\rc4.d
+\etc\rc6.d
+\etc\openal
+\etc\sysctl.d
+\etc\network
+\etc\gimp
+\etc\ImageMagick
+\etc\polkit-1
+\etc\menu-methods
+\etc\rc1.d
+\etc\chatscripts
+\etc\ifplugd
+\etc\apparmor.d
+\etc\smartmontools
+\etc\perl
+\etc\vga
+\etc\gconf
+\etc\vbox
+\etc\esound
+\etc\wpa_supplicant
+\etc\java-6-openjdk
+\etc\menu
+\etc\cngplp
+\etc\depmod.d
+\etc\scalpel
+\etc\ppp
+\etc\rc2.d
+\etc\modprobe.d
+\etc\init.d
+\etc\xml
+\etc\java
+\etc\obex-data-server
+\etc\apache2
+\etc\.java
+\etc\conky
+\etc\xul-ext
+\etc\icedtea-web
+\etc\gnome
+\etc\brltty
+\etc\terminfo
+\etc\gdb
+\etc\udev
+\etc\rc5.d
+\etc\speech-dispatcher
+\etc\UPower
+\etc\ginn
+\etc\rc0.d
+\etc\miredo
+\etc\Wireless
+\etc\thunderbird
+\etc\insserv
+\etc\dictionaries-common
+\etc\ca-certificates
+\etc\sgml
+\etc\cron.d
+\etc\vlc
+\etc\mplayer
+root:x:0:0:root:\root:\bin\bash
+daemon:x:1:1:daemon:\usr\sbin:\bin\sh
+bin:x:2:2:bin:\bin:\bin\sh
+sys:x:3:3:sys:\dev:\bin\sh
+sync:x:4:65534:sync:\bin:\bin\sync
+games:x:5:60:games:\usr\games:\bin\sh
+man:x:6:12:man:\var\cache\man:\bin\sh
+lp:x:7:7:lp:\var\spool\lpd:\bin\sh
+mail:x:8:8:mail:\var\mail:\bin\sh
+news:x:9:9:news:\var\spool\news:\bin\sh
+uucp:x:10:10:uucp:\var\spool\uucp:\bin\sh
+proxy:x:13:13:proxy:\bin:\bin\sh
+www-data:x:33:33:www-data:\var\www:\bin\sh
+backup:x:34:34:backup:\var\backups:\bin\sh
+list:x:38:38:Mailing List Manager:\var\list:\bin\sh
+irc:x:39:39:ircd:\var\run\ircd:\bin\sh
+gnats:x:41:41:Gnats Bug-Reporting System (admin):\var\lib\gnats:\bin\sh
+nobody:x:65534:65534:nobody:\nonexistent:\bin\sh
+libuuid:x:100:101::\var\lib\libuuid:\bin\sh
+syslog:x:101:103::\home\syslog:\bin\false
+messagebus:x:102:105::\var\run\dbus:\bin\false
+colord:x:103:108:colord colour management daemon,,,:\var\lib\colord:\bin\false
+lightdm:x:104:111:Light Display Manager:\var\lib\lightdm:\bin\false
+whoopsie:x:105:114::\nonexistent:\bin\false
+avahi-autoipd:x:106:117:Avahi autoip daemon,,,:\var\lib\avahi-autoipd:\bin\false
+avahi:x:107:118:Avahi mDNS daemon,,,:\var\run\avahi-daemon:\bin\false
+usbmux:x:108:46:usbmux daemon,,,:\home\usbmux:\bin\false
+kernoops:x:109:65534:Kernel Oops Tracking Daemon,,,:\:\bin\false
+pulse:x:110:119:PulseAudio daemon,,,:\var\run\pulse:\bin\false
+rtkit:x:111:122:RealtimeKit,,,:\proc:\bin\false
+speech-dispatcher:x:112:29:Speech Dispatcher,,,:\var\run\speech-dispatcher:\bin\sh
+hplip:x:113:7:HPLIP system user,,,:\var\run\hplip:\bin\false
+saned:x:114:123::\home\saned:\bin\false
+denis:x:1000:1000:Denis,,,:\home\denis:\bin\bash
+guest-taUO7n:x:115:125:Guest,,,:\tmp\guest-taUO7n:\bin\bash
+tomcat7:x:116:128::\usr\share\tomcat7:\bin\false
+mysql:x:117:129:MySQL Server,,,:\nonexistent:\bin\false
+miredo:x:118:65534::\var\run\miredo:\bin\false
+root:x:0:0:root:\root:\bin\bash
+root:x:0:
+daemon:x:1:
+bin:x:2:
+sys:x:3:
+adm:x:4:denis
+tty:x:5:
+disk:x:6:
+lp:x:7:
+mail:x:8:
+news:x:9:
+uucp:x:10:
+man:x:12:
+proxy:x:13:
+kmem:x:15:
+dialout:x:20:
+fax:x:21:
+voice:x:22:
+cdrom:x:24:denis
+floppy:x:25:
+tape:x:26:
+sudo:x:27:denis
+audio:x:29:pulse
+dip:x:30:denis
+www-data:x:33:
+backup:x:34:
+operator:x:37:
+list:x:38:
+irc:x:39:
+src:x:40:
+gnats:x:41:
+shadow:x:42:
+utmp:x:43:
+video:x:44:
+sasl:x:45:
+plugdev:x:46:denis
+staff:x:50:
+games:x:60:
+users:x:100:
+nogroup:x:65534:
+libuuid:x:101:
+crontab:x:102:
+syslog:x:103:
+fuse:x:104:
+messagebus:x:105:
+bluetooth:x:106:
+scanner:x:107:
+colord:x:108:
+lpadmin:x:109:denis
+ssl-cert:x:110:
+lightdm:x:111:
+nopasswdlogin:x:112:
+netdev:x:113:
+whoopsie:x:114:
+mlocate:x:115:
+ssh:x:116:
+avahi-autoipd:x:117:
+avahi:x:118:
+pulse:x:119:
+pulse-access:x:120:
+utempter:x:121:
+rtkit:x:122:
+saned:x:123:
+denis:x:1000:
+sambashare:x:124:denis
+guest-taUO7n:x:125:
+winbindd_priv:x:126:
+vboxusers:x:127:
+tomcat7:x:128:
+mysql:x:129:
+root:x:0:
+mysql:x:129:

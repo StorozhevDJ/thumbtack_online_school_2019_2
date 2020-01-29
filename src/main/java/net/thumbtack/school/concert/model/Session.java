@@ -1,7 +1,10 @@
 package net.thumbtack.school.concert.model;
 
+import java.util.Objects;
+
 public class Session {
 
+    private String login;
     private String token;
 
     public Session() {
@@ -20,30 +23,25 @@ public class Session {
         this.token = token;
     }
 
+    public String getLogin() {
+        return login;
+    }
+
+    public void setLogin(String login) {
+        this.login = login;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Session)) return false;
+        Session session = (Session) o;
+        return Objects.equals(login, session.login) &&
+                Objects.equals(token, session.token);
+    }
+
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((token == null) ? 0 : token.hashCode());
-        return result;
+        return Objects.hash(login, token);
     }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        Session other = (Session) obj;
-        if (token == null) {
-            if (other.token != null)
-                return false;
-        } else if (!token.equals(other.token))
-            return false;
-        return true;
-    }
-
-
 }

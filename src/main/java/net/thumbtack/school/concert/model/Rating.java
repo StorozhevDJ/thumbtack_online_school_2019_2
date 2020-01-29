@@ -1,7 +1,10 @@
 package net.thumbtack.school.concert.model;
 
+import java.util.Objects;
+
 public class Rating {
 
+	private int id;
     private long rating;
     private String songId;
     private String user;
@@ -40,39 +43,27 @@ public class Rating {
         this.user = user;
     }
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + (int) (rating ^ (rating >>> 32));
-		result = prime * result + ((songId == null) ? 0 : songId.hashCode());
-		result = prime * result + ((user == null) ? 0 : user.hashCode());
-		return result;
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
 	}
 
 	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Rating other = (Rating) obj;
-		if (rating != other.rating)
-			return false;
-		if (songId == null) {
-			if (other.songId != null)
-				return false;
-		} else if (!songId.equals(other.songId))
-			return false;
-		if (user == null) {
-			if (other.user != null)
-				return false;
-		} else if (!user.equals(other.user))
-			return false;
-		return true;
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof Rating)) return false;
+		Rating rating1 = (Rating) o;
+		return id == rating1.id &&
+				rating == rating1.rating &&
+				Objects.equals(songId, rating1.songId) &&
+				Objects.equals(user, rating1.user);
 	}
-    
-    
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id, rating, songId, user);
+	}
 }

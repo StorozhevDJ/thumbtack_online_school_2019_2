@@ -1,8 +1,5 @@
 package net.thumbtack.school.concert.daoimpl;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import net.thumbtack.school.concert.dao.RatingDao;
 import net.thumbtack.school.concert.database.DataBase;
 import net.thumbtack.school.concert.model.Rating;
@@ -10,13 +7,29 @@ import org.apache.ibatis.session.SqlSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class RatingDaoMyBatisImpl extends DaoMyBatisImplBase implements RatingDao {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RatingDaoMyBatisImpl.class);
 
     @Override
     public boolean add(Rating rating) {
-        return new DataBase().insertRating(rating);
+        LOGGER.debug("DAO insert Rating {}", rating);
+        try (SqlSession sqlSession = getSession()) {
+            try {
+                getRatingMapper(sqlSession).insert(rating);
+            } catch (RuntimeException ex) {
+                LOGGER.info("Can't insert Rating {}. {}", rating, ex.getCause().getMessage());
+                sqlSession.rollback();
+                //throw ex;
+                //throw new ServerException(ServerErrorCode.OTHER_ERROR, ex.getMessage());
+                return false;
+            }
+            sqlSession.commit();
+            return true;
+        }
     }
 
     @Override

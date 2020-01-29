@@ -1,9 +1,11 @@
 package net.thumbtack.school.concert.model;
 
 import java.util.List;
+import java.util.Objects;
 
 public class Song {
 
+    private int id;
     private String songName; // название песни
     private List<String> composer; // композитора
     private List<String> author; // автора слов
@@ -72,57 +74,30 @@ public class Song {
         this.userLogin = userLogin;
     }
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((author == null) ? 0 : author.hashCode());
-		result = prime * result + ((composer == null) ? 0 : composer.hashCode());
-		result = prime * result + length;
-		result = prime * result + ((singer == null) ? 0 : singer.hashCode());
-		result = prime * result + ((songName == null) ? 0 : songName.hashCode());
-		result = prime * result + ((userLogin == null) ? 0 : userLogin.hashCode());
-		return result;
-	}
+    public int getId() {
+        return id;
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Song other = (Song) obj;
-		if (author == null) {
-			if (other.author != null)
-				return false;
-		} else if (!author.equals(other.author))
-			return false;
-		if (composer == null) {
-			if (other.composer != null)
-				return false;
-		} else if (!composer.equals(other.composer))
-			return false;
-		if (length != other.length)
-			return false;
-		if (singer == null) {
-			if (other.singer != null)
-				return false;
-		} else if (!singer.equals(other.singer))
-			return false;
-		if (songName == null) {
-			if (other.songName != null)
-				return false;
-		} else if (!songName.equals(other.songName))
-			return false;
-		if (userLogin == null) {
-			if (other.userLogin != null)
-				return false;
-		} else if (!userLogin.equals(other.userLogin))
-			return false;
-		return true;
-	}
+    public void setId(int id) {
+        this.id = id;
+    }
 
-    
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Song)) return false;
+        Song song = (Song) o;
+        return id == song.id &&
+                length == song.length &&
+                Objects.equals(songName, song.songName) &&
+                Objects.equals(composer, song.composer) &&
+                Objects.equals(author, song.author) &&
+                Objects.equals(singer, song.singer) &&
+                Objects.equals(userLogin, song.userLogin);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, songName, composer, author, singer, length, userLogin);
+    }
 }

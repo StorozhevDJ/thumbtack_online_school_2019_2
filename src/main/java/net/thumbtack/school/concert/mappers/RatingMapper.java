@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface RatingMapper {
 
-    void add(Rating rating);
+    void insert(Rating rating);
 
     void add(List<Rating> ratings);
 

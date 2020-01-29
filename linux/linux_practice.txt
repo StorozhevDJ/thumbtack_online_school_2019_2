@@ -1,0 +1,207 @@
+
+
+# Создать файл hello.txt  с текстом “Hello world”.
+echo "Hello world" > hello.txt
+
+# Добавить в этот файл (разделяя пустыми строками)
+# свои имя и фамилию, 
+echo "Denis Storozhev" >> hello.txt
+
+# текущую дату 
+date >> hello.txt
+
+# имя пользователя
+whoami >> hello.txt
+
+# содержимое домашнего каталога (нерекурсивно, список имен файлов, включая скрытые)
+ls ~/ -a  >> hello.txt
+
+# содержимое корневого каталога (нерекурсивно)
+ls /  >> hello.txt
+
+# содержимое каталога /etc
+ls /etc  >> hello.txt
+
+# только файлы в каталоге /etc
+ls /etc -l|grep -v ^d >> hello.txt
+
+# только подкаталоги в каталоге /etc (нерекурсивно)
+find /etc -maxdepth 1 -type d >> hello.txt
+
+# содержимое файла /etc/passwd
+cat /etc/passwd >> hello.txt
+
+# первый столбец файла /etc/passwd (список юзеров)
+head -1 /etc/passwd >> hello.txt
+
+# содержимое файла /etc/group
+cat /etc/group >> hello.txt
+
+# первый столбец файла /etc/group (список групп)
+head -1 /etc/group >> hello.txt
+
+# первую и последнюю строки файла /etc/group
+head -1 /etc/group | tail -1 /etc/group >> hello.txt
+
+#Вывести hello.txt с прокруткой
+less hello.txt
+
+#Разбить hello.txt на файлы размером 1к, затем собрать обратно.
+split -b 1024 hello.txt hello.txt.
+cat hello.txt.* > new_hello.txt
+
+#Заменить в hello.txt ‘/’ на ‘\’
+cat hello.txt | tr '/' '\\' > hello.txt
+
+#Скопировать /var/log в текущий каталог (кроме файлов без доступа) с сохранением времени модификации. В текущем каталоге должен появиться ./var/log
+mkdir var
+cp -ap /var/log ./var/log
+# Вариант 2
+tar -cpf - /var/log | ( cd . && tar -xvpf - )
+
+#Для полученной копии
+#    вывести объем занимаемого места
+du -s ./var
+
+#    вывести все файлы, начинающиеся на ‘a’ (не каталоги)
+find ./var -type f -name "a*"
+
+#    удалить все файлы, начинающиеся на ‘a’ (не каталоги). 
+find . -name "a*" | xargs rm
+# Как убедиться, что выполнено правильно?
+find ./var -type f -name "a*"
+
+#    вывести все файлы со временем последней модификации больше 5 дней;
+find . -type f -mtime +5
+
+#    вывести все файлы со временем последней модификации меньше 5 дней;
+find . -type f -mtime -5
+
+#создать каталог archive 
+mkdir archive
+# и переместить туда файлы (не каталоги) со временем     модификации больше 5 дней.  
+find ./var -type f -mtime +5 -print0 | xargs -0 mv -t ./archive 
+
+# * переместить файлы как в прошлом задании, но сохраняя структуру каталогов.
+# Вариант через файл архива
+find ./var -mtime +5 | xargs -I % sh -c 'tar -rf arc.tar % ; rm -f %'
+tar -C "archive" -xvf arc.tar
+# Вариант 2
+find ./var -mtime +5 | xargs -I % sh -c 'tar cf - % | (cd ./archive && tar xvf -) ; rm -f %'
+
+
+# Найти все файлы (рекурсивно) с расширением jar в каталогах /opt и /usr.
+find /opt /usr -name *.jar -type f
+
+# Найти все каталоги, содержащие файлы с расширением jar в каталогах /opt и /usr, вывести по одному разу.
+find /opt /usr -name *.jar -type f | xargs -l1 dirname | uniq -u
+
+# Найти все файлы с расширением java, созданные месяц назад плюс-минус одна неделя.
+find ./ -name *.java -mtime -38  -mtime +24
+
+# В двух заданных каталогах должен быть одинаковый набор файлов. Нужно в этом убедиться, т.е. проверить, что совпадают множества файлов, имена и содержимое.
+diff -qr ./dir1/ ./dir2/
+# вариант через подсчет MD5SUM, например для проверки успешности копировния на другой ПК
+find ./dir/ -type f | xargs md5sum | sort | md5sum 
+
+# Создать с помощью touch несколько файлов 1.MP3, 2.MP3… 
+touch {1..9}.MP3
+
+# Написать команду для группового переименования расширений в нижний регистр, т.е. должно получиться 1.mp3, 2.mp3...
+# Вариант 1 изменит полностью всё имя
+rename -f 'y/A-Z/a-z/' *.MP3
+# Вариант 2 изменит тоолько регистр расширения
+rename -f 's/\.MP3/$\.mp3/' *.MP3
+
+
+# * Создать текстовый файл с каким либо русским текстом. Написать команду для его транслитерации.
+echo "Тестовый текст" > file.txt
+# По идее можно было бы сделать так, но tr не корректно работает с кириллицей UTF-8
+cat file.txt |tr "абвгдеёжзийклмнопрстуфхцчшщъыьэюяАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ" "abvgdeejziiklmnoprstufxc4ww'y'euqABVGDEEJZIIKLMNOPRSTUFXC4WW'Y'EUQ"
+# Менее красивый вариант преобразования строки
+echo "тестовый текст" | iconv -t koi-7
+# Вариант с использованием стороннего ПО, конвертера uniconv, входящего в пакет yudit
+cat file.txt|uniconv -encode Russian-Translit
+# Способ с использованием регулярок и sed, который в задании не рекомендовалось использовать.
+cat file.txt | sed "y/абвгдезийклмнопрстуфхъьы/abvgdezijklmnoprstufx\"'y/;s/ж/zh/g;s/ш/sh/g;s/ч/ch/g;s/щ/shh/g;s/ю/yu/g;s/я/ya/g;s/э/eh/g"
+
+# Установить вручную (без apt-get) java 8 и maven последней версии .
+# Добавить путь запуска в переменную PATH, создать переменную M2_HOME.
+# https://www.8host.com/blog/ruchnaya-ustanovka-oracle-java-na-debian-ili-ubuntu/
+# https://download.oracle.com/otn/java/jdk/8u241-b07/1f5b5a70bf22433b84d0e960903adac8/jdk-8u241-linux-x64.tar.gz
+# https://linuxize.com/post/how-to-install-apache-maven-on-ubuntu-18-04/
+# https://www-us.apache.org/dist/maven/maven-3/3.6.3/binaries/
+
+sudo su
+mkdir /opt/jdk
+tar -zxf jdk-8*.tar.gz -C /opt/jdk
+ls /opt/jdk
+update-alternatives --install /usr/bin/java java /opt/jdk/jdk1.8.0_241/bin/java 100
+update-alternatives --install /usr/bin/javac javac /opt/jdk/jdk1.8.0_241/bin/javac 100
+
+wget  https://www-us.apache.org/dist/maven/maven-3/3.6.3/binaries/apache-maven-3.6.3-bin.tar.gz -P /tmp
+sudo tar xf /tmp/apache-maven-*.tar.gz -C /opt
+sudo ln -s /opt/apache-maven-3.6.3 /opt/maven
+
+nano /etc/profile
+# Добавление в конец файла 4х строк
+    export JAVA_HOME=/opt/jdk/jdk1.8.0_241
+    export JRE_HOME=${JAVA_HOME}/jre
+    export PATH=$PATH:${M2_HOME}/bin:${JAVA_HOME}/bin:${JAVA_HOME}/jre/bin
+    export M2_HOME=/opt/maven
+
+exit
+    
+java -version
+mvn -version
+
+# Выполнить сборку java проекта.
+cd /dir/to/project
+mvn clean package
+
+# Проанализировать загрузку процессора, объем памяти.
+ps
+top
+free
+
+# Вывести информацию по использованию места в файловой системе.
+df
+du --max-depth=1 -h /
+
+# Найти самые большие каталоги (рекурсивно до уровня 2).
+sudo du -a / --max-depth=2 | sort -n -r | head -n 5
+
+# Users, groups, access rights
+# Создать двух юзеров (напр., ivanov, petrov),
+sudo adduser --no-create-home newuser1
+sudo adduser --no-create-home newuser2
+sudo addgroup newgroup
+sudo gpasswd -a newuser1 newgroup
+sudo gpasswd -a newuser2 newgroup
+
+# создать каталог /shared и дать полный доступ этим двум юзерам. У остальных не должно быть доступа даже на чтение.
+sudo mkdir newdir
+sudo chown newuser1:newgroup newdir
+sudo chmod 770 newdir
+
+# Pipes
+# Установить MySQL и создать базу ttschool, заполнить данными. Выполнить дамп базы в файл посредством pipe, затем восстановить из файла.
+sudo apt-get update
+sudo apt-get install mysql-server
+sudo systemctl status mysql
+sudo mysql_secure_installation
+
+sudo mysql
+CREATE USER 'ttuser'@'localhost' IDENTIFIED BY 'password';
+GRANT ALL PRIVILEGES ON *.* TO 'ttuser'@'localhost' WITH GRANT OPTION;
+
+mkfifo mysql_pipe
+gzip -9 -c < mysql_pipe > db_dump.gz &
+mysqldump -u test -p ttschool group school > mysql_pipe
+rm mysql_pipe
+
+mkfifo mysql_pipe
+gunzip -c db_dump.gz > mysql_pipe &
+mysql -p -u test ttschool < mysql_pipe
+rm mysql_pipe
+

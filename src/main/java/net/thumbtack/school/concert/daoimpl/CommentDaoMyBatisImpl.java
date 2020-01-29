@@ -15,7 +15,20 @@ public class CommentDaoMyBatisImpl extends DaoMyBatisImplBase implements Comment
 
     @Override
     public boolean add(Comment comment) {
-        return new DataBase().insertComment(comment);
+        LOGGER.debug("DAO insert Rating {}", comment);
+        try (SqlSession sqlSession = getSession()) {
+            try {
+                getCommentMapper(sqlSession).insert(comment);
+            } catch (RuntimeException ex) {
+                LOGGER.info("Can't insert Rating {}. {}", comment, ex.getCause().getMessage());
+                sqlSession.rollback();
+                //throw ex;
+                //throw new ServerException(ServerErrorCode.OTHER_ERROR, ex.getMessage());
+                return false;
+            }
+            sqlSession.commit();
+            return true;
+        }
     }
 
     @Override
