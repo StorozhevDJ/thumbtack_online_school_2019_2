@@ -1,0 +1,225 @@
+interface: any
+filter: (ip or ip6) and ( port 80 )
+####
+T 192.168.1.100:60428 -> 192.168.1.87:80 [AP]
+GET /ttschool/ HTTP/1.1.
+Host: 192.168.1.87.
+Connection: keep-alive.
+Upgrade-Insecure-Requests: 1.
+User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.120 Safari/537.36 OPR/64.0.3417.73.
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3.
+Accept-Encoding: gzip, deflate.
+Accept-Language: ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7.
+.
+
+##
+T 192.168.1.87:80 -> 192.168.1.100:60428 [AP]
+HTTP/1.1 200 .
+Server: nginx/1.10.3 (Ubuntu).
+Date: Tue, 04 Feb 2020 10:40:51 GMT.
+Content-Type: text/html.
+Transfer-Encoding: chunked.
+Connection: keep-alive.
+ETag: W/"617-1580812784000".
+Last-Modified: Tue, 04 Feb 2020 10:39:44 GMT.
+Content-Encoding: gzip.
+.
+145.
+...........R.N.1......@..D..9...D...B.osg....F...#.A.4.v.....].<......z2z1.S.-l...l1..{.m...$...~D.l....
+.*.z..#8..h9k...-..s..|Z..H^.n.'ke:...,..`...y.b..{.s.W....El..=.9.-.}]6..#.Hwu%~F........1..{...n$.h%.....Mj.......D6.}*;..B#...
+.G2>eq........:D..m....9.......zJ7.QR.$.....cy.K.).......T.*......2.....k.J_!......*..i....
+0.
+.
+
+##
+T 192.168.1.100:60428 -> 192.168.1.87:80 [AP]
+GET /ttschool/img.png HTTP/1.1.
+Host: 192.168.1.87.
+Connection: keep-alive.
+User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.120 Safari/537.36 OPR/64.0.3417.73.
+Accept: image/webp,image/apng,image/*,*/*;q=0.8.
+Referer: http://192.168.1.87/ttschool/.
+Accept-Encoding: gzip, deflate.
+Accept-Language: ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7.
+.
+
+#
+T 192.168.1.87:80 -> 192.168.1.100:60428 [A]
+HTTP/1.1 200 .
+Server: nginx/1.10.3 (Ubuntu).
+Date: Tue, 04 Feb 2020 10:40:51 GMT.
+Content-Type: image/png.
+Content-Length: 5103.
+Connection: keep-alive.
+Accept-Ranges: bytes.
+ETag: W/"5103-1556922449000".
+Last-Modified: Fri, 03 May 2019 22:27:29 GMT.
+.
+.PNG.
+.
+....IHDR.......\........J....pHYs.................IDATx..]klSg.~.$.F8t.dZw....I..*j.v.....!7
+...1.2.b.]. !.QQ..i......N;i..3?..H.!.m..6.......S....S"...uh(g.8..;.....c..d...sy...{..... .x.XUS....bB......2.dV.T1'.A.....=....#..y.P.P(..X..c........}.r...G.H:<.._....je\%O2...M.&.n.;n.@..o.H
+...'Sn.y....B!F....WO .C....p...f..~_s..c.!.Y]...0c.....e.WU..31.........rE..3.c.X,..0.%...i..Ew:..um..k.....n]......i....s.?...r=.....d.1..4g.Ew./....}m6.........>./5....
+.@..si}.R6...2r......)0..aC....+."...w.B.....W..1...*.$.E'..so.ulm....f.....E.......].<..X,.l.#.9..soD.....7...._.|..aG.J.............. ...B........Q5..|...]hm..r.C..8..JE.RW.QJ.,..]S.t)7...o...hw..6[..9-@.H.Y(4._^U..ww.B....o...$..Z72.=^.\G..6.>O...".t.Q.].>[
+i..uN.s.`..)......|u.c..$%..eI~.H.....y..S.H
+.T.5.}.....O..GyE.~..9,vU...J....=A.y=n...9._....0}..p5...|.,.rB.r:.8..E.K.m...TVV..d.)........R..;.hl.N../4.....(+......nh=......D......
+.l.l.. |'..1$.....Oc......~.j8:..3R...:'.V:p..m..H..V...kRXII..|OR.9......n....F.C...@.t.M.(y .....r
+./4.<4.fj....f.F...\?}...5p.k...FB..)Y...s.um......9+=..d...$.i%.;...H-N&..*...Z7..W;QYYi1..CS7qh..N...$kv-M.)...1......<#).........L.?.W.....'aW`E.t.b6t...Dc3... .?.......0m@..5E.
+#
+T 192.168.1.87:80 -> 192.168.1.100:60428 [A]
+V.../..X_....{.e.....&Bs...)`"51-:K..... [..@
+.....u.Ub.......$..r5..M....
+~_3.v`$-..t.e..BV.K&+..7'..M=.&....;.....h.V:..~r
+H..".6.]..($.....)....F.9....U.............an$j.+....u.<....&B.........F...Wos.3:o.i3J....B..+.-.}...n.........%@$nF..wy|p.ilh..v
+M.D...N...|..........H......0}...`.sewE.k9.H..af..5.}.. f.....t.bMn.H6.i.SyE..&B....DbV.~.z.hi*.}......|...(.r.T.@&7....fh.....Z[.hf.m...k...LI.;.hl&.....N.Wg..."...h....H..D.......F
+...i.r:...x....9.2owwif...#hlhP.zZ.5..`w.'E$.i.D|....ZlM....-....D4..l.O... .:......I\.....[..@46.......cw.G..!a......(..C.z..X../.....H}}........."w....fI&3..$3#.w..p!mF..c.=-.R..'....wBs.Qh.&{.$B65.,.E6W.....h".....?=.$]..z.._.]Q.D.<......D_...Oc..f..5.f+Ly.....Y.|...c.8...j.jy........./''MU.H.a.9M..R..9:......)..z..2...w.....m..).7.....]....2...r.D.Q...q..}.....=.+W..d-..N!.M..! R........d.%.....f .....p...3'.C.....`......:...?:..K..T.u-..]..|!.....2..FZ;..;V7......<B.?......D...d.U..>x,Y.1..O.m#..f .<....5.u... x..y....v..O.....G..... .|.....M.}F.....c..h.Q...M.........L.{...%.YUu..i....XUu..... .4..g......5....TH....=N.;.....Ik.......f|x....y=n....gzM...%..8......._....X.....p.......*...)..r.X.kt^..]...#e.?...&.Go.<Ph...\...RY..._.}..........&Bp:.0..A.F2......../.....oE.K....q...."V"Yi.s]...m...U....mk....(x..D....wPQ..;^oJ..hl.#....T....;<."J@x..X.C.1...e.lDk..D.7.9Z.X__/....?#.Yy..%tmR.=4+...J...J......q.....(N......+V..H...k.ZrXu.d.j.Gc3i................c.+..L..R............,.YI...)-.|..
+#
+T 192.168.1.87:80 -> 192.168.1.100:60428 [A]
+v.J!....!....#Q.0)y=....xyE.z..[L.Ht.s.3
+...>x.KpUIKS)*......U..c.....{.b4....d.....G.-...P5....W.?../v\.R...e.O/.....>.2..`...a...W3....^..6.....E...g'n...NO...p)...vy.#.Rj..T.... V7.........%.$O...dd g8.fj.+....p\...Dc3.........b.{.&B....T.....l%.Dp\q;.P.N.R.9.WTh...!z=n464X..F..0.F":..z;.@W.D.1ZH;.v........>...q.Z.;..F.e..C'..t0..n....e...R.wH)+......<.z..c_XL.H.s#A~.t.E.,..f..D{6/...".D.!.v.a..e...m....B.IL.J..ag...!r....,..|..u.b.........S...........u....oU...^'S1../z5....Fi.~.'../,a....^.,..sQ.n..q._......IJ.a.X'...d..>..z..5.e..........5..b.r... .....jM..&-.J..GG.l.'e..N..p|p0+...\.qo.....P-..V....E.~g..i...I\z....|..V...!. ....d..(- ..+.>..|.^.*WF.....9.....,%....{./m..T...>.....#Ef...].?..T+........m:...&...$.....2.zX"1..k...H}|r.t}.i..{..N.....ER..zW0..!>../..S(..)Y...Y........g4....hC.g.E.f\l.6.*++-.ual"$........;...Q........W.....z.VU...iC.g.....H..L.HW.....!i8.f.........5.,:r2....GiZ@..!^D\.U..
+#..n..]...._...Q..;i.|R.w:...O|fZ...i..Db6.@........B.....hk.(.".L...l....F65 ....,.@..k.]....".t....{....n..)7G..}s.*...\..HWF"....V.....`..,43.(....C..."W.}..[..5...$.e.-..SP..mn..L..w:.Y0.M.$]]h.&.}g9L...VN.HW ...}!.z...Y..T...."s..}g9.::.E....U....a....Ht....=......../......[......!?2.oz...iF.....mM.......z.1[....g.:..]....}gN..J.H.^.N..mM..P<].L.L......#.x|f".....`U...k.."....v..v..k..Xe%...X.7.-.v..=...,."...........+W...=.H...7.....ti...Ew..".47....\....B."?...~.z.......M..t[.mt.L..I..j.+...b .v..........ID.A...m).
+#
+T 192.168.1.87:80 -> 192.168.1.100:60428 [AP]
+{.....S.H!.Eu..&.@............Buu...\..o.Z....F..W..r........ ...9M...ti..&.'..Lk..hq-.""$..G..K.y=nE....Z.....$.Eo.n.+.|?9........q......I1.../...#3.....N.F,.`J..J.C.|sN.......+...hG)m.K`R.$~..... ....tG.p8.tlmQ-....O..J......P)..f/.*.....@.e..X...ej....^.c.4..$...$.$9].vG..Q...Rw..vo....g+.............-..L.@..E4....B.......R.JW..,$.M.W...L.@...e.....fBt..*..MZ\...d.S*.A_s#....$.......e.f*..|..=<...l.H.P.D:!.^ c@
+.....-....eH.....$ ....o..C]...x....&...........t......F..a,#]...u..T.....4O........n..'`.^$..[,.....,+g.........SYYi..;l.L.-..z..v...@.....b.k...3_\....L.F..4.:......Dj..U...Bt.F..i)..v.q{.V.f...H...t.#m'....{f.-j..F..........w.#...n6....2:.....I.}..../m.B...U3..@..f.fu]F...b$:.(..B.....H.....JM9|A,.@..P.Ptu...s.#Y.*E..%.g*..0)C .fW.@2...\7........Em..R..{'m<....a....P.....m6@.....u.R@..8......5..W;u........z1.H.......\5!a......E~.4.:.v.....W....f\N`.-{....`J.`......O..r.....3m`q.<.H..$F.y........G..R`.jBd^l.6....[.._..$..XyS.....U..D3..........PZl...O.H.......jM..q....62.i......IEND.B`.
+###
+T 192.168.1.100:60428 -> 192.168.1.87:80 [AP]
+GET /ttschool/file2.txt HTTP/1.1.
+Host: 192.168.1.87.
+Connection: keep-alive.
+Upgrade-Insecure-Requests: 1.
+User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.120 Safari/537.36 OPR/64.0.3417.73.
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3.
+Referer: http://192.168.1.87/ttschool/.
+Accept-Encoding: gzip, deflate.
+Accept-Language: ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7.
+Cookie: cookie_string.
+.
+
+#
+T 192.168.1.87:80 -> 192.168.1.100:60428 [AP]
+HTTP/1.1 200 .
+Server: nginx/1.10.3 (Ubuntu).
+Date: Tue, 04 Feb 2020 10:40:54 GMT.
+Content-Type: text/plain.
+Content-Length: 6.
+Connection: keep-alive.
+Accept-Ranges: bytes.
+ETag: W/"6-1580806080000".
+Last-Modified: Tue, 04 Feb 2020 08:48:00 GMT.
+.
+file2
+
+####
+T 192.168.1.100:60428 -> 192.168.1.87:80 [AP]
+POST /ttschool/ HTTP/1.1.
+Host: 192.168.1.87.
+Connection: keep-alive.
+Content-Length: 257.
+Cache-Control: max-age=0.
+Origin: http://192.168.1.87.
+Upgrade-Insecure-Requests: 1.
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary5O0KCAUkp69xBMkH.
+User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.120 Safari/537.36 OPR/64.0.3417.73.
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3.
+Referer: http://192.168.1.87/ttschool/.
+Accept-Encoding: gzip, deflate.
+Accept-Language: ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7.
+Cookie: cookie_string.
+.
+------WebKitFormBoundary5O0KCAUkp69xBMkH.
+Content-Disposition: form-data; name="text".
+.
+example_post_request.
+------WebKitFormBoundary5O0KCAUkp69xBMkH.
+Content-Disposition: form-data; name="submit".
+.
+Send POST.
+------WebKitFormBoundary5O0KCAUkp69xBMkH--.
+
+#
+T 192.168.1.87:80 -> 192.168.1.100:60428 [AP]
+HTTP/1.1 200 .
+Server: nginx/1.10.3 (Ubuntu).
+Date: Tue, 04 Feb 2020 10:41:16 GMT.
+Content-Type: text/html.
+Transfer-Encoding: chunked.
+Connection: keep-alive.
+ETag: W/"617-1580812784000".
+Last-Modified: Tue, 04 Feb 2020 10:39:44 GMT.
+Content-Encoding: gzip.
+.
+145.
+...........R.N.1......@..D..9...D...B.osg....F...#.A.4.v.....].<......z2z1.S.-l...l1..{.m...$...~D.l....
+.*.z..#8..h9k...-..s..|Z..H^.n.'ke:...,..`...y.b..{.s.W....El..=.9.-.}]6..#.Hwu%~F........1..{...n$.h%.....Mj.......D6.}*;..B#...
+.G2>eq........:D..m....9.......zJ7.QR.$.....cy.K.).......T.*......2.....k.J_!......*..i....
+0.
+.
+
+##
+T 192.168.1.100:60428 -> 192.168.1.87:80 [AP]
+POST /ttschool/ HTTP/1.1.
+Host: 192.168.1.87.
+Connection: keep-alive.
+Content-Length: 646.
+Cache-Control: max-age=0.
+Origin: http://192.168.1.87.
+Upgrade-Insecure-Requests: 1.
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundaryhpI9wFkB21vP3QHb.
+User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.120 Safari/537.36 OPR/64.0.3417.73.
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3.
+Referer: http://192.168.1.87/ttschool/.
+Accept-Encoding: gzip, deflate.
+Accept-Language: ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7.
+Cookie: cookie_string.
+.
+
+#
+T 192.168.1.100:60428 -> 192.168.1.87:80 [AP]
+------WebKitFormBoundaryhpI9wFkB21vP3QHb.
+Content-Disposition: form-data; name="fileToUpload"; filename="fly-scan.desktop".
+Content-Type: application/x-desktop.
+.
+[Desktop Entry]
+Type=Application
+
+Name=Scan Dialog
+Name[ru]=........................
+
+GenericName=Scanner Dialog
+GenericName[ru]=............ .... ................
+
+Comment=Scan and save images
+Comment[ru]=...................... .. .................. ......................
+
+Exec=fly-scan
+Icon=scanner
+
+Categories=Graphics;Scanning;
+.
+------WebKitFormBoundaryhpI9wFkB21vP3QHb.
+Content-Disposition: form-data; name="submit".
+.
+Upload file.
+------WebKitFormBoundaryhpI9wFkB21vP3QHb--.
+
+##
+T 192.168.1.87:80 -> 192.168.1.100:60428 [AP]
+HTTP/1.1 200 .
+Server: nginx/1.10.3 (Ubuntu).
+Date: Tue, 04 Feb 2020 10:41:28 GMT.
+Content-Type: text/html.
+Transfer-Encoding: chunked.
+Connection: keep-alive.
+ETag: W/"617-1580812784000".
+Last-Modified: Tue, 04 Feb 2020 10:39:44 GMT.
+Content-Encoding: gzip.
+.
+145.
+...........R.N.1......@..D..9...D...B.osg....F...#.A.4.v.....].<......z2z1.S.-l...l1..{.m...$...~D.l....
+.*.z..#8..h9k...-..s..|Z..H^.n.'ke:...,..`...y.b..{.s.W....El..=.9.-.}]6..#.Hwu%~F........1..{...n$.h%.....Mj.......D6.}*;..B#...
+.G2>eq........:D..m....9.......zJ7.QR.$.....cy.K.).......T.*......2.....k.J_!......*..i....
+0.
+.
+
+#

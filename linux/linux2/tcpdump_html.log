@@ -1,0 +1,112 @@
+16:56:56.130187 IP (tos 0x0, ttl 64, id 37836, offset 0, flags [DF], proto TCP (6), length 52)
+    192.168.1.100.36068 > orangepipcplus.http: Flags [F.], cksum 0x295f (correct), seq 2886840088, ack 329553432, win 290, options [nop,nop,TS val 1254389679 ecr 2716535], length 0
+16:56:56.130767 IP (tos 0x0, ttl 64, id 55022, offset 0, flags [DF], proto TCP (6), length 52)
+    orangepipcplus.http > 192.168.1.100.36068: Flags [F.], cksum 0x8432 (incorrect -> 0x2411), seq 1, ack 1, win 172, options [nop,nop,TS val 2718010 ecr 1254389679], length 0
+16:56:56.133158 IP (tos 0x0, ttl 64, id 37837, offset 0, flags [DF], proto TCP (6), length 52)
+    192.168.1.100.36068 > orangepipcplus.http: Flags [.], cksum 0x2396 (correct), ack 2, win 290, options [nop,nop,TS val 1254389684 ecr 2718010], length 0
+16:57:02.616281 IP (tos 0x0, ttl 64, id 39631, offset 0, flags [DF], proto TCP (6), length 60)
+    192.168.1.100.36450 > orangepipcplus.http: Flags [S], cksum 0x9bec (correct), seq 923079795, win 29200, options [mss 1460,sackOK,TS val 1254396168 ecr 0,nop,wscale 7], length 0
+16:57:02.616623 IP (tos 0x0, ttl 64, id 0, offset 0, flags [DF], proto TCP (6), length 60)
+    orangepipcplus.http > 192.168.1.100.36450: Flags [S.], cksum 0x843a (incorrect -> 0xebc9), seq 2664025819, ack 923079796, win 14480, options [mss 1460,sackOK,TS val 2718659 ecr 1254396168,nop,wscale 7], length 0
+16:57:02.619563 IP (tos 0x0, ttl 64, id 39632, offset 0, flags [DF], proto TCP (6), length 52)
+    192.168.1.100.36450 > orangepipcplus.http: Flags [.], cksum 0x523f (correct), ack 1, win 229, options [nop,nop,TS val 1254396170 ecr 2718659], length 0
+16:57:02.620105 IP (tos 0x0, ttl 64, id 39633, offset 0, flags [DF], proto TCP (6), length 503)
+    192.168.1.100.36450 > orangepipcplus.http: Flags [P.], cksum 0x20c0 (correct), seq 1:452, ack 1, win 229, options [nop,nop,TS val 1254396171 ecr 2718659], length 451: HTTP, length: 451
+	GET /ttschool/ HTTP/1.1
+	Host: 192.168.1.87
+	Connection: keep-alive
+	Upgrade-Insecure-Requests: 1
+	User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.120 Safari/537.36 OPR/64.0.3417.73
+	Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3
+	Accept-Encoding: gzip, deflate
+	Accept-Language: ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7
+	
+16:57:02.620353 IP (tos 0x0, ttl 64, id 46367, offset 0, flags [DF], proto TCP (6), length 52)
+    orangepipcplus.http > 192.168.1.100.36450: Flags [.], cksum 0x8432 (incorrect -> 0x50e6), ack 452, win 122, options [nop,nop,TS val 2718659 ecr 1254396171], length 0
+16:57:02.634214 IP (tos 0x0, ttl 64, id 46368, offset 0, flags [DF], proto TCP (6), length 650)
+    orangepipcplus.http > 192.168.1.100.36450: Flags [P.], cksum 0x98bf (correct), seq 1:599, ack 452, win 122, options [nop,nop,TS val 2718660 ecr 1254396171], length 598: HTTP, length: 598
+	HTTP/1.1 200 
+	Server: nginx/1.10.3 (Ubuntu)
+	Date: Tue, 04 Feb 2020 10:57:02 GMT
+	Content-Type: text/html
+	Transfer-Encoding: chunked
+	Connection: keep-alive
+	ETag: W/"617-1580812784000"
+	Last-Modified: Tue, 04 Feb 2020 10:39:44 GMT
+	Content-Encoding: gzip
+	
+	145
+16:57:02.639665 IP (tos 0x0, ttl 64, id 39634, offset 0, flags [DF], proto TCP (6), length 52)
+    192.168.1.100.36450 > orangepipcplus.http: Flags [.], cksum 0x4e08 (correct), ack 599, win 238, options [nop,nop,TS val 1254396190 ecr 2718660], length 0
+16:57:02.731304 IP (tos 0x0, ttl 64, id 39635, offset 0, flags [DF], proto TCP (6), length 441)
+    192.168.1.100.36450 > orangepipcplus.http: Flags [P.], cksum 0xddab (correct), seq 452:841, ack 599, win 238, options [nop,nop,TS val 1254396283 ecr 2718660], length 389: HTTP, length: 389
+	GET /ttschool/img.png HTTP/1.1
+	Host: 192.168.1.87
+	Connection: keep-alive
+	User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.120 Safari/537.36 OPR/64.0.3417.73
+	Accept: image/webp,image/apng,image/*,*/*;q=0.8
+	Referer: http://192.168.1.87/ttschool/
+	Accept-Encoding: gzip, deflate
+	Accept-Language: ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7
+	
+16:57:02.743647 IP (tos 0x0, ttl 64, id 46369, offset 0, flags [DF], proto TCP (6), length 1500)
+    orangepipcplus.http > 192.168.1.100.36450: Flags [.], cksum 0x939d (correct), seq 599:2047, ack 841, win 130, options [nop,nop,TS val 2718671 ecr 1254396283], length 1448: HTTP, length: 1448
+	HTTP/1.1 200 
+	Server: nginx/1.10.3 (Ubuntu)
+	Date: Tue, 04 Feb 2020 10:57:02 GMT
+	Content-Type: image/png
+	Content-Length: 5103
+	Connection: keep-alive
+	Accept-Ranges: bytes
+	ETag: W/"5103-1556922449000"
+	Last-Modified: Fri, 03 May 2019 22:27:29 GMT
+	
+16:57:02.743921 IP (tos 0x0, ttl 64, id 46370, offset 0, flags [DF], proto TCP (6), length 1500)
+    orangepipcplus.http > 192.168.1.100.36450: Flags [.], cksum 0x1cdc (correct), seq 2047:3495, ack 841, win 130, options [nop,nop,TS val 2718671 ecr 1254396283], length 1448: HTTP
+16:57:02.744105 IP (tos 0x0, ttl 64, id 46371, offset 0, flags [DF], proto TCP (6), length 1500)
+    orangepipcplus.http > 192.168.1.100.36450: Flags [.], cksum 0xe37c (correct), seq 3495:4943, ack 841, win 130, options [nop,nop,TS val 2718671 ecr 1254396283], length 1448: HTTP
+16:57:02.744351 IP (tos 0x0, ttl 64, id 46372, offset 0, flags [DF], proto TCP (6), length 1065)
+    orangepipcplus.http > 192.168.1.100.36450: Flags [P.], cksum 0x498c (correct), seq 4943:5956, ack 841, win 130, options [nop,nop,TS val 2718671 ecr 1254396283], length 1013: HTTP
+16:57:02.749582 IP (tos 0x0, ttl 64, id 39636, offset 0, flags [DF], proto TCP (6), length 52)
+    192.168.1.100.36450 > orangepipcplus.http: Flags [.], cksum 0x408d (correct), ack 3495, win 283, options [nop,nop,TS val 1254396300 ecr 2718671], length 0
+16:57:02.751676 IP (tos 0x0, ttl 64, id 39637, offset 0, flags [DF], proto TCP (6), length 52)
+    192.168.1.100.36450 > orangepipcplus.http: Flags [.], cksum 0x36c6 (correct), ack 5956, win 322, options [nop,nop,TS val 1254396303 ecr 2718671], length 0
+16:57:07.842254 IP (tos 0x0, ttl 64, id 39638, offset 0, flags [DF], proto TCP (6), length 575)
+    192.168.1.100.36450 > orangepipcplus.http: Flags [P.], cksum 0x2076 (correct), seq 841:1364, ack 5956, win 322, options [nop,nop,TS val 1254401392 ecr 2718671], length 523: HTTP, length: 523
+	GET /ttschool/file2.txt HTTP/1.1
+	Host: 192.168.1.87
+	Connection: keep-alive
+	Upgrade-Insecure-Requests: 1
+	User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.120 Safari/537.36 OPR/64.0.3417.73
+	Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3
+	Referer: http://192.168.1.87/ttschool/
+	Accept-Encoding: gzip, deflate
+	Accept-Language: ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7
+	Cookie: cookie_string
+	
+16:57:07.855955 IP (tos 0x0, ttl 64, id 46373, offset 0, flags [DF], proto TCP (6), length 307)
+    orangepipcplus.http > 192.168.1.100.36450: Flags [P.], cksum 0x4a8b (correct), seq 5956:6211, ack 1364, win 139, options [nop,nop,TS val 2719183 ecr 1254401392], length 255: HTTP, length: 255
+	HTTP/1.1 200 
+	Server: nginx/1.10.3 (Ubuntu)
+	Date: Tue, 04 Feb 2020 10:57:07 GMT
+	Content-Type: text/plain
+	Content-Length: 6
+	Connection: keep-alive
+	Accept-Ranges: bytes
+	ETag: W/"6-1580806080000"
+	Last-Modified: Tue, 04 Feb 2020 08:48:00 GMT
+	
+	file2
+16:57:07.861079 IP (tos 0x0, ttl 64, id 39639, offset 0, flags [DF], proto TCP (6), length 52)
+    192.168.1.100.36450 > orangepipcplus.http: Flags [.], cksum 0x1db1 (correct), ack 6211, win 344, options [nop,nop,TS val 1254401412 ecr 2719183], length 0
+16:57:25.118369 IP (tos 0x0, ttl 64, id 39640, offset 0, flags [DF], proto TCP (6), length 984)
+    192.168.1.100.36450 > orangepipcplus.http: Flags [P.], cksum 0x7668 (correct), seq 1364:2296, ack 6211, win 344, options [nop,nop,TS val 1254418668 ecr 2719183], length 932: HTTP, length: 932
+	POST /ttschool/ HTTP/1.1
+	Host: 192.168.1.87
+	Connection: keep-alive
+	Content-Length: 257
+	Cache-Control: max-age=0
+	Origin: http://192.168.1.87
+	Upgrade-Insecure-Requests: 1
+	Content-Type: multipart/form-data; boundary=----WebKitFormBoundaryDYg247S8v49v9lpE
+	User-Agent: Mo
