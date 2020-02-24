@@ -46,6 +46,14 @@ public class UserService {
     CommentDao commentDao = new CommentDaoImpl();
     RatingDao ratingDao = new RatingDaoImpl();
 
+    public void setUserDao (UserDao userDao) {
+        this.userDao = userDao;
+    }
+
+    public void setSessionDao (SessionDao sessionDao) {
+        this.sessionDao = sessionDao;
+    }
+
     /**
      * Add new User (Register) in to DataBase
      *
