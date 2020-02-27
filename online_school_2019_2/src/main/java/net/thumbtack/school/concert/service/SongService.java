@@ -41,11 +41,24 @@ import net.thumbtack.school.concert.model.User;
 
 public class SongService {
 
-    SessionDao sessionDao = new SessionDaoImpl();
-    SongDao songDao = new SongDaoImpl();
-    CommentDao commentDao = new CommentDaoImpl();
-    RatingDao ratingDao = new RatingDaoImpl();
+    private SessionDao sessionDao;
+    private SongDao songDao;
+    private CommentDao commentDao;
+    private RatingDao ratingDao;
+    
 
+    public SongService (SessionDao sessionDao, SongDao songDao, CommentDao commentDao, RatingDao ratingDao) {
+    	this.sessionDao = sessionDao;
+    	this.songDao = songDao;
+    	this.commentDao = commentDao;
+    	this.ratingDao = ratingDao;
+    }
+    
+    public SongService () {
+    	this(new SessionDaoImpl(), new SongDaoImpl(), new CommentDaoImpl(), new RatingDaoImpl());
+    }
+    
+    
 	/**
 	 * Радиослушатель добавляет новую песню на сервер.
 	 *

@@ -41,12 +41,6 @@ public class MockitoUserService {
 	
     @Test
     public void testRegisterUser() throws ServerException {
-        DataBase db = new DataBase();
-        try {
-            db.open("dbfile.json");
-        } catch (JsonSyntaxException | IOException e) {
-            fail(e.getMessage());
-        }
 
         UserService userService = new UserService();
 
@@ -71,11 +65,13 @@ public class MockitoUserService {
 
         // Positive check
         String responseToken = userService.registerUser(new Gson().toJson(user));
+        assertEquals(new Gson().fromJson(responseToken, LoginUserDtoResponse.class).getToken().length(), 36);
 
         try {
             userService.registerUser(new Gson().toJson(user));
+            fail();
         } catch (ServerException e) {
-
+        	assertEquals(ServerErrorCode.USERNAME_ALREADY_IN_USE, e.getServerErrorCode());
         }
 
 
@@ -164,8 +160,6 @@ public class MockitoUserService {
         } catch (ServerException e) {
             assertEquals(ServerErrorCode.USERNAME_ALREADY_IN_USE, e.getServerErrorCode());
         }*/
-        
-        db.close();
     }
 
     @Test

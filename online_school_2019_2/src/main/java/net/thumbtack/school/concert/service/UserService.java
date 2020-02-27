@@ -40,18 +40,23 @@ import net.thumbtack.school.concert.model.User;
 
 public class UserService {
 
-    UserDao userDao = new UserDaoImpl();
-    SessionDao sessionDao = new SessionDaoImpl();
-    SongDao songDao = new SongDaoImpl();
-    CommentDao commentDao = new CommentDaoImpl();
-    RatingDao ratingDao = new RatingDaoImpl();
+    UserDao userDao;
+    SessionDao sessionDao;
+    SongDao songDao;
+    CommentDao commentDao;
+    RatingDao ratingDao;
 
-    public void setUserDao (UserDao userDao) {
-        this.userDao = userDao;
+    
+    public UserService (UserDao userDao, SessionDao sessionDao, SongDao songDao, CommentDao commentDao, RatingDao ratingDao) {
+    	this.userDao = userDao;
+    	this.sessionDao = sessionDao;
+    	this.songDao = songDao;
+    	this.commentDao = commentDao;
+    	this.ratingDao = ratingDao;
     }
-
-    public void setSessionDao (SessionDao sessionDao) {
-        this.sessionDao = sessionDao;
+    
+    public UserService () {
+    	this(new UserDaoImpl(), new SessionDaoImpl(), new SongDaoImpl(), new CommentDaoImpl(), new RatingDaoImpl());
     }
 
     /**
