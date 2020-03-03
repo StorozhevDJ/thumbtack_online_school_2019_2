@@ -100,4 +100,9 @@ public class TestDbCountryServer {
         verify(jdbcConnection, times(1)).prepareStatement(anyString());
     }
 
+    @Test
+    public void testStartServer() {
+        //ToDo test
+    }
+
 }
