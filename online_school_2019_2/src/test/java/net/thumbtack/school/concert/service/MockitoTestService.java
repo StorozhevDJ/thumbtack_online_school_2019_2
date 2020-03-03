@@ -1,255 +1,154 @@
 package net.thumbtack.school.concert.service;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
+import com.google.gson.reflect.TypeToken;
 
+import net.thumbtack.school.concert.dao.CommentDao;
+import net.thumbtack.school.concert.dao.RatingDao;
 import net.thumbtack.school.concert.dao.SessionDao;
+import net.thumbtack.school.concert.dao.SongDao;
 import net.thumbtack.school.concert.dao.UserDao;
-import net.thumbtack.school.concert.daoimpl.SessionDaoMyBatisImpl;
-import net.thumbtack.school.concert.daoimpl.UserDaoMyBatisImpl;
-import net.thumbtack.school.concert.database.DataBase;
+import net.thumbtack.school.concert.dto.response.GetSongsDtoResponse;
 import net.thumbtack.school.concert.dto.response.LoginUserDtoResponse;
 import net.thumbtack.school.concert.exception.ServerErrorCode;
 import net.thumbtack.school.concert.exception.ServerException;
+import net.thumbtack.school.concert.model.Comment;
+import net.thumbtack.school.concert.model.Rating;
+import net.thumbtack.school.concert.model.Session;
+import net.thumbtack.school.concert.model.Song;
 import net.thumbtack.school.concert.model.User;
-import net.thumbtack.school.concert.utils.MyBatisUtils;
 
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-public class MockitoUserService {
 
-    @BeforeAll()
-    public static void setUp() {
-        boolean initSqlSessionFactory = MyBatisUtils.initSqlSessionFactory();
-        if (!initSqlSessionFactory) {
-            throw new RuntimeException("Can't create connection, stop");
-        }
-    }
+/*
+ * В рамках своего 11-го задания написать метод, который регистрирует временного пользователя на сервере,
+ * скачивает от его имени некоторый список (в зависимости от задачи), удаляет этого пользователя
+ * и возвращает размер полученного списка (целое число). Другими словами, должен получиться робот-клиент для класса Server.
+ * Написать тесты, которые проверяют корректность вычислений, удаления пользователя и сессии.
+ * Возможные исключения также протестировать.
+ */
 
-    @BeforeEach()
-    public void clearDatabase() {
-        new SessionDaoMyBatisImpl().deleteAll();
-        new UserDaoMyBatisImpl().deleteAll();
-    }
-	
+public class MockitoTestService {
+
+
     @Test
-    public void testRegisterUser() throws ServerException {
-
-        UserService userService = new UserService();
+    public void testConcertServices() throws ServerException {
 
         User user = new User("John", "Smith", "johnsmith", "password123");
 
         UserDao userDao = mock(UserDao.class);
-        userService.setUserDao(userDao);
-
-
         SessionDao sessionDao = mock(SessionDao.class);
-        userService.setSessionDao(sessionDao);
+        SongDao songDao = mock(SongDao.class);
+        CommentDao commentDao = mock(CommentDao.class);
+        RatingDao ratingDao = mock(RatingDao.class);
 
+        UserService userService = new UserService(userDao, sessionDao, songDao, commentDao, ratingDao);
 
-        //when(userDao.get("johnsmith")).thenReturn(user);
-
-        //Check Exception second register
+        //Set Exception for second register
         doNothing()
                 .doThrow(new ServerException(ServerErrorCode.USERNAME_ALREADY_IN_USE))
                 .when(userDao).add(user);
 
-
-
         // Positive check
         String responseToken = userService.registerUser(new Gson().toJson(user));
-        assertEquals(new Gson().fromJson(responseToken, LoginUserDtoResponse.class).getToken().length(), 36);
-
-        try {
-            userService.registerUser(new Gson().toJson(user));
-            fail();
-        } catch (ServerException e) {
-        	assertEquals(ServerErrorCode.USERNAME_ALREADY_IN_USE, e.getServerErrorCode());
-        }
-
-
-
+        //Second user register with throw exception
+        ServerException thrown = assertThrows(ServerException.class,
+                () -> userService.registerUser(new Gson().toJson(user))
+        );
+        // Check
+        Assertions.assertAll(
+                () -> assertEquals(new Gson().fromJson(responseToken, LoginUserDtoResponse.class).getToken().length(), 36),
+                () -> assertEquals(ServerErrorCode.USERNAME_ALREADY_IN_USE, thrown.getServerErrorCode())
+        );
 
 
+        // Test Song List
+        SongService songService = new SongService(sessionDao, songDao, commentDao, ratingDao);
 
-        /*try {
-            userService.registerUser(null);
-            fail();
-        } catch (ServerException e) {
-            assertEquals(ServerErrorCode.JSON_SYNTAX_ERROR, e.getServerErrorCode());
-        }
-        try {
-            userService.registerUser("");
-            fail();
-        } catch (ServerException e) {
-            assertEquals(ServerErrorCode.JSON_SYNTAX_ERROR, e.getServerErrorCode());
-        }
-        try {
-            userService.registerUser("Hello world");
-            fail();
-        } catch (ServerException e) {
-            assertEquals(ServerErrorCode.JSON_SYNTAX_ERROR, e.getServerErrorCode());
-        }
-        try {
-            userService.registerUser("{\"firstName\":\"asd\"}");
-            fail();
-        } catch (ServerException e) {
-            assertEquals(ServerErrorCode.BAD_REQUEST, e.getServerErrorCode());
-        }
-        try {
-            userService.registerUser(
-                    "{\"firstName\":\"qwe\", \"lastName\":\"asdqwe\", \"login\":\"123qwe\", \"password\":\"asd\"}");
-            fail();
-        } catch (ServerException e) {
-            assertEquals(ServerErrorCode.BAD_REQUEST, e.getServerErrorCode());
-        }
-        try {
-            userService.registerUser(
-                    "{\"firstName\":\"\", \"lastName\":\"asdqwe\", \"login\":\"123qwe\", \"password\":\"qwe45678\"}");
-            fail();
-        } catch (ServerException e) {
-            assertEquals(ServerErrorCode.BAD_REQUEST, e.getServerErrorCode());
-        }
-        try {
-            userService.registerUser("{\"firstName\":\"fname\", \"lastName\":\"\", \"login\":\"login\", \"password\":\"pswd\"}");
-            fail();
-        } catch (ServerException e) {
-            assertEquals(ServerErrorCode.BAD_REQUEST, e.getServerErrorCode());
-        }
-        try {
-            userService.registerUser("{\"firstName\":\"fname\", \"lastName\":\"lname\", \"login\":\"\", \"password\":\"pswd\"}");
-            fail();
-        } catch (ServerException e) {
-            assertEquals(ServerErrorCode.BAD_REQUEST, e.getServerErrorCode());
-        }
-        try {
-            userService.registerUser(
-                    "{\"firstName\":\"fname\", \"lastName\":\"lname\", \"login\":\"login\", \"password\":\"\"}");
-            fail();
-        } catch (ServerException e) {
-            assertEquals(ServerErrorCode.BAD_REQUEST, e.getServerErrorCode());
-        }
-        try {
-            userService.registerUser(
-                    "{\"firstNme\":\"asd\", \"lastName\":\"asdqwe\", \"login\":\"asd123qwe\", \"password\":\"asd5678!\"}");
-            fail();
-        } catch (ServerException e) {
-            assertEquals(ServerErrorCode.BAD_REQUEST, e.getServerErrorCode());
-        }
+        when(sessionDao.get(new Session(new Gson().fromJson(responseToken, LoginUserDtoResponse.class).getToken())))
+                .thenReturn(user);
+        Map<String, Song> songsMap = new HashMap<String, Song>() {{
+            put("song1", new Song("SongName1",
+                    Arrays.asList("composer1", "composer2"),
+                    Arrays.asList("author"),
+                    "singer",
+                    555,
+                    "user"));
+            put("song2", new Song("SongName2",
+                    Arrays.asList("composer3"),
+                    Arrays.asList("author", "author2"),
+                    "singer2",
+                    666,
+                    "johnsmith"));
+            put("song3", new Song("SongName3",
+                    Arrays.asList("composer1", "composer3"),
+                    Arrays.asList("author3"),
+                    "singer",
+                    777,
+                    "user"));
+        }};
+        when(songDao.get(null, null, null)).thenReturn(songsMap);
 
-        try {
-            response = userService.registerUser(
-                    "{\"firstName\":\"TestFName\", \"lastName\":\"TestLName\", \"login\":\"testLogin\", \"password\":\"pswd\"}");
-        } catch (ServerException e) {
-            fail(e.getServerErrorText());
-        }
-        assertFalse(new Gson().fromJson(response, LoginUserDtoResponse.class).getToken().isEmpty());
-        assertEquals(new Gson().fromJson(response, LoginUserDtoResponse.class).getToken().length(), 36);
+        List<Rating> ratingList = new ArrayList<Rating>() {{
+            add(new Rating("song1", 5, "user"));
+            add(new Rating("song2", 5, "user"));
+            add(new Rating("song2", 3, "johnsmith"));
+            add(new Rating("song3", 5, "user"));
+            add(new Rating("song3", 4, "johnsmith"));
+        }};
+        when(ratingDao.get(anyList())).thenReturn(ratingList);
 
-        try {
-            userService.registerUser(
-                    "{\"firstName\":\"TestFName\", \"lastName\":\"TestLName\", \"login\":\"testLogin\", \"password\":\"pswd\"}");
-            fail();
-        } catch (ServerException e) {
-            assertEquals(ServerErrorCode.USERNAME_ALREADY_IN_USE, e.getServerErrorCode());
-        }*/
+        when(commentDao.get(anyList())).thenReturn(Arrays.asList(new Comment("song3", "jonhsmith", "comment")));
+
+        // Get all Songs
+        String songJson = songService.getSongs(responseToken);
+        List<GetSongsDtoResponse> respList = new Gson().fromJson(songJson, new TypeToken<List<GetSongsDtoResponse>>() {
+        }.getType());
+
+        // Check result
+        Assertions.assertAll(
+                () -> assertEquals(3, respList.size()),
+                () -> assertEquals("song1", respList.get(0).getSongId()),
+                () -> assertEquals("song3", respList.get(1).getSongId()),
+                () -> assertEquals("song2", respList.get(2).getSongId()),
+                () -> assertTrue(Math.abs(respList.get(1).getRating() - 4.5) < 0.001)
+        );
+
+        // Set mockito to check user delete
+        when(commentDao.getList(null, user.getLogin())).thenReturn(new ArrayList<Comment>());
+        when(songDao.get(user.getLogin())).thenReturn(new HashMap<String, Song>());
+        when(ratingDao.getRatingList(user.getLogin())).thenReturn(new ArrayList<>());
+        // First user delete
+        userService.deleteUser(responseToken);
+        Assertions.assertAll(
+                () -> verify(ratingDao, times(1)).delete(null, user.getLogin()),
+                () -> verify(commentDao, times(1)).update(new ArrayList<>()),
+                () -> verify(songDao, times(1)).update(new HashMap<>()),
+                () -> verify(songDao, times(1)).delete(new ArrayList<>()),
+                () -> verify(sessionDao, times(1)).logout(new Session(new Gson().fromJson(responseToken, LoginUserDtoResponse.class).getToken())),
+                () -> verify(userDao, times(1)).delete(user.getLogin())
+        );
+
+        // Second user delete
+        when(sessionDao.get(new Session(new Gson().fromJson(responseToken, LoginUserDtoResponse.class).getToken())))
+                .thenReturn(null);
+        assertEquals(ServerErrorCode.TOKEN_INCORRECT,
+                assertThrows(ServerException.class, () -> userService.deleteUser(responseToken)).getServerErrorCode()
+        );
     }
 
-    @Test
-    public void testLoginLogoutUser() {
-        DataBase db = new DataBase();
-        try {
-            db.open("dbfile.json");
-        } catch (JsonSyntaxException | IOException e) {
-            fail(e.getMessage());
-        }
 
-        UserService us = new UserService();
-
-        String response = new String();
-
-        try {
-            us.loginUser("{\"login\":\"login\", \"password\":\"psw5d\"}");
-            fail();
-        } catch (ServerException e) {
-            assertEquals(ServerErrorCode.LOGIN_INCORRECT, e.getServerErrorCode());
-        }
-        try {
-            us.loginUser("{\"login\":\"asd123\", \"password\":\"asd5678\"}");
-            fail();
-        } catch (ServerException e) {
-            assertEquals(ServerErrorCode.LOGIN_INCORRECT, e.getServerErrorCode());
-        }
-        try {
-            response = us.loginUser("{\"login\":\"login\", \"password\":\"pswd\"}");
-        } catch (ServerException e) {
-            fail(e.getServerErrorText());
-        }
-        assertFalse(new Gson().fromJson(response, LoginUserDtoResponse.class).getToken().isEmpty());
-        assertEquals(new Gson().fromJson(response, LoginUserDtoResponse.class).getToken().length(), 36);
-
-        try {
-            response = us.logoutUser(response);
-        } catch (ServerException e) {
-            fail(e.getServerErrorText());
-        }
-
-        db.close();
-    }
-
-    @Test
-    public void testDeleteUser() {
-        DataBase db = new DataBase();
-        try {
-            db.open("dbfile.json");
-        } catch (JsonSyntaxException | IOException e) {
-            fail(e.getMessage());
-        }
-
-        UserService us = new UserService();
-
-        try {
-            us.deleteUser("{\"token\":\"ffffffff-0000-1111-bea8-d9282a42ba48\"}");
-            fail();
-        } catch (ServerException e) {
-            assertEquals(ServerErrorCode.TOKEN_INCORRECT, e.getServerErrorCode());
-        }
-        int userCnt = db.getUsers().size();
-        int ratingCnt = db.getRatings().size();
-        int songsCnt = db.getSongs().size();
-        int sessionsCnt = db.getSessions().size();
-        try {
-            us.deleteUser("{\"token\":\"aeb9610c-6053-4061-bea8-d9282a42ba48\"}");
-        } catch (ServerException e) {
-            fail(e.getServerErrorText());
-        }
-        assertEquals(userCnt, db.getUsers().size() + 1);
-        assertEquals(sessionsCnt, db.getSessions().size() + 1);
-        assertEquals(ratingCnt, db.getRatings().size() + 3);
-        assertEquals(songsCnt, db.getSongs().size() + 0);
-
-        userCnt = db.getUsers().size();
-        ratingCnt = db.getRatings().size();
-        songsCnt = db.getSongs().size();
-        sessionsCnt = db.getSessions().size();
-        try {
-            us.deleteUser("{\"token\":\"bc7844a3-94be-4606-b9eb-1e5876b75eef\"}");
-        } catch (ServerException e) {
-            fail(e.getServerErrorText());
-        }
-        assertEquals(userCnt, db.getUsers().size() + 1);
-        assertEquals(sessionsCnt, db.getSessions().size() + 1);
-        assertEquals(ratingCnt, db.getRatings().size() + 3);
-        assertEquals(songsCnt, db.getSongs().size() + 2);
-
-        db.close();
-    }
+    
 
 }
