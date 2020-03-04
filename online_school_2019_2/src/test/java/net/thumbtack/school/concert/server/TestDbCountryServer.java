@@ -14,7 +14,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
 
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -57,20 +56,21 @@ public class TestDbCountryServer {
 
     @Test
     public void testSave() throws SQLException {
+        CountryServer cs = new CountryServer();
         reset(spyConnection);
-        CountryServer.insertData("country", "capital", "currenciesName");
+        cs.insertData("country", "capital", "currenciesName");
         verify(spyConnection, never()).createStatement();
         verify(spyConnection).prepareStatement(anyString(), anyInt());
 
         try {
-            CountryServer.insertData(null, "capital", "currenciesName");
+            cs.insertData(null, "capital", "currenciesName");
             fail();
         } catch (Exception e) {
 
         }
 
         reset(spyConnection);
-        CountryServer.deleteData();
+        cs.deleteData();
         verify(spyConnection, never()).createStatement();
         verify(spyConnection).prepareStatement(anyString());
     }
@@ -80,7 +80,7 @@ public class TestDbCountryServer {
     public void testGetCapitalById() throws SQLException {
         ResultSet resultSet = mock(ResultSet.class);
 
-        when(resultSet.getString("capital")).thenReturn("london");
+        when(resultSet.getString("capital")).thenReturn("london").thenReturn("berlin").thenReturn("paris");
 
         PreparedStatement statement = mock(PreparedStatement.class);
         when(statement.executeQuery()).thenReturn(resultSet);
@@ -93,16 +93,10 @@ public class TestDbCountryServer {
 
         when(resultSet.next()).thenReturn(true).thenReturn(false);
 
-        String capital = CountryServer.getCapitalById(0);
+        String capital = new CountryServer().getCapitalById(0);
         assertEquals("london", capital);
 
-        verify(jdbcConnection, times(0)).createStatement();
         verify(jdbcConnection, times(1)).prepareStatement(anyString());
-    }
-
-    @Test
-    public void testStartServer() {
-        //ToDo test
     }
 
 }

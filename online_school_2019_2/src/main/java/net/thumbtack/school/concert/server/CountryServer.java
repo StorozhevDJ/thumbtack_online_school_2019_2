@@ -26,16 +26,6 @@ import net.thumbtack.school.database.jdbc.JdbcUtils;
 
 public class CountryServer {
 
-    public void startCountryServer() throws SQLException, IOException {
-        for (int i = 0; i < 3; i++) {
-            String capital = getCapitalById(i);
-            String json = downloadJson(capital);
-            String countryName = getStringValueByJsonName(json, "name");
-            String currencies = getStringValueByJsonName(json, "currencies");
-            String currenciesName = getStringValueByJsonName(currencies, "name");
-            insertData(countryName, capital, countryName);
-        }
-    }
 
     /**
      * Download JSON for country
@@ -65,8 +55,12 @@ public class CountryServer {
         return new JsonParser().parse(json).getAsJsonArray().get(0).getAsJsonObject().get(name).toString();
     }
 
+    public String getCurrenciesName(String json) {
+        return getStringValueByJsonName(getStringValueByJsonName(json, "currencies"), "name");
 
-    public static void insertData(String country, String capital, String currency) throws SQLException {
+    }
+
+    public void insertData(String country, String capital, String currency) throws SQLException {
         String insertQuery = "INSERT INTO `country` values(?,?,?,?);";
         Connection con = JdbcUtils.getConnection();
         try (PreparedStatement stmt = con.prepareStatement(insertQuery, Statement.RETURN_GENERATED_KEYS)) {
@@ -80,7 +74,7 @@ public class CountryServer {
         }
     }
 
-    public static String getCapitalById(int id) throws SQLException {
+    public String getCapitalById(int id) throws SQLException {
         String query = "SELECT capital FROM capital WHERE id=" + id + ";";
         Connection con = JdbcUtils.getConnection();
         String capital = new String();
@@ -92,7 +86,7 @@ public class CountryServer {
         return capital;
     }
 
-    public static void deleteData() throws SQLException {
+    public void deleteData() throws SQLException {
         String query = "DELETE FROM country";
         Connection con = JdbcUtils.getConnection();
         try (PreparedStatement stmt = con.prepareStatement(query)) {

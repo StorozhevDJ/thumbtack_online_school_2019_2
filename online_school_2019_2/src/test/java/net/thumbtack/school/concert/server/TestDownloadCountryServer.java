@@ -18,6 +18,7 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 
+
 /**
  * В базе данных MySQL создать список некоторых городов - столиц стран.
  * Написать метод, которые загружает этот список, для каждого города выводит страну
@@ -32,7 +33,7 @@ public class TestDownloadCountryServer {
 
 
     @Test
-    public void testRealDownload() throws IOException {
+    public void testRealDownload() throws IOException, SQLException {
         CountryServer server = new CountryServer();
 
         String json = server.downloadJson("london");
@@ -56,7 +57,11 @@ public class TestDownloadCountryServer {
         PowerMockito.when(url.openConnection()).thenReturn(http);
         PowerMockito.whenNew(URL.class).withAnyArguments().thenReturn(url);
 
-        new CountryServer().downloadJson("london");
+        try {
+            new CountryServer().downloadJson("london");
+        } catch (NullPointerException e) {
+
+        }
 
         PowerMockito.verifyNew(URL.class).withArguments("http://restcountries.eu/rest/v2/capital/london");
     }
@@ -78,5 +83,5 @@ public class TestDownloadCountryServer {
         String result = new CountryServer().downloadJson("london");
         assertEquals("[{\"name\":\"United Kingdom of Great Britain and Northern Ireland\",\"topLevelDomain\":[\".uk\"],\"alpha2Code\":\"GB\",\"alpha3Code\":\"GBR\",\"callingCodes\":[\"44\"],\"capital\":\"London\",\"altSpellings\":[\"GB\",\"UK\",\"Great Britain\"],\"region\":\"Europe\",\"subregion\":\"Northern Europe\",\"population\":65110000,\"latlng\":[54.0,-2.0],\"demonym\":\"British\",\"area\":242900.0,\"gini\":34.0,\"timezones\":[\"UTC-08:00\",\"UTC-05:00\",\"UTC-04:00\",\"UTC-03:00\",\"UTC-02:00\",\"UTC\",\"UTC+01:00\",\"UTC+02:00\",\"UTC+06:00\"],\"borders\":[\"IRL\"],\"nativeName\":\"United Kingdom\",\"numericCode\":\"826\",\"currencies\":[{\"code\":\"GBP\",\"name\":\"British pound\",\"symbol\":\"£\"}],\"languages\":[{\"iso639_1\":\"en\",\"iso639_2\":\"eng\",\"name\":\"English\",\"nativeName\":\"English\"}],\"translations\":{\"de\":\"Vereinigtes Königreich\",\"es\":\"Reino Unido\",\"fr\":\"Royaume-Uni\",\"ja\":\"イギリス\",\"it\":\"Regno Unito\",\"br\":\"Reino Unido\",\"pt\":\"Reino Unido\",\"nl\":\"Verenigd Koninkrijk\",\"hr\":\"Ujedinjeno Kraljevstvo\",\"fa\":\"بریتانیای کبیر و ایرلند شمالی\"},\"flag\":\"https://restcountries.eu/data/gbr.svg\",\"regionalBlocs\":[{\"acronym\":\"EU\",\"name\":\"European Union\",\"otherAcronyms\":[],\"otherNames\":[]}],\"cioc\":\"GBR\"}]", result);
     }
-
+    
 }
