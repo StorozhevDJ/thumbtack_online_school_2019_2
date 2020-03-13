@@ -49,6 +49,7 @@ public class Function1 {
 	 * используйте andThen
 	 */
 	public int getCountFromStringAndThen(String string) {
+		// Function<String, List<String>>
 		Function<String, List<?>> split = t -> Arrays.asList((t.split(" ")));
 		Function<String, Integer> splitAndCountThen = split.andThen(List::size);
 		return splitAndCountThen.apply(string);
@@ -180,6 +181,7 @@ public class Function1 {
 	 */
 	public Person12a getMothersMotherFather(Person12a person) {
 		Person12a result = person.getMother();
+		// REVU if (result == null) { return null;} и т.д.
 		if (result != null) {
 			result = result.getMother();
 			if (result != null) {
