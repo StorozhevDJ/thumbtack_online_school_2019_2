@@ -49,8 +49,7 @@ public class Function1 {
 	 * используйте andThen
 	 */
 	public int getCountFromStringAndThen(String string) {
-		// Function<String, List<String>>
-		Function<String, List<?>> split = t -> Arrays.asList((t.split(" ")));
+		Function<String, List<String>> split = t -> Arrays.asList((t.split(" ")));
 		Function<String, Integer> splitAndCountThen = split.andThen(List::size);
 		return splitAndCountThen.apply(string);
 	}
@@ -59,7 +58,7 @@ public class Function1 {
 	 * 4.b используйте compose
 	 */
 	public int getCountFromStringCompose(String string) {
-		Function<List<?>, Integer> count = List::size;
+		Function<List<String>, Integer> count = List::size;
 		Function<String, Integer> splitAndCountCompose = count.compose(t -> Arrays.asList((t.split(" "))));
 		return splitAndCountCompose.apply(string);
 	}
@@ -181,13 +180,14 @@ public class Function1 {
 	 */
 	public Person12a getMothersMotherFather(Person12a person) {
 		Person12a result = person.getMother();
-		// REVU if (result == null) { return null;} и т.д.
-		if (result != null) {
-			result = result.getMother();
-			if (result != null) {
-				result = result.getFather();
-			}
+		if (result == null) {
+			return null;
 		}
+		result = result.getMother();
+		if (result == null) {
+			return null;
+		}
+		result = result.getFather();
 		return result;
 	}
 
