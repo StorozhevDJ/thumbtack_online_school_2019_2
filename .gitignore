@@ -1,3 +1,24 @@
-/.idea/
+# Package Files #
+*.jar
+*.war
+*.ear
+
+*/target
+/bin
+
+*.log.*
+*.log
+/.classpath
+/.project
+.settings/
+
+*.idea*
+*.project
+*.iml
+
+*.class
+/*/.classpath
+
 /target/
-/ttschoolog.log
+/codestyles/
+/_linux/
