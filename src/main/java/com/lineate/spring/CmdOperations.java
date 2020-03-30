@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 import java.net.URL;
 import java.time.ZonedDateTime;
 
-@Component
+//@Component
 public class CmdOperations implements CommandLineRunner {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(CmdOperations.class);
@@ -21,7 +21,7 @@ public class CmdOperations implements CommandLineRunner {
     private PromotionService promotionService;
     private RecordingService recordingService;
 
-    @Autowired
+    //    @Autowired
     public CmdOperations(PromotionService promotionService, RecordingService recordingService) {
         this.promotionService = promotionService;
         this.recordingService = recordingService;
