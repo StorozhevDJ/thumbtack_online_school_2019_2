@@ -24,27 +24,27 @@ public class RecordingService {
 	}
 
 	public String save(Recording recording) {
-		String save_path = null;
+		String savePath = null;
 
 		if (recording.getUrlAudio() != null) {
-			save_path = recording.getUrlAudio().getPath();
+			savePath = recording.getUrlAudio().getPath();
 			ZonedDateTime publishAvailableDate = ZonedDateTime.now().plusWeeks(1);
 			for (PublishingChannels pc : publishingChannels) {
 				pc.publish(recording, publishAvailableDate);
 			}
 		} else if (recording.getUrlVideo() != null) {
-			save_path = recording.getUrlVideo().getPath();
+			savePath = recording.getUrlVideo().getPath();
 			for (PublishingChannels pc : publishingChannels) {
 				if (pc.getClass() == YoutubeMusicChannel.class) {
 					pc.publish(recording, ZonedDateTime.now().plusWeeks(2));
 				}
 			}
 		}
-		if (save_path == null) {
+		if (savePath == null) {
 			return null;
 		}
 
-		return recordingDataHub.save(save_path);
+		return recordingDataHub.save(savePath);
 	}
 
 }
