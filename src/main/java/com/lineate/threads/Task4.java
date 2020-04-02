@@ -4,12 +4,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 class MyThread4Plus extends Thread {
+// REVU странное имя для переменной - списка
     List<Integer> integer;
 
     public MyThread4Plus(List<Integer> integer) {
         this.integer = integer;
     }
 
+	// синхронизировать run бессмысленно,  он запускается извне
+        // синхронизировать надо  на переменной, к которой разграничиваем доступ
+	// то есть List
     synchronized public void run() {
         int rand;
         for (int i = 0; i < 10000; i++) {

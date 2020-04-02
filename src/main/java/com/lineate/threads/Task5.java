@@ -17,6 +17,10 @@ class MyThread5 extends Thread {
         this.op = op;
     }
 
+// REVU не имеет смысла делать синхронизированные методы в классе потока
+// они работают для одного и того же экземпляра, а у потоков всегда разные экземпляры
+// надо было сделать класс ListWrapper, поместить в него List<Integer> integerList;
+// и в нем синхронизировать
     synchronized void read(int ptr) {
         integerList.remove(ptr);
     }
