@@ -9,24 +9,12 @@ enum Operation {
 }
 
 class MyThread5 extends Thread {
-    List<Integer> integerList;
-    Operation op;
+    private final List<Integer> integerList;
+    private Operation op;
 
     public MyThread5(List<Integer> integerList, Operation op) {
         this.integerList = integerList;
         this.op = op;
-    }
-
-// REVU не имеет смысла делать синхронизированные методы в классе потока
-// они работают для одного и того же экземпляра, а у потоков всегда разные экземпляры
-// надо было сделать класс ListWrapper, поместить в него List<Integer> integerList;
-// и в нем синхронизировать
-    synchronized void read(int ptr) {
-        integerList.remove(ptr);
-    }
-
-    synchronized void write(int val) {
-        integerList.add(val);
     }
 
     public void run() {
@@ -36,16 +24,20 @@ class MyThread5 extends Thread {
         for (int i = 0; i < 10000; i++) {
             if (op == Operation.WRITE) {
                 rand = (int) (Math.random() * 1000);
-                write(rand);
-                System.out.println("Added " + rand);
+                synchronized (integerList) {
+                    integerList.add(rand);
+                    System.out.println("Added " + rand);
+                }
             } else if (op == Operation.READ) {
-                if (integerList.size() > 0) {
-                    ptr = (int) (Math.random() * (integerList.size() - 1));
-                    val = integerList.get(ptr);
-                    read(ptr);
-                    System.out.println("Removed value " + val + " by ptr " + ptr);
-                } else {
-                    System.out.println("Empty list ");
+                synchronized (integerList) {
+                    if (integerList.size() > 0) {
+                        ptr = (int) (Math.random() * (integerList.size() - 1));
+                        val = integerList.get(ptr);
+                        integerList.remove(ptr);
+                        System.out.println("Removed value " + val + " by ptr " + ptr);
+                    } else {
+                        System.out.println("Empty list ");
+                    }
                 }
             }
         }
