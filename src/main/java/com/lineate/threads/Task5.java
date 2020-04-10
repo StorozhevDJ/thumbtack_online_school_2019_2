@@ -8,42 +8,48 @@ enum Operation {
     READ
 }
 
-// REVU в этом упражнении надо было сделать потокобезопасный класс, внутри которого разместить List<Integer> integerList
-// и его методы сделать synchronized
-// сейчас это решение ничем, по сути, не отличается от Task 4
+
 class MyThread5 extends Thread {
     private final List<Integer> integerList;
-    private Operation op;
+    private final Operation op;
 
     public MyThread5(List<Integer> integerList, Operation op) {
         this.integerList = integerList;
         this.op = op;
     }
 
+    public synchronized void write(int number) {
+        integerList.add(number);
+        System.out.println("Add = " + number);
+    }
+
+    public synchronized void read(int index) {
+        integerList.remove(index);
+        System.out.println("Delete = " + index);
+    }
+
+    @Override
     public void run() {
-        int rand;
-        int val;
-        int ptr;
-        for (int i = 0; i < 10000; i++) {
-            if (op == Operation.WRITE) {
-                rand = (int) (Math.random() * 1000);
-                synchronized (integerList) {
-                    integerList.add(rand);
-                    System.out.println("Added " + rand);
-                }
-            } else if (op == Operation.READ) {
-                synchronized (integerList) {
-                    if (integerList.size() > 0) {
-                        ptr = (int) (Math.random() * (integerList.size() - 1));
-                        val = integerList.get(ptr);
-                        integerList.remove(ptr);
-                        System.out.println("Removed value " + val + " by ptr " + ptr);
-                    } else {
-                        System.out.println("Empty list ");
-                    }
+        System.out.println("Operation " + op);
+        if (op == Operation.READ) {
+            System.out.println("Start delete... ");
+            int count = 0;
+            while (count <= 10000) {
+                if (!integerList.isEmpty()) {
+                    int ptr = (int) (Math.random() * (integerList.size() - 1));
+                    read(ptr);
+                    count++;
                 }
             }
+        } else {
+            System.out.println("Start add... ");
+            for (int i = 0; i < 10000; i++) {
+                int rand = (int) (Math.random() * 1000);
+                write(rand);
+            }
+            System.out.println("end add ");
         }
+        System.out.println("End " + op);
     }
 }
 
