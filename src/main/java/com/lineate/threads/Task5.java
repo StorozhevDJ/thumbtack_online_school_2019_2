@@ -8,6 +8,9 @@ enum Operation {
     READ
 }
 
+// REVU в этом упражнении надо было сделать потокобезопасный класс, внутри которого разместить List<Integer> integerList
+// и его методы сделать synchronized
+// сейчас это решение ничем, по сути, не отличается от Task 4
 class MyThread5 extends Thread {
     private final List<Integer> integerList;
     private Operation op;

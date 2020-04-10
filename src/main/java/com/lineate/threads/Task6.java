@@ -5,13 +5,16 @@ import java.util.Collections;
 import java.util.List;
 
 class MyThread6Add extends Thread {
+	// REVU private
     List<Integer> integer;
 
     public MyThread6Add(List<Integer> integer) {
         this.integer = integer;
     }
 
-    synchronized public void run() {
+    // REVU synchronized для run не имеет смысла
+    // только один поток использует один экземпляр класса MyThread6Add 
+   synchronized public void run() {
         int rand;
         for (int i = 0; i < 10000; i++) {
             rand = (int) (Math.random() * 1000);
@@ -22,12 +25,14 @@ class MyThread6Add extends Thread {
 }
 
 class MyThread6Remove extends Thread {
+	// REVU private
     List<Integer> integerList;
 
     public MyThread6Remove(List<Integer> integerList) {
         this.integerList = integerList;
     }
 
+    // REVU то же
     synchronized public void run() {
         int val;
         int ptr;
