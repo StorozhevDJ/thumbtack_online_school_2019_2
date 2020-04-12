@@ -4,7 +4,6 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -55,12 +54,14 @@ class Message {
 }
 
 
-class Transport implements Callable {
+class Transport implements Runnable {
 
     private final Message message;
+    private final Object fileWriterSynchronize;
 
-    public Transport(Message message) {
+    public Transport(Message message, Object fileWriterSynchronize) {
         this.message = message;
+        this.fileWriterSynchronize = fileWriterSynchronize;
     }
 
     public void send() {
@@ -68,8 +69,9 @@ class Transport implements Callable {
             System.out.println("Start send message thread. Connect to server.");
             Thread.sleep(200);
             System.out.println("Send message to " + message.getEmailAddress());
-            synchronized (message) {
+            synchronized (fileWriterSynchronize) {
                 try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("sended_mail.log", true), StandardCharsets.UTF_8))) {
+
                     try {
                         writer.write(message.getEmailAddress() + ",");
                         writer.write(message.getSender() + ",");
@@ -91,9 +93,8 @@ class Transport implements Callable {
     }
 
     @Override
-    public Object call() {
+    public void run() {
         send();
-        return null;
     }
 }
 
@@ -119,10 +120,20 @@ public class Task14 {
     public static void main(String args[]) {
 
         ExecutorService es = Executors.newCachedThreadPool();
+        Object fileWriterSynchronize = new Object();
 
         try {
             Files.lines(Paths.get("mail_list.csv"), StandardCharsets.UTF_8).forEach(mail -> {
-                es.submit(new Transport(new Message(mail, "from@mail.ru", "subject", "body mail")));
+                es.submit(
+                        new Transport(
+                                new Message(
+                                        mail,
+                                        "from@mail.ru",
+                                        "subject",
+                                        "body mail"),
+                                fileWriterSynchronize
+                        )
+                );
             });
         } catch (IOException e) {
             e.printStackTrace();

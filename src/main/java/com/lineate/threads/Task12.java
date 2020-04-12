@@ -11,6 +11,19 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 
 public class Task12 {
+
+    /**
+     * Написать свой класс, аналогичный ConcurrentHashMap , используя  ReadWriteLock.
+     * Будет ли эта реализация хуже ConcurrentHashMap, и если да, то почему
+     */
+    Map<Object, Object> hm;
+    ReadWriteLock rwl = new ReentrantReadWriteLock();
+
+    public Task12() {
+        this.hm = new HashMap();
+    }
+
+
     public int size() {
         rwl.readLock().lock();
         try {
@@ -110,7 +123,7 @@ public class Task12 {
         }
     }
 
-    public Set<Map.Entry> entrySet() {
+    public Set<Map.Entry<Object, Object>> entrySet() {
         rwl.readLock().lock();
         try {
             return hm.entrySet();
@@ -218,14 +231,5 @@ public class Task12 {
         }
     }
 
-    /**
-     * Написать свой класс, аналогичный ConcurrentHashMap , используя  ReadWriteLock.
-     * Будет ли эта реализация хуже ConcurrentHashMap, и если да, то почему
-     */
-    HashMap hm;
-    ReadWriteLock rwl = new ReentrantReadWriteLock();
 
-    public Task12(HashMap hm) {
-        this.hm = hm;
-    }
 }

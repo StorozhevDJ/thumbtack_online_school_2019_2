@@ -9,13 +9,11 @@ enum Operation {
 }
 
 
-class MyThread5 extends Thread {
+class MyClass {
     private final List<Integer> integerList;
-    private final Operation op;
 
-    public MyThread5(List<Integer> integerList, Operation op) {
+    MyClass(List<Integer> integerList) {
         this.integerList = integerList;
-        this.op = op;
     }
 
     public synchronized void write(int number) {
@@ -28,16 +26,36 @@ class MyThread5 extends Thread {
         System.out.println("Delete = " + index);
     }
 
+    public Boolean isEmpty() {
+        return integerList.isEmpty();
+    }
+
+    public Integer size() {
+        return integerList.size();
+    }
+}
+
+
+class MyThread5 extends Thread {
+    private final MyClass myClass;
+    private final Operation op;
+
+    public MyThread5(MyClass myClass, Operation op) {
+        this.myClass = myClass;
+        this.op = op;
+    }
+
     @Override
     public void run() {
+
         System.out.println("Operation " + op);
         if (op == Operation.READ) {
             System.out.println("Start delete... ");
             int count = 0;
             while (count <= 10000) {
-                if (!integerList.isEmpty()) {
-                    int ptr = (int) (Math.random() * (integerList.size() - 1));
-                    read(ptr);
+                if (!myClass.isEmpty()) {
+                    int ptr = (int) (Math.random() * (myClass.size() - 1));
+                    myClass.read(ptr);
                     count++;
                 }
             }
@@ -45,7 +63,7 @@ class MyThread5 extends Thread {
             System.out.println("Start add... ");
             for (int i = 0; i < 10000; i++) {
                 int rand = (int) (Math.random() * 1000);
-                write(rand);
+                myClass.write(rand);
             }
             System.out.println("end add ");
         }
@@ -60,9 +78,10 @@ public class Task5 {
      */
     public static void main(String args[]) {
         List<Integer> integerList = new ArrayList<>();
+        MyClass myClass = new MyClass(integerList);
 
-        MyThread5 threadPlus = new MyThread5(integerList, Operation.WRITE);
-        MyThread5 threadMinus = new MyThread5(integerList, Operation.READ);
+        MyThread5 threadPlus = new MyThread5(myClass, Operation.WRITE);
+        MyThread5 threadMinus = new MyThread5(myClass, Operation.READ);
 
         threadPlus.start();
         threadMinus.start();
