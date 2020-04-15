@@ -63,6 +63,7 @@ class Developer implements Runnable {
                 queue.put(new MyTask16());
                 System.out.println("Developer added Task " + i * count + ". Tasks in queue = " + queue.size());
             }
+            queue.put(null);    //Add poison
             System.out.println("Developer end!");
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -82,16 +83,20 @@ class Executor implements Runnable {
     @Override
     public void run() {
         System.out.println("Executor started!");
-        while (queue.size() != 0) {
+        while (true) {
             try {
                 MyTask16 myTask16 = queue.take();
-                System.out.println("Executor task: " + myTask16);
-                myTask16.execute();
-                Thread.sleep(100);
+                if (myTask16 != null) {
+                    System.out.println("Executor task: " + myTask16);
+                    myTask16.execute();
+                    Thread.sleep(100);
+                } else {
+                    break; //If poison
+                }
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
-        System.out.println("Executor end! " + "Queue size " + queue.size());
+        System.out.println("Executor end! ");
     }
 }

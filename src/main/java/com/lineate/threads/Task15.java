@@ -20,8 +20,8 @@ public class Task15 {
 
         BlockingQueue<Data> queue = new LinkedBlockingQueue<>();
 
-        Consumer2 consumer1 = new Consumer2(queue, 300);
-        Consumer2 consumer2 = new Consumer2(queue, 100);
+        Consumer2 consumer1 = new Consumer2(queue);
+        Consumer2 consumer2 = new Consumer2(queue);
         Producer2 producer1 = new Producer2(queue, 150);
         Producer2 producer2 = new Producer2(queue, 250);
 
@@ -39,8 +39,6 @@ public class Task15 {
             System.out.println("Main thread Interrupted");
         }
     }
-
-
 }
 
 
@@ -52,7 +50,11 @@ class Data {
         this.array = array;
     }
 
-    public int[] get() {
+    public void setArray(int[] array) {
+        this.array = array;
+    }
+
+    public int[] getArray() {
         return array;
     }
 }
@@ -75,6 +77,7 @@ class Producer2 extends Thread {
                 queue.put(new Data(new int[10]));
                 System.out.println("Producer added Data " + i + ". Data in queue = " + queue.size());
             }
+            queue.put(new Data(null));  //Poison
             System.out.println("Producer finished!");
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -84,24 +87,30 @@ class Producer2 extends Thread {
 
 class Consumer2 extends Thread {
     private BlockingQueue<Data> queue;
-    private int count;
 
-    public Consumer2(BlockingQueue<Data> queue, int count) {
+    public Consumer2(BlockingQueue<Data> queue) {
         this.queue = queue;
-        this.count = count;
     }
 
     @Override
     public void run() {
-        System.out.println("Consumer started! Count: " + count);
+        System.out.println("Consumer started!");
         try {
-            for (int i = 0; i < count; i++) {
+            for (; true; ) {
                 Data data = queue.take();
-                System.out.println("Producer getting Data " + data + ". Queue size = " + queue.size());
+                if (data != null) {
+                    if (data.getArray() != null) {
+                        System.out.println("Consumer getting Data " + data + ". Queue size = " + queue.size());
+                    } else {
+                        System.out.println("Consumer getting null data (poison) ");
+                        break;
+                    }
+                }
             }
-            System.out.println("Producer finished!");
+            System.out.println("Consumer finished!");
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }
 }
+
