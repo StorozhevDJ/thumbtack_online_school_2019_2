@@ -77,6 +77,8 @@ class Producer2 extends Thread {
                 queue.put(new Data(new int[10]));
                 System.out.println("Producer added Data " + i + ". Data in queue = " + queue.size());
             }
+            // REVU нет, не может Producer здесь класть яд
+            // яд может оказаться не в конце очереди, так как другие Producer еще не закончили работу
             queue.put(new Data(null));  //Poison
             System.out.println("Producer finished!");
         } catch (InterruptedException e) {
