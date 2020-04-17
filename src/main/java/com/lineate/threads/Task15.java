@@ -31,10 +31,22 @@ public class Task15 {
         producer2.start();
 
         try {
-            consumer1.join();
-            consumer2.join();
             producer1.join();
             producer2.join();
+        } catch (InterruptedException e) {
+            System.out.println("Main thread Interrupted");
+        }
+
+        try {
+            queue.put(new Data(null));  //Poison
+            queue.put(new Data(null));
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            consumer1.join();
+            consumer2.join();
         } catch (InterruptedException e) {
             System.out.println("Main thread Interrupted");
         }
@@ -77,9 +89,6 @@ class Producer2 extends Thread {
                 queue.put(new Data(new int[10]));
                 System.out.println("Producer added Data " + i + ". Data in queue = " + queue.size());
             }
-            // REVU нет, не может Producer здесь класть яд
-            // яд может оказаться не в конце очереди, так как другие Producer еще не закончили работу
-            queue.put(new Data(null));  //Poison
             System.out.println("Producer finished!");
         } catch (InterruptedException e) {
             e.printStackTrace();

@@ -63,7 +63,6 @@ class Developer implements Runnable {
                 queue.put(new MyTask16());
                 System.out.println("Developer added Task " + i * count + ". Tasks in queue = " + queue.size());
             }
-            queue.put(null);    //Add poison
             System.out.println("Developer end!");
         } catch (InterruptedException e) {
             e.printStackTrace();
