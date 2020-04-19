@@ -109,13 +109,11 @@ class Consumer2 extends Thread {
         try {
             for (; true; ) {
                 Data data = queue.take();
-                if (data != null) {
-                    if (data.getArray() != null) {
-                        System.out.println("Consumer getting Data " + data + ". Queue size = " + queue.size());
-                    } else {
-                        System.out.println("Consumer getting null data (poison) ");
-                        break;
-                    }
+                if (data.getArray() != null) {
+                    System.out.println("Consumer getting Data " + data + ". Queue size = " + queue.size());
+                } else {
+                    System.out.println("Consumer getting null data (poison) ");
+                    break;
                 }
             }
             System.out.println("Consumer finished!");

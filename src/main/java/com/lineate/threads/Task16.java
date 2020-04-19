@@ -21,8 +21,8 @@ public class Task16 {
         BlockingQueue<MyTask16> queue = new LinkedBlockingQueue<>();
 
         ExecutorService executorService = Executors.newFixedThreadPool(10);
-        for (int i = 0; i < 20; i++) {
-            executorService.submit(new Developer(queue, 10));
+        for (int i = 0; i < 7; i++) {
+            executorService.submit(new Developer(queue, 5));
             executorService.submit(new Executor(queue));
         }
         executorService.shutdown();
@@ -36,6 +36,21 @@ interface Executable {
 
 
 class MyTask16 implements Executable {
+
+    boolean poison;
+
+    public boolean isPoison() {
+        return poison;
+    }
+
+    public MyTask16() {
+        this.poison = false;
+    }
+
+    public MyTask16(boolean poison) {
+        this.poison = poison;
+    }
+
     @Override
     public void execute() throws InterruptedException {
         System.out.println("Task start");
@@ -63,6 +78,7 @@ class Developer implements Runnable {
                 queue.put(new MyTask16());
                 System.out.println("Developer added Task " + i * count + ". Tasks in queue = " + queue.size());
             }
+            queue.put(new MyTask16(true));
             System.out.println("Developer end!");
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -85,13 +101,12 @@ class Executor implements Runnable {
         while (true) {
             try {
                 MyTask16 myTask16 = queue.take();
-                if (myTask16 != null) {
-                    System.out.println("Executor task: " + myTask16);
-                    myTask16.execute();
-                    Thread.sleep(100);
-                } else {
-                    break; //If poison
+                if (myTask16.isPoison()) {
+                    break;
                 }
+                System.out.println("Executor task: " + myTask16);
+                myTask16.execute();
+                Thread.sleep(100);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
